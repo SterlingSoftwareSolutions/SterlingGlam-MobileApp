@@ -7,14 +7,17 @@ import Dashboard from './App/Screens/Dashboard';
 import CustomerProfile from './App/Screens/customerProfile';
 import Setting from './App/Screens/Setting';
 import Appoinment from './App/Screens/Appoinment';
-// import AppoinmentHistory from './App/Screens/AppoinmentHistory';
+import AppoinmentHistory from './App/Screens/AppoinmentHistory';
+import SubCategories from './App/Screens/SubCategories';
+
+ 
  
  
 export default function App() {
   return (
 
     <View style={styles.container}>
-     <Appoinment/>
+     <SubCategories/>
       
     </View>
     

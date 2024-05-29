@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
   line: {
     marginTop: 30,
     left: 40,
-    width: 330,
+    width: 315,
     top: 20,
   },
   day: {
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     top: 10,
     right: -60,
-    marginTop: 5,
+    marginTop: 15,
   },
   groupChildLayout: {
     height: 54,

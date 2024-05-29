@@ -56,8 +56,8 @@ const styles = StyleSheet.create({
   },
 
   rectangleParent: {
-    top: 700,
-    left: 24,
+    top: 650,
+    left: 27,
     shadowColor: "rgba(0, 0, 0, 0.25)",
     shadowOffset: {
       width: 0,
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     top: 0,
   },
   letsStart: {
-    top: 9,
+    top: 11,
     left: 49,
     fontSize: FontSize.size_xl,
     // fontFamily: FontFamily.poppinsRegular,
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   },
   welocomeItem: {
     marginLeft: -85.5,
-    top: 842,
+    top: 846,
     left: "50%",
     borderStyle: "solid",
     borderColor: Color.colorGray_900,

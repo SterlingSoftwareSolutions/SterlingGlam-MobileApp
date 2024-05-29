@@ -42,7 +42,7 @@ export class Dashboard extends Component {
             />
             <Text>Lukshi</Text>
             <Text>0784358292</Text>
-            <Text>Rating: 3 stars</Text>
+             
           </View>
           {/* Hair Specialist Card */}
           <View style={styles.hairSpecialistCard}>
@@ -53,7 +53,7 @@ export class Dashboard extends Component {
              
             <Text>lalila</Text>
             <Text>0704549342</Text>
-            <Text>Rating: 4 stars</Text>
+            
           </View>
           <View style={styles.hairSpecialistCard}>
             <Image
@@ -63,7 +63,7 @@ export class Dashboard extends Component {
             
             <Text>Dushi</Text>
             <Text>0784358292</Text>
-            <Text>Rating: 3 stars</Text>
+         
           </View>
         </View>
       </ScrollView>
@@ -73,12 +73,12 @@ export class Dashboard extends Component {
 
 // Sample data for categories
 const categories = [
-  { id: 1, name: 'Category 1', image: require('../Assets/shampo.png') },
-  { id: 2, name: 'Category 2', image: require('../Assets/photo2.png') },
-  { id: 3, name: 'Category 3', image: require('../Assets/photo3.png') },
-  { id: 4, name: 'Category 4', image: require('../Assets/photo4.png') },
-  { id: 5, name: 'Category 5', image: require('../Assets/photo5.png') },
-  { id: 6, name: 'Category 6', image: require('../Assets/shampo.png') },
+  { id: 1, name: 'Hair', image: require('../Assets/h2.png') },
+  { id: 2, name: 'Skin', image: require('../Assets/photo4.png') },
+  { id: 3, name: 'Nail', image: require('../Assets/n1.jpg') },
+  { id: 4, name: 'Boday', image: require('../Assets/w3.png') },
+  { id: 5, name: 'Dresing', image: require('../Assets/d1.jpg') },
+  { id: 6, name: 'Product', image: require('../Assets/po1.webp') },
 ];
 
 // Styles
@@ -117,6 +117,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   tileText: {
+    fontSize:17,
     position: 'absolute',
     bottom: 0,
     left: 0,
@@ -137,6 +138,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     padding: 8,
     borderRadius: 8,
+    top:-20,
   },
   hairSpecialistImage: {
     width: 80,
@@ -144,6 +146,8 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     marginBottom: 8,
   },
+ 
+  
 });
 
 export default Dashboard;
