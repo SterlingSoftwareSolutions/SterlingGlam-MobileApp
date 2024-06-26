@@ -25,6 +25,7 @@
           style={styles.line}
            />
            <Text style={styles.darkmode}>Dark mode</Text>
+           
         
         <Image
           source={require('../Assets/line1.png')}
@@ -36,6 +37,7 @@
 
          <Text style={styles.sing}>Sing-out</Text>
        </View>
+       
      )
    }
  };
