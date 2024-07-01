@@ -1,8 +1,10 @@
 import { View, Text, StyleSheet, Image, Pressable, Button, ImageBackground } from 'react-native'
 import React from 'react'
 import { FontFamily, FontSize, Color, Border } from "../Styles/GlobalStyles";
+import { useNavigation } from '@react-navigation/native';
 
 export default function Welcome() {
+  // const navigation = useNavigation()
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -18,6 +20,8 @@ export default function Welcome() {
         
         <View style={[styles.groupChild, styles.groupChildLayout]} />
         <Text style={styles.letsStart}>Let’s Start</Text>
+        {/* <Button title='Let’s Start'
+        onPress={()=>navigation.navigate("SignUp")}/> */}
       </Pressable>
       </ImageBackground>
       <View>
@@ -76,10 +80,10 @@ const styles = StyleSheet.create({
     borderRadius: Border.br_xl,
     backgroundColor: Color.colorPurple,
     left: 0,
-    top: 0,
+    top: -55,
   },
   letsStart: {
-    top: 11,
+    top: -45,
     left: 49,
     fontSize: FontSize.size_xl,
     // fontFamily: FontFamily.poppinsRegular,
@@ -104,7 +108,7 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   logoitem: {
-    top: 128,
+    top: 108,
     left: -36,
     width: 430,
     height: 430,

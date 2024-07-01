@@ -142,11 +142,11 @@ const styles = StyleSheet.create({
   groupPosition: {
     backgroundColor: Color.colorWhite,
     left: 15,
-    top: -80,
+    top: -90,
   },
    
   signUp: {
-    top: -73,
+    top: -83,
     left: 35,
     color: Color.colorPurple,
   },
