@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet,Pressable } from 'react-native';
 import { FontFamily, FontSize, Color, Border } from "../Styles/GlobalStyles";
+import { useNavigation } from '@react-navigation/native';
 
 export default function Login() {
+  const navigation = useNavigation()
   return (
     <View style={styles.container}>
        <Image
@@ -14,15 +16,17 @@ export default function Login() {
       <View style={[styles.rectangleView, styles.loginChild1ShadowBox]} />
       <Text style={[styles.password, styles.passwordTypo]}>password</Text>
       
+       
       <Pressable
-        style={[styles.rectanglePressable, styles.childLayout]}
-        onPress={() => navigation.navigate("Home")}
-      />
-      <View style={[styles.loginChild1, styles.childLayout]} />
-      <Text style={styles.login1}>login</Text>
+       style={[styles.rectanglePressable, styles.childLayout]}
+       onPress={() => navigation.navigate("Dashboard")}
+      >
+        <View style={[styles.loginChild1, styles.childLayout]} />
+        <Text style={styles.login1}>login</Text>
+      </Pressable>
       <Pressable
         style={[styles.rectangleParent, styles.childLayout]}
-        onPress={() => navigation.navigate("singin")}
+        onPress={() => navigation.navigate("SignUp")}
       >
         <View style={[styles.groupChild, styles.groupPosition]} />
         <Text style={[styles.signUp, styles.signUpTypo]}>Sign-up</Text>
@@ -118,10 +122,10 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   loginChild1: {
-    top: 560,
+    top: 280,
     width: 317,
     backgroundColor: Color.colorPurple,
-    left: 41,
+    left: -5,
     borderRadius: Border.br_xl,
     shadowOpacity: 1,
     elevation: 4,
@@ -142,11 +146,11 @@ const styles = StyleSheet.create({
   groupPosition: {
     backgroundColor: Color.colorWhite,
     left: 15,
-    top: -90,
+    top: -79,
   },
    
   signUp: {
-    top: -83,
+    top: -72,
     left: 35,
     color: Color.colorPurple,
   },
@@ -259,8 +263,8 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   login1: {
-    top: 570,
-    left: 85,
+    top: 290,
+    left: 45,
     fontSize: FontSize.size_3xl,
     fontWeight: "700",
     fontFamily: FontFamily.poppinsBold,

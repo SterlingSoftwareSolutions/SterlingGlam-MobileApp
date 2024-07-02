@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, Image, FlatList, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, Image, FlatList, StyleSheet, ScrollView, TouchableOpacity, Pressable} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-export class Dashboard extends Component {
-  render() {
+export default function Dashboard() {
+  const navigation = useNavigation()
     return (
-      <ScrollView style={styles.container}>
+      <View style={styles.container}>
         {/* <MenuIcon /> */}
         <Image
           source={require('../Assets/drag.png')}
@@ -20,13 +21,13 @@ export class Dashboard extends Component {
         <FlatList
           data={categories}
           renderItem={({ item }) => (
-            <View style={styles.tile}>
-               <Image
-                 source={item.image}
+            <TouchableOpacity style={styles.tile} onPress={() => navigation.navigate('SubCategories')}>
+              <Image
+                source={item.image}
                 style={styles.tileImage}
               />
               <Text style={styles.tileText}>{item.name}</Text>
-            </View>
+            </TouchableOpacity>
           )}
           numColumns={3}
           keyExtractor={(item) => item.id.toString()}
@@ -66,10 +67,10 @@ export class Dashboard extends Component {
          
           </View>
         </View>
-      </ScrollView>
+      </View>
     );
   }
-}
+
 
 // Sample data for categories
 const categories = [
@@ -150,4 +151,3 @@ const styles = StyleSheet.create({
   
 });
 
-export default Dashboard;

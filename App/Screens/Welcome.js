@@ -4,7 +4,7 @@ import { FontFamily, FontSize, Color, Border } from "../Styles/GlobalStyles";
 import { useNavigation } from '@react-navigation/native';
 
 export default function Welcome() {
-  // const navigation = useNavigation()
+   const navigation = useNavigation()
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -80,10 +80,10 @@ const styles = StyleSheet.create({
     borderRadius: Border.br_xl,
     backgroundColor: Color.colorPurple,
     left: 0,
-    top: -55,
+    top: 15,
   },
   letsStart: {
-    top: -45,
+    top: 23,
     left: 49,
     fontSize: FontSize.size_xl,
     // fontFamily: FontFamily.poppinsRegular,
