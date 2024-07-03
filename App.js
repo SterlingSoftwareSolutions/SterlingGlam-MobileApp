@@ -28,7 +28,7 @@ export default function App() {
         <Stack.Screen name='Dashboard' component={Dashboard}/>
         <Stack.Screen name='SignUp' component={Signup}/>
         <Stack.Screen name='SubCategories' component={SubCategories}/>
-
+        <Stack.Screen name="Appointment" component={Appoinment} />
       </Stack.Navigator>
 
     </NavigationContainer>

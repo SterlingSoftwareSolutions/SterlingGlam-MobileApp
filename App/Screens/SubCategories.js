@@ -1,8 +1,10 @@
-import { Text, View, TextInput, StyleSheet, Image, FlatList } from 'react-native';
+import { Text, View, TextInput, StyleSheet, Image, FlatList,TouchableOpacity } from 'react-native';
 import React, { Component } from 'react';
 import { FontFamily, FontSize, Color, Border } from '../Styles/GlobalStyles';
+import { useNavigation } from '@react-navigation/native';
 
 const DATA = [
+
   { id: '1', name: 'Hair Cut', source: require('../Assets/haircut.png') },
   { id: '2', name: 'Hair Style', source: require('../Assets/hairstyle.jpg') },
   { id: '3', name: 'Oil Threatment', source: require('../Assets/oil1.jpg') },
@@ -10,20 +12,29 @@ const DATA = [
   { id: '5', name: 'Hair color', source: require('../Assets/color1.jpg') },
 ];
 
-export class SubCategories extends Component {
-  renderItem = ({ item }) => (
-    <View>
-      <Image
-        source={item.source}
-        style={styles.iconItem}
-      />
-      <Text style={styles.imageText}>{item.name}</Text>
-    </View>
+export default function SubCategories() {
+  
+  
+  handlePress = (item) => {
+     
+    // Navigate to the Appointment screen
+    this.props.navigation.navigate('Appointment', { item });
+  };
 
+  renderItem = ({ item }) => (
+      
+    <TouchableOpacity onPress={() => this.handlePress(item)}>
+      <View style={styles.itemContainer}>
+        <Image
+          source={item.source}
+          style={styles.iconItem}
+        />
+        <Text style={styles.imageText}>{item.name}</Text>
+      </View>
+    </TouchableOpacity>
   );
 
-  render() {
-    return (
+  return (
       <View style={styles.container}>
         <Text style={styles.heading}>Hair</Text>
         <View style={styles.searchRow}>
@@ -52,7 +63,7 @@ export class SubCategories extends Component {
       </View>
     );
   }
-}
+
 
 const styles = StyleSheet.create({
   container: {
@@ -135,4 +146,4 @@ const styles = StyleSheet.create({
   
 });
 
-export default SubCategories;
+ 
