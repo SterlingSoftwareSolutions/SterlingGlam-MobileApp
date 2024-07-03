@@ -1,72 +1,78 @@
-import { Text, View,TextInput, StyleSheet, Image } from 'react-native'
-import React, { Component } from 'react'
-import { FontFamily, FontSize, Color, Border } from "../Styles/GlobalStyles";
+import { Text, View, TextInput, StyleSheet, Image, FlatList } from 'react-native';
+import React, { Component } from 'react';
+import { FontFamily, FontSize, Color, Border } from '../Styles/GlobalStyles';
+
+const DATA = [
+  { id: '1', name: 'Hair Cut', source: require('../Assets/haircut.png') },
+  { id: '2', name: 'Hair Style', source: require('../Assets/hairstyle.jpg') },
+  { id: '3', name: 'Oil Threatment', source: require('../Assets/oil1.jpg') },
+  { id: '4', name: 'Shampo Threatment', source: require('../Assets/hairthreatment1.jpg') },
+  { id: '5', name: 'Hair color', source: require('../Assets/color1.jpg') },
+];
 
 export class SubCategories extends Component {
+  renderItem = ({ item }) => (
+    <View>
+      <Image
+        source={item.source}
+        style={styles.iconItem}
+      />
+      <Text style={styles.imageText}>{item.name}</Text>
+    </View>
+
+  );
+
   render() {
     return (
-        <View style={styles.container}>
-       <Text style={styles.heading}>Hair</Text>
-       <Image
+      <View style={styles.container}>
+        <Text style={styles.heading}>Hair</Text>
+        <View style={styles.searchRow}>
+        <Image
           source={require('../Assets/back.png')}
           style={styles.icon}
         />
-        <TextInput
-          style={[styles.Text, styles.Text2]}
-          placeholder= "Search for Service"
-        />
-        <Image
-          source={require('../Assets/search.png')}
-          style={styles.icon1}
-        />
+        <View style={styles.searchBox}>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Search for Service"
+          />
           <Image
-          source={require('../Assets/haircut.png')}
-          style={styles.icon3}
-        />
-        
-        <Image
-          source={require('../Assets/hairstyle.jpg')}
-          style={styles.icon4}
-        />
-        <Image
-          source={require('../Assets/oil1.jpg')}
-          style={styles.icon5}
-        />
-        <Image
-          source={require('../Assets/hairthreatment1.jpg')}
-          style={styles.icon6}
-        />
-        <Image
-          source={require('../Assets/color1.jpg')}
-          style={styles.icon7}
-        
-         />
-        {/* <Image
-          source={require('../Assets/12.png')}
-          style={styles.icon8}
-        />
-         */}
+            source={require('../Assets/search.png')}
+            style={styles.searchIcon}
+          />
+        </View>
       </View>
-      
-    )
+        <FlatList
+          data={DATA}
+          renderItem={this.renderItem}
+          keyExtractor={item => item.id}
+          numColumns={2}
+          contentContainerStyle={styles.flatListContainer}
+        />
+      </View>
+    );
   }
-};
+}
+
 const styles = StyleSheet.create({
-    heading: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      textAlign: "center",
-      top:50,
-    },
-    icon: {
-      marginTop: 17,
-      left: 10,
-      width: 45,
-      height:45,
-    },
-     
+  container: {
+    flex: 1,
+    padding: 10,
+  },
+  heading: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 20,
+  },
+  icon: {
+    marginTop: 17,
+    left: 10,
+    width: 45,
+    height: 45,
+  },
   Text: {
-    top:30,
+    top: 30,
     height: 35,
     borderColor: 'gray',
     borderWidth: 1,
@@ -75,58 +81,58 @@ const styles = StyleSheet.create({
     width: '80%',
     marginLeft: '10%',
     borderRadius: 5,
-    left:17,
+    left: 17,
   },
-  icon1:{
+  icon1: {
     marginTop: -16,
-      left: 10,
-      width: 46,
-      height:46,
-    },
-    icon2:{
-      height: 120,
-      width: 120,
-      borderRadius: 60,
-      left: 40,
-      top:40,
+    left: 10,
+    width: 46,
+    height: 46,
   },
-  icon3:{
+  iconItem: {
     height: 120,
     width: 120,
     borderRadius: 60,
-    left: 40,
-    top:40,
-},
-icon4:{
-  height: 120,
-  width: 120,
-  borderRadius: 60,
-  left: 40,
-  top:80,
-},
-icon5:{
-  height: 120,
-  width: 120,
-  borderRadius: 60,
-  left: 40,
-  top:120,
-},
-icon6:{
-  height: 120,
-  width: 120,
-  borderRadius: 60,
-  left: 230,
-  top:-320,
-  alignItems:'center',
-},
-icon7:{
-  height: 120,
-  width: 120,
-  borderRadius: 60,
-  left: 230,
-  top:-280,
-},
- 
+    margin: 10,
+  },
+  flatListContainer: {
+    // alignItems: 'center',
+    alignContent: 'center',
+    alignSelf: 'center'
+
+  },
+  imageText:{
+ alignContent: 'center',
+    alignSelf: 'center'
+  },
+  searchRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  icon: {
+    width: 24,
+    height: 24,
+    marginRight: 8,
+  },
+  searchBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 4,
+    paddingHorizontal: 8,
+  },
+  textInput: {
+    flex: 1,
+    padding: 8,
+  },
+  searchIcon: {
+    width: 24,
+    height: 24,
+  },
+  
 });
 
 export default SubCategories;
