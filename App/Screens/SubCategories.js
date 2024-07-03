@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const DATA = [
 
+
   { id: '1', name: 'Hair Cut', source: require('../Assets/haircut.png') },
   { id: '2', name: 'Hair Style', source: require('../Assets/hairstyle.jpg') },
   { id: '3', name: 'Oil Threatment', source: require('../Assets/oil1.jpg') },
@@ -13,7 +14,6 @@ const DATA = [
 ];
 
 export default function SubCategories() {
-  
   
   handlePress = (item) => {
      
