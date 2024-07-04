@@ -6,10 +6,10 @@ export class AppoinmentHistory extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Image
+        {/* <Image
           source={require('../Assets/drag.png')}
           style={styles.menu}
-        />
+        /> */}
         <Text style={styles.heading}>Appoinment History</Text>
         <Image
           source={require('../Assets/13.png')}

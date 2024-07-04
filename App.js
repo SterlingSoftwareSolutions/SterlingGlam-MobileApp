@@ -29,6 +29,8 @@ export default function App() {
         <Stack.Screen name='SignUp' component={Signup}/>
         <Stack.Screen name='SubCategories' component={SubCategories}/>
         <Stack.Screen name="Appointment" component={Appoinment} />
+        <Stack.Screen name="AppoinmentHistory" component={AppoinmentHistory} />
+
         {/* Example commit */}
       </Stack.Navigator>
 

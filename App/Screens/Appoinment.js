@@ -2,10 +2,15 @@ import React, { useState } from 'react';
 import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { FontSize, Color, Border } from '../Styles/GlobalStyles';
+import { useNavigation } from '@react-navigation/native';
+
 
 const Appointment = () => {
+  const navigation = useNavigation();
+
   const [selectedDate, setSelectedDate] = useState(null);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
 
   const handleConfirm = (date) => {
     setSelectedDate(date);
@@ -20,12 +25,18 @@ const Appointment = () => {
     setDatePickerVisibility(false);
   };
 
+  const handleTimeSlotSelect = (timeSlot) => {
+    setSelectedTimeSlot(timeSlot);
+  };
+
   const handleBookAppointment = () => {
-    if (selectedDate) {
-      // Logic to handle booking appointment with selectedDate
-      console.log('Booking appointment for:', selectedDate);
+    if (selectedDate && selectedTimeSlot) {
+      // Logic to handle booking appointment with selectedDate and selectedTimeSlot
+      console.log('Booking appointment for:', selectedDate, 'at time slot:', selectedTimeSlot);
+      navigation.navigate("AppoinmentHistory");
+      
     } else {
-      console.warn('Please select a date for the appointment.');
+      console.warn('Please select a date and a time slot for the appointment.');
     }
   };
 
@@ -34,7 +45,7 @@ const Appointment = () => {
       <Text style={styles.heading}>Appointment</Text>
 
       <View style={styles.dateContainer}>
-        <Text style={styles.account}>Date</Text>
+        <Text style={styles.account}>Pick the Date</Text>
         <TouchableOpacity onPress={showDatePicker} >
           <Image
             source={require('../Assets/date-icon.png')}
@@ -56,40 +67,67 @@ const Appointment = () => {
         </Text>
       )}
 
-<Text style={styles.day}>Morning</Text>
+      <Text style={styles.day}>Morning</Text>
       <View style={styles.timeStyle}>
-        <TouchableOpacity style={styles.timeSlot}>
+        <TouchableOpacity
+          style={[styles.timeSlot, selectedTimeSlot === '9.00' && styles.selectedTimeSlot]}
+          onPress={() => handleTimeSlotSelect('9.00')}
+        >
           <Text style={styles.timeText}>9.00</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.timeSlot}>
+        <TouchableOpacity
+          style={[styles.timeSlot, selectedTimeSlot === '10.00' && styles.selectedTimeSlot]}
+          onPress={() => handleTimeSlotSelect('10.00')}
+        >
           <Text style={styles.timeText}>10.00</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.timeSlot}>
+        <TouchableOpacity
+          style={[styles.timeSlot, selectedTimeSlot === '11.00' && styles.selectedTimeSlot]}
+          onPress={() => handleTimeSlotSelect('11.00')}
+        >
           <Text style={styles.timeText}>11.00</Text>
         </TouchableOpacity>
       </View>
 
       <Text style={styles.day}>Afternoon</Text>
       <View style={styles.timeStyle}>
-        <TouchableOpacity style={styles.timeSlot}>
-          <Text style={styles.timeText}>1.00</Text>
+        <TouchableOpacity
+          style={[styles.timeSlot, selectedTimeSlot === '13.00' && styles.selectedTimeSlot]}
+          onPress={() => handleTimeSlotSelect('13.00')}
+        >
+          <Text style={styles.timeText}>13.00</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.timeSlot}>
-          <Text style={styles.timeText}>2.00</Text>
+        <TouchableOpacity
+          style={[styles.timeSlot, selectedTimeSlot === '14.00' && styles.selectedTimeSlot]}
+          onPress={() => handleTimeSlotSelect('14.00')}
+        >
+          <Text style={styles.timeText}>14.00</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.timeSlot}>
-          <Text style={styles.timeText}>3.00</Text>
+        <TouchableOpacity
+          style={[styles.timeSlot, selectedTimeSlot === '15.00' && styles.selectedTimeSlot]}
+          onPress={() => handleTimeSlotSelect('15.00')}
+        >
+          <Text style={styles.timeText}>15.00</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.timeStyle}>
-        <TouchableOpacity style={styles.timeSlot}>
-          <Text style={styles.timeText}>4.00</Text>
+        <TouchableOpacity
+          style={[styles.timeSlot, selectedTimeSlot === '16.00' && styles.selectedTimeSlot]}
+          onPress={() => handleTimeSlotSelect('16.00')}
+        >
+          <Text style={styles.timeText}>16.00</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.timeSlot}>
-          <Text style={styles.timeText}>5.00</Text>
+        <TouchableOpacity
+          style={[styles.timeSlot, selectedTimeSlot === '17.00' && styles.selectedTimeSlot]}
+          onPress={() => handleTimeSlotSelect('17.00')}
+        >
+          <Text style={styles.timeText}>17.00</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.timeSlot}>
-          <Text style={styles.timeText}>6.00</Text>
+        <TouchableOpacity
+          style={[styles.timeSlot, selectedTimeSlot === '18.00' && styles.selectedTimeSlot]}
+          onPress={() => handleTimeSlotSelect('18.00')}
+        >
+          <Text style={styles.timeText}>18.00</Text>
         </TouchableOpacity>
       </View>
 
@@ -112,7 +150,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 20,
+    margin: 20,
   },
   dateContainer: {
     flexDirection: 'row',
@@ -121,17 +159,18 @@ const styles = StyleSheet.create({
   },
   account: {
     fontSize: 20,
-    // flex: 1, // Take up remaining space
+    // flex: 1, 
   },
   calendarIcon: {
     width: 30,
     height: 30,
-    marginLeft: 10, // Add some margin between text and icon
+    marginLeft: 10, 
   },
   selectedDateText: {
     fontSize: 18,
     textAlign: 'center',
     marginTop: 10,
+    color:Color.colorPurple
   },
   day: {
     fontSize: 18,
@@ -148,6 +187,10 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 5,
     padding: 10,
+  },
+  selectedTimeSlot: {
+    borderColor: Color.colorPurple,
+    borderWidth: 2,
   },
   timeText: {
     fontSize: 16,
