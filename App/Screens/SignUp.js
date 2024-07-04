@@ -2,8 +2,10 @@ import React from 'react';
 import { View, Text, Image, StyleSheet,Pressable, TextInput } from 'react-native';
 
 import { FontFamily, FontSize, Color, Border } from "../Styles/GlobalStyles";
+import { useNavigation } from '@react-navigation/native';
 
 export default function Signup() {
+  const navigation = useNavigation()
   return (
     <View style={styles.container}>
        <Image
