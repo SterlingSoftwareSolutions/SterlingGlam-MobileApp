@@ -2,7 +2,7 @@ import { View, Text,TextInput, Image, FlatList,TouchableOpacity,Pressable, Style
  import React, { Component } from 'react'
  import { FontFamily, FontSize, Color, Border } from "../Styles/GlobalStyles";
  
- export class customerProfile extends Component {
+ export class CustomerProfile extends Component {
    render() {
      return (
       <View style={styles.container}>
@@ -124,7 +124,6 @@ import { View, Text,TextInput, Image, FlatList,TouchableOpacity,Pressable, Style
     top: 576,
     left: 80,
     fontSize: FontSize.size_xl,
-    fontFamily: FontFamily.poppinsRegular,
     color: Color.colorWhite,
     textAlign: "center",
     display: "flex",
@@ -147,4 +146,4 @@ import { View, Text,TextInput, Image, FlatList,TouchableOpacity,Pressable, Style
   }, 
 });
 
-export default customerProfile;
+export default CustomerProfile;

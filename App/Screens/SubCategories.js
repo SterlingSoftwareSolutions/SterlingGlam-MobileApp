@@ -4,8 +4,6 @@ import { FontFamily, FontSize, Color, Border } from '../Styles/GlobalStyles';
 import { useNavigation } from '@react-navigation/native';
 
 const DATA = [
-
-
   { id: '1', name: 'Hair Cut', source: require('../Assets/haircut.png') },
   { id: '2', name: 'Hair Style', source: require('../Assets/hairstyle.jpg') },
   { id: '3', name: 'Oil Threatment', source: require('../Assets/oil1.jpg') },
@@ -14,16 +12,15 @@ const DATA = [
 ];
 
 export default function SubCategories() {
-  
-  handlePress = (item) => {
-     
+  const navigation = useNavigation();
+
+  const handlePress = (item) => {
     // Navigate to the Appointment screen
-    this.props.navigation.navigate('Appointment', { item });
+    navigation.navigate('Appointment', { item });
   };
 
-  renderItem = ({ item }) => (
-      
-    <TouchableOpacity onPress={() => this.handlePress(item)}>
+  const renderItem = ({ item }) => (
+    <TouchableOpacity onPress={() => handlePress(item)}>
       <View style={styles.itemContainer}>
         <Image
           source={item.source}
@@ -38,10 +35,11 @@ export default function SubCategories() {
       <View style={styles.container}>
         <Text style={styles.heading}>Hair</Text>
         <View style={styles.searchRow}>
-        <Image
+        {/* <Image
           source={require('../Assets/back.png')}
           style={styles.icon}
-        />
+        /> */} 
+        {/* remove bg of arrow and go back function */}
         <View style={styles.searchBox}>
           <TextInput
             style={styles.textInput}
@@ -55,7 +53,7 @@ export default function SubCategories() {
       </View>
         <FlatList
           data={DATA}
-          renderItem={this.renderItem}
+          renderItem={renderItem}
           keyExtractor={item => item.id}
           numColumns={2}
           contentContainerStyle={styles.flatListContainer}

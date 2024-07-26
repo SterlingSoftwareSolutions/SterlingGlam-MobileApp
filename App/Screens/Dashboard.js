@@ -7,10 +7,10 @@ export default function Dashboard() {
     return (
       <View style={styles.container}>
         {/* <MenuIcon /> */}
-        <Image
+        {/* <Image
           source={require('../Assets/drag.png')}
           style={styles.menu}
-        />
+        /> */}
         {/* Banner Image */}
         <Image
           source={require('../Assets/bannerImg.png')}
@@ -97,6 +97,7 @@ const styles = StyleSheet.create({
     resizeMode:'contain'
   },
   banner: {
+    marginTop:35,
     width: '100%',
     height: 200,
     marginBottom:-50
