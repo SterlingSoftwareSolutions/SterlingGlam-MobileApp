@@ -1,149 +1,121 @@
-import { View, Text,TextInput, Image, FlatList,TouchableOpacity,Pressable, StyleSheet, ScrollView } from 'react-native';
- import React, { Component } from 'react'
- import { FontFamily, FontSize, Color, Border } from "../Styles/GlobalStyles";
- 
- export class CustomerProfile extends Component {
-   render() {
-     return (
-      <View style={styles.container}>
-      {/* <MenuIcon /> */}
-      <Image
-        source={require('../Assets/drag.png')}
-        style={styles.menu}
-      />
-      <Text style={styles.heading}>Customer Profile</Text>
-      <Image
-          source={require('../Assets/13.png')}
-          style={styles.banner}
-        />
-         <Image
-        source={require('../Assets/23.png')}
-        style={styles.click}
-      />
-        <Image
-        source={require('../Assets/came.png')}
-        style={styles.came}
-      />
-      {/* <Text style={styles.Label}>Email Address</Text> */}
-      <TextInput
-          style={[styles.Text, styles.Text2]}
-          placeholder="Email address"
-        />
-       
-      {/* <Text style={styles.Label}>Name</Text> */}
-      <TextInput
-          style={[styles.Text, styles.Text2]}
-          placeholder="Name"
-        />
-      {/* <Text style={styles.Label}>Contact Information</Text> */}
-      <TextInput
-          style={[styles.Text, styles.Text2]}
-          placeholder="Contact information"
-        />
-       {/* <Text style={styles.Label}>Address</Text> */}
-       <TextInput
-          style={[styles.Text, styles.Text2]}
-          placeholder="Address"
-        />
-      {/* <Text style={styles.Label}>Preferences </Text> */}
-      <TextInput
-          style={[styles.Text, styles.Text2]}
-          placeholder="Preferences"
-        />
-      {/* <Text style={styles.Label}>Transaction History </Text> */}
-      <TextInput
-          style={[styles.Text ]}
-          placeholder="Transaction history"
-        />
-    <Pressable
-        style={[styles.rectangleParent, styles.groupChildLayout]}
-        onPress={() => navigation.navigate("Login")}
-      >
-        
-        <View style={[styles.groupChild, styles.groupChildLayout]} />
-        <Text style={styles.letsStart}>Save</Text>
-      </Pressable>
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { Avatar } from 'react-native-paper';
+import Header from '../components/Header';
 
-    </View>
-    
-     )
-   }
- };
- const styles = StyleSheet.create({
-  heading: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: "center",
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    marginTop:55,
-  },
-  menu:{
-    marginLeft: 15,
-    height:25,
-    width:25,
-    resizeMode:'contain'
-  },
-  banner: {
-    marginTop:30,
-    left:125,
-    width: 150,
-    height: 150,
-     
-  },
-  click:{
-    marginLeft: 220,
-    height:55,
-    width:55,
-    resizeMode:'contain',
-    marginTop:-40,
-  },
-  came:{
-    marginLeft: 233,
-    height:28,
-    width:28,
-    resizeMode:'contain',
-    marginTop:-45,
-  },
-  
-  Text: {
-    top:40,
-    height: 35,
-    borderColor: 'gray',
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    marginBottom: 10,
-    width: '70%',
-    marginLeft: '10%',
-    borderRadius: 5,
-    left:25,
-  },
-  letsStart: {
-    top: 576,
-    left: 80,
-    fontSize: FontSize.size_xl,
-    color: Color.colorWhite,
-    textAlign: "center",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: 246,
-    height: 50,
-    position: "absolute",
-  },
-  groupChild: {
-    borderRadius: Border.br_xl,
-    backgroundColor: Color.colorPurple,
-    left: 65,
-    top: 570,
-  },
-  groupChildLayout: {
-    height: 40,
-    width: 280,
-    position: "absolute",
-  }, 
+const localProfilePicture = require('../Assets/avatar.png');
+
+const CustomerProfile = ({navigation}) => {
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [contactNumber, setContactNumber] = useState('');
+    const [address, setAddress] = useState('');
+    const [profilePicture, setProfilePicture] = useState(localProfilePicture);
+
+    // Handler for saving profile data
+    const handleSave = () => {
+        console.log('Profile saved:', { name, email, contactNumber, address, profilePicture });
+    };
+
+    // Handler for profile picture change
+    const handleProfilePictureChange = () => {
+        // trigger an image picker;
+        setProfilePicture(localProfilePicture);
+    };
+
+    const handleBackPress = () => {
+        navigation.goBack(); // Use this to navigate back
+    };
+
+    return (
+        <View style={styles.container}>
+            <TouchableOpacity onPress={handleProfilePictureChange}>
+                <Avatar.Image
+                    size={100}
+                    source={profilePicture}
+                    style={styles.avatar}
+                />
+            </TouchableOpacity>
+
+            <Text style={styles.label}>Name</Text>
+            <TextInput
+                style={styles.input}
+                value={name}
+                onChangeText={setName}
+                placeholder="Enter your name"
+            />
+
+            <Text style={styles.label}>Email</Text>
+            <TextInput
+                style={styles.input}
+                value={email}
+                onChangeText={setEmail}
+                placeholder="Enter your email"
+                keyboardType="email-address"
+            />
+
+            <Text style={styles.label}>Contact Number</Text>
+            <TextInput
+                style={styles.input}
+                value={contactNumber}
+                onChangeText={setContactNumber}
+                placeholder="Enter your contact number"
+                keyboardType="phone-pad"
+            />
+
+            <Text style={styles.label}>Address</Text>
+            <TextInput
+                style={styles.input}
+                value={address}
+                onChangeText={setAddress}
+                placeholder="Enter your address"
+            />
+
+            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+                <Text style={styles.saveButtonText}>Save</Text>
+            </TouchableOpacity>
+
+        </View>
+    );
+};
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 20,
+        backgroundColor: '#ffffff',
+
+    },
+    avatar: {
+        alignSelf: 'center',
+        margin: 20,
+    },
+    label: {
+        fontSize: 16,
+        marginBottom: 8,
+    },
+    input: {
+        height: 40,
+        borderColor: '#ddd',
+        borderWidth: 1,
+        borderRadius: 4,
+        paddingHorizontal: 10,
+        marginBottom: 20,
+    },
+    saveButton: {
+        backgroundColor: '#7E0681',
+        borderRadius: 25,
+        paddingVertical: 15,
+        paddingHorizontal: 80,
+        justifyContent: 'center',
+        alignItems: 'center',
+
+    },
+    saveButtonText: {
+        fontSize: 18,
+        color: '#ffffff',
+        fontWeight: 'bold',
+    },
 });
 
 export default CustomerProfile;

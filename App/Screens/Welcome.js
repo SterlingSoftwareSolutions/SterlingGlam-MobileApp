@@ -15,7 +15,7 @@ const WelcomeScreen = () => {
     <View style={styles.container}>
       <Image source={Logo} style={styles.logo} />
       <TouchableOpacity style={styles.startButton} onPress={handleStart}>
-        <Text style={styles.startButtonText}>Let's Get Started</Text>
+        <Text style={styles.startButtonText}>Get Glam Now</Text>
       </TouchableOpacity>
     </View>
   );
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 80, 
     position: 'absolute',
-    bottom: 50,
+    bottom: 70,
   },
   startButtonText: {
     fontSize: 18,
