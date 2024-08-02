@@ -1,6 +1,5 @@
-import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer, StackActions } from '@react-navigation/native';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, StatusBar } from 'react-native';
 import Welcome from './App/Screens/Welcome';
 import Signup from './App/Screens/SignUp';
 import Login from './App/Screens/Login';
@@ -23,6 +22,7 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
+      <StatusBar barStyle="light-content" />
       <MainNavigator />
     </NavigationContainer>
   );

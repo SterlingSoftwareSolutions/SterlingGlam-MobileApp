@@ -1,5 +1,8 @@
 import React from 'react';
 import { View, Text, Image, ScrollView, TextInput, TouchableOpacity, StyleSheet,Dimensions } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+
 const {width} = Dimensions.get('window');
 
 
@@ -8,14 +11,16 @@ export default function HomeScreen() {
     <ScrollView style={styles.container}>
       <View style={styles.headerContainer}>
       <Image source={require('../resources/headerImage.png')} style={styles.headerImage} />
-
-        {/* <View style={styles.header}>
-          <Image source={require('../resources/headerImage.png')} style={styles.headerImage} />
-        </View> */}
         <View style={styles.headerContent}>
           <Text style={styles.headerText}>STERLING GLAM</Text>
           <Text style={styles.headerSubText}>Experts at cutting and coloring hair of all type</Text>
-          <TextInput style={styles.searchBar} placeholder="Search" />
+          <View style={styles.searchBarContainer}>
+          <TextInput
+            style={styles.searchBar}
+            placeholder="Search"
+          />
+          <Icon name="search" size={18} color='white' style={styles.searchIcon} />
+        </View>
         </View>
       </View>
       <View style={styles.section}>
@@ -70,11 +75,6 @@ const styles = StyleSheet.create({
     height:300,
 
   },
-  // header: {
-  //   width: '100%',
-  //   height: 200,
-  //   // overflow: 'hidden',
-  // },
   headerImage: {
     position:'absolute',
     width: "100%",
@@ -93,10 +93,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 20,
     marginTop:100
-    // backgroundColor: 'transparent',
   },
   headerText: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: 'bold',
     marginTop: 10,
     color:'white',
@@ -110,12 +109,24 @@ const styles = StyleSheet.create({
     color:'white',
 
   },
-  searchBar: {
-    marginTop: 50,
-    padding: 10,
-    borderRadius: 5,
-    backgroundColor: '#f0f0f0',
+  searchBarContainer: {
+    marginTop: 40,
     width: '75%',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  searchBar: {
+    flex: 1,
+    padding: 10,
+    paddingRight: 40, 
+    borderRadius: 25,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    color:'white',
+  },
+  
+  searchIcon: {
+    position: 'absolute',
+    right: 15,
   },
   section: {
     padding: 20,
