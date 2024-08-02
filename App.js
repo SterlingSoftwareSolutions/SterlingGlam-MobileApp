@@ -13,15 +13,14 @@ import { Profiler } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AppNavigator from './App/navigation/AppNavigator';
 import AuthNavigator from './App/navigation/AuthNavigator';
+import HomeScreen from './App/Screens/Home';
 
  const Stack = createNativeStackNavigator();
  
 export default function App() {
   return (
 
-    <NavigationContainer>
-      <AuthNavigator/>
-    </NavigationContainer>    
+    <HomeScreen></HomeScreen>  
   );
 }
 

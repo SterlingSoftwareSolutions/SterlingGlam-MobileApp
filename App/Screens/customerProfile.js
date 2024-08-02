@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Avatar } from 'react-native-paper';
-import Header from '../components/Header';
 
 const localProfilePicture = require('../Assets/avatar.png');
 
@@ -82,7 +81,7 @@ const CustomerProfile = ({navigation}) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
+        padding: 25,
         backgroundColor: '#ffffff',
 
     },
