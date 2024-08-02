@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import {NavigationContainer, StackActions} from '@react-navigation/native';
+import { NavigationContainer, StackActions } from '@react-navigation/native';
 import { StyleSheet, Text, View } from 'react-native';
 import Welcome from './App/Screens/Welcome';
 import Signup from './App/Screens/SignUp';
@@ -14,13 +14,17 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AppNavigator from './App/navigation/AppNavigator';
 import AuthNavigator from './App/navigation/AuthNavigator';
 import HomeScreen from './App/Screens/Home';
+import SplashScreen from './App/Screens/SplashScreen';
+import GetStartedScreen from './App/Screens/GetStartedScreen';
+import MainNavigator from './App/navigation/MainNavigator';
 
- const Stack = createNativeStackNavigator();
- 
+const Stack = createNativeStackNavigator();
+
 export default function App() {
   return (
-
-    <HomeScreen></HomeScreen>  
+    <NavigationContainer>
+      <MainNavigator />
+    </NavigationContainer>
   );
 }
 
@@ -28,6 +32,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-     
+
   },
 });
