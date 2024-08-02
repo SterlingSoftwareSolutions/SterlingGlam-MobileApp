@@ -8,6 +8,7 @@ import WelcomeScreen from "../Screens/Welcome";
 import Login from "../Screens/Login";
 import SignUp from "../Screens/SignUp";
 import Dashboard from "../Screens/Dashboard";
+import HomeScreen from "../Screens/HomeScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -18,7 +19,7 @@ const MainNavigator = () => (
     >
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="GetStarted" component={GetStartedScreen} />
-        <Stack.Screen name="Dashboard" component={Dashboard} />
+        <Stack.Screen name="HomeScreen" component={HomeScreen} />
 
     </Stack.Navigator>
 );

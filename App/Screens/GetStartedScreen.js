@@ -5,7 +5,7 @@ import GradientBackground from '../components/GradientBackground';
 
 const GetStartedScreen = ({ navigation }) => {
   const handlePress = () => {
-    navigation.navigate('Dashboard'); 
+    navigation.navigate('HomeScreen'); 
   };
 
   return (
