@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Avatar } from 'react-native-paper';
 
-const localProfilePicture = require('../Assets/avatar.png');
+const localProfilePicture = require('../resources/dpDummy.png');
 
 const CustomerProfile = ({navigation}) => {
     const [name, setName] = useState('');
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     saveButton: {
-        backgroundColor: '#7E0681',
+        backgroundColor: '#624332',
         borderRadius: 25,
         paddingVertical: 15,
         paddingHorizontal: 80,

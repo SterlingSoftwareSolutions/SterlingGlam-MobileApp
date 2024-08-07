@@ -1,10 +1,29 @@
 import React from 'react';
 import { View, Text, Image, ScrollView, TextInput, TouchableOpacity, StyleSheet,Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { Card } from 'react-native-elements';
+
 
 
 const {width} = Dimensions.get('window');
+const localProfilePicture = require('../Assets/avatar.png');
 
+
+const services = [
+  { name: 'Face', image: require('../resources/facemakeup.png') },
+  { name: 'Eye', image: require('../resources/facemakeup.png') },
+  { name: 'Hair', image: require('../resources/facemakeup.png') },
+  { name: 'Bridal', image: require('../resources/facemakeup.png') },
+];
+
+const categories = [
+  { name: 'Cleaners', image: require('../resources/cleaners.png') },
+  { name: 'Creams', image: require('../resources/cleaners.png') },
+  { name: 'Revitalizers', image: require('../resources/cleaners.png') },
+  { name: 'Cleaners', image: require('../resources/cleaners.png') },
+  { name: 'Creams', image: require('../resources/cleaners.png') },
+  { name: 'Revitalizers', image: require('../resources/cleaners.png') },
+];
 
 export default function HomeScreen() {
   return (
@@ -25,41 +44,42 @@ export default function HomeScreen() {
       </View>
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Glam Services</Text>
-        <View style={styles.row}>
-          <TouchableOpacity style={styles.serviceItem}>
-            <Image source={require('../resources/facemakeup.png')} style={styles.serviceImage} />
-            <Text>Face Makeup</Text>
+        <View style={styles.serviceSection}>
+        {services.map((service, index) => (
+          <TouchableOpacity key={index} style={styles.serviceItem}>
+            <View style={styles.imageContainer}>
+              <Image source={service.image} style={styles.serviceImage} />
+            </View>
+            <Text style={styles.serviceText}>{service.name}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.serviceItem}>
-            <Image source={require('../resources/facemakeup.png')} style={styles.serviceImage} />
-            <Text>Eye Makeup</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.serviceItem}>
-            <Image source={require('../resources/facemakeup.png')} style={styles.serviceImage} />
-            <Text>Hair Makeup</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.serviceItem}>
-            <Image source={require('../resources/facemakeup.png')} style={styles.serviceImage} />
-            <Text>Bridal Makeup</Text>
-          </TouchableOpacity>
-        </View>
+        ))}
+      </View>
       </View>
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Categories</Text>
-        <View style={styles.row}>
-          <TouchableOpacity style={styles.categoryItem}>
-            <Image source={require('../resources/cleaners.png')} style={styles.categoryImage} />
-            <Text>Cleaners</Text>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollViewContent}>
+        {categories.map((category, index) => (
+          <TouchableOpacity key={index} style={styles.categoryItem}>
+            <View style={styles.categoryImageContainer}>
+              <Image source={category.image} style={styles.categoryImage} />
+            </View>
+            <Text style={styles.categoryText}>{category.name}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.categoryItem}>
-            <Image source={require('../resources/cleaners.png')} style={styles.categoryImage} />
-            <Text>Creams</Text>
+        ))}
+      </ScrollView>
+      </View>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Categories</Text>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollViewContent}>
+        {categories.map((category, index) => (
+          <TouchableOpacity key={index} style={styles.categoryItem}>
+            <View style={styles.categoryImageContainer}>
+              <Image source={category.image} style={styles.categoryImage} />
+            </View>
+            <Text style={styles.categoryText}>{category.name}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.categoryItem}>
-            <Image source={require('../resources/cleaners.png')} style={styles.categoryImage} />
-            <Text>Revitalizers</Text>
-          </TouchableOpacity>
-        </View>
+        ))}
+      </ScrollView>
       </View>
     </ScrollView>
   );
@@ -68,6 +88,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor:'white'
   },
   headerContainer: {
     position: 'relative',
@@ -136,21 +157,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
   },
-  row: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+  serviceSection:{
+    flexDirection:'row',
     justifyContent: 'space-between',
-  },
-  serviceItem: {
-    width: '45%',
-    marginBottom: 20,
-    alignItems: 'center',
-  },
-  serviceImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginBottom: 5,
   },
   categoryItem: {
     width: '30%',
@@ -163,4 +172,54 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 5,
   },
+  scrollViewContent:{
+    flexDirection: 'row',
+  },
+  serviceItem: {
+    alignItems: 'center',
+    justifyContent:'space-between'
+    // marginRight: 10, 
+  },
+  imageContainer: {
+    width: 74,
+    height: 74,
+    borderRadius: 37, 
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff', 
+  },
+  serviceImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover', 
+  },
+  categoryItem: {
+    alignItems: 'center',
+    marginRight: 16, 
+  },
+  categoryImageContainer: {
+    width: 140,
+    height: 85,
+    borderRadius: 10,
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff', 
+    borderWidth: 1, 
+    borderColor: '#ddd', 
+  },
+  categoryImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  categoryText: {
+    marginTop: 6,
+    textAlign: 'center',
+  },
+  serviceText:{
+    fontSize:13,
+    marginTop:3,
+  }
 });
