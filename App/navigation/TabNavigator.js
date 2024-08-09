@@ -7,6 +7,11 @@ import GetStartedScreen from '../Screens/GetStartedScreen';
 import CustomerProfile from '../Screens/CustomerProfile';
 import WelcomeScreen from '../Screens/Welcome';
 import { Entypo, MaterialCommunityIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import ServicesScreen from '../Screens/ServicesScreen';
+import BookingScreen from '../Screens/Booking';
+import ReviewBookingScreen from '../Screens/ReviewBookingScreen';
+import BookingConfirmationScreen from '../Screens/BookingConfirmationScreen';
+import BookingConfirmation from '../Screens/BookingConfirmationScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -30,7 +35,7 @@ const TabNavigator = () => {
         <Tab.Navigator
         
             screenOptions={{
-                headerShown:true,
+                headerShown:false,
                 tabBarShowLabel: false,
                 tabBarStyle: {
                     position: 'absolute',
@@ -54,8 +59,8 @@ const TabNavigator = () => {
                 }}
             />
             <Tab.Screen
-                name='Products'
-                component={GetStartedScreen}
+                name='Services'
+                component={ServicesScreen}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <MaterialCommunityIcons name="shopping" size={24} color={focused ? '#E7BD8D' : 'white'} />
@@ -64,7 +69,7 @@ const TabNavigator = () => {
             />
             <Tab.Screen
                 name='Appointment'
-                component={SplashScreen}
+                component={BookingConfirmationScreen}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <Ionicons name="calendar" size={28} color={focused ? '#E7BD8D' : 'white'} />
@@ -76,7 +81,7 @@ const TabNavigator = () => {
             />
             <Tab.Screen
                 name='Notification'
-                component={SplashScreen}
+                component={BookingScreen}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <Ionicons name="notifications" size={24} color={focused ? '#E7BD8D' : 'white'} />
@@ -85,7 +90,7 @@ const TabNavigator = () => {
             />
             <Tab.Screen
                 name='Welcome'
-                component={CustomerProfile}
+                component={ReviewBookingScreen}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <FontAwesome5 name="user-alt" size={24} color={focused ? '#E7BD8D' : 'white'} />
