@@ -13,8 +13,9 @@ const BookingScreen = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [selectedService, setSelectedService] = useState(null);
+  const [startDayOffset, setStartDayOffset] = useState(0);
 
-  const daysToShow = 6; // Number of days to display for selection
+  const daysToShow = 6; 
   const currentDate = new Date();
 
   const slots = [
@@ -26,6 +27,7 @@ const BookingScreen = () => {
     '15.00 - 16.00',
     '16.00 - 17.00',
     '17.00 - 18.00',
+    '18.00 - 19.00',
   ];
 
   const otherServices = [
@@ -40,6 +42,16 @@ const BookingScreen = () => {
 
   const selectSlot = (slot) => {
     setSelectedSlot(slot);
+  };
+
+  const moveDaysBack = () => {
+    if (startDayOffset > 0) {
+      setStartDayOffset(startDayOffset - daysToShow);
+    }
+  };
+
+  const moveDaysForward = () => {
+    setStartDayOffset(startDayOffset + daysToShow);
   };
 
   const renderDateItem = ({ item }) => {
@@ -64,14 +76,22 @@ const BookingScreen = () => {
 
       <View style={styles.datePickerContainer}>
         <Text style={styles.sectionTitle}>Pick Day</Text>
-        <FlatList
-          data={[...Array(daysToShow).keys()].map(i => addDays(currentDate, i))}
-          renderItem={renderDateItem}
-          horizontal
-          keyExtractor={(item) => item.toString()}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.dateList}
-        />
+        <View style={styles.dateNavigation}>
+          <TouchableOpacity onPress={moveDaysBack} style={styles.arrowButton}>
+            <Text style={styles.arrowText}>{'<'}</Text>
+          </TouchableOpacity>
+          <FlatList
+            data={[...Array(daysToShow).keys()].map(i => addDays(currentDate, i + startDayOffset))}
+            renderItem={renderDateItem}
+            horizontal
+            keyExtractor={(item) => item.toString()}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.dateList}
+          />
+          <TouchableOpacity onPress={moveDaysForward} style={styles.arrowButton}>
+            <Text style={styles.arrowText}>{'>'}</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View style={styles.slotsContainer}>
@@ -92,7 +112,7 @@ const BookingScreen = () => {
         </View>
       </View>
 
-      <View style={styles.otherServicesContainer}>
+      {/* <View style={styles.otherServicesContainer}>
         <Text style={styles.sectionTitle}>Other Services (3)</Text>
         <FlatList
           data={otherServices}
@@ -109,7 +129,7 @@ const BookingScreen = () => {
           keyExtractor={(item) => item.id.toString()}
           showsHorizontalScrollIndicator={false}
         />
-      </View>
+      </View> */}
 
       <TouchableOpacity style={styles.bookButton}>
         <Text style={styles.bookButtonText}>Book</Text>
@@ -122,6 +142,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    
   },
   headerText: {
     fontSize: 24,
@@ -135,6 +156,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+  },
+  dateNavigation: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  arrowButton: {
+    padding: 10,
+  },
+  arrowText: {
+    fontSize: 20,
+    color: '#000',
+    fontWeight:"bold"
   },
   dateList: {
     flexDirection: 'row',
@@ -152,14 +185,16 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 16,
     color: '#000',
+    fontWeight:"bold"
   },
   slotsContainer: {
     paddingHorizontal: 20,
+    marginTop:30
   },
   slotsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    justifyContent:'space-evenly',
   },
   slotItem: {
     padding: 10,
@@ -168,13 +203,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
     width: '30%',
     alignItems: 'center',
+    marginTop:15
   },
   selectedSlotItem: {
     backgroundColor: '#795548',
   },
   slotText: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#000',
+    fontWeight: 'bold',
   },
   otherServicesContainer: {
     paddingHorizontal: 20,
@@ -195,7 +232,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   bookButton: {
-    backgroundColor: '#795548',
+    backgroundColor: '#24150E',
     paddingVertical: 15,
     justifyContent: 'center',
     alignItems: 'center',

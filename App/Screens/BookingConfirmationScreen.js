@@ -12,22 +12,36 @@ const BookingConfirmationScreen = () => {
       <Text style={styles.subHeader}>
         Congratulations! Your booking of face makeup has been confirmed!
       </Text>
+
+
       <View style={styles.detailsContainer}>
+        <View style={styles.subContainer}>
+        <Icon name="file" size={25} color="#000" />
         <Text style={styles.detailHeader}>Services Booked</Text>
-        <Icon name="file" size={20} color="#000" />
+        </View>
         <Text style={styles.detailText}>Foundation        Blush</Text>
-        <View style={styles.detailRow}>
-          <Icon name="clock-o" size={20} color="#000" />
+
+        <View style={styles.subContainer}>
+        <Icon name="clock-o" size={25} color="#000" />
+        <Text style={styles.detailHeader}>Date & Time</Text>
+        </View>
           <Text style={styles.detailText}>Wednesday 14 August 2024 at 11.00 - 12.00</Text>
+
+        <View style={styles.subContainer}>
+        <Icon name="user" size={25} color="#000" />
+        <Text style={styles.detailHeader}>Specialist</Text>
         </View>
-        <View style={styles.detailRow}>
-          <Icon name="user" size={20} color="#000" />
-          <Text style={styles.detailText}>Specialist: Katherine</Text>
+        <Text style={styles.detailText}>Specialist: Katherine</Text>
+
+        <View style={styles.subContainer}>
+        <Icon name="tag" size={25} color="#000" />
+        <Text style={styles.detailHeader}>Price</Text>
         </View>
-        <View style={styles.detailRow}>
-          <Icon name="tag" size={20} color="#000" />
-          <Text style={styles.detailText}>Price: Rs. 3,800.00</Text>
-        </View>
+        <Text style={styles.detailText}>Price: Rs. 3,800.00</Text>
+
+       
+        
+       
         <View style={styles.detailRow}>
           <Text style={styles.boldText}>Charges: </Text>
           <Text style={styles.detailText}>Rs. 3,800.00</Text>
@@ -78,10 +92,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+    left:15
   },
   detailText: {
     fontSize: 16,
     marginBottom: 10,
+    color:'grey',
+    fontWeight:'bold',
+    borderBottomColor:'grey',
+    borderBottomWidth:1,
   },
   detailRow: {
     flexDirection: 'row',
@@ -96,6 +115,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: '100%',
   },
+  subContainer:{
+    flexDirection:'row'
+  }
 });
 
 export default BookingConfirmationScreen;
