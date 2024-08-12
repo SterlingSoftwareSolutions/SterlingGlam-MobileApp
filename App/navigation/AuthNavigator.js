@@ -1,7 +1,7 @@
 import React from "react";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import AppNavigator from "./AppNavigator";
+import AppNavigator from "./ApplictaionNavigator";
 import WelcomeScreen from "../Screens/Welcome";
 import Login from "../Screens/Login";
 import SignUp from "../Screens/SignUp";

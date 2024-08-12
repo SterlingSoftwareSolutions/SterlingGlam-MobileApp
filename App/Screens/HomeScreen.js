@@ -2,15 +2,17 @@ import React from 'react';
 import { View, Text, Image, ScrollView, TextInput, TouchableOpacity, StyleSheet, Dimensions, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ProductCard from '../components/ProductCard';
+import { useNavigation } from '@react-navigation/native';
+
 
 const { width } = Dimensions.get('window');
 
 
 const services = [
-  { name: 'Face', image: require('../resources/facemakeup.png') },
-  { name: 'Eye', image: require('../resources/facemakeup.png') },
-  { name: 'Hair', image: require('../resources/facemakeup.png') },
-  { name: 'Bridal', image: require('../resources/facemakeup.png') },
+  { name: 'Face', image: require('../resources/EyeMakeup.jpg'), type: 'face' },
+  { name: 'Nail', image: require('../resources/nail.png'), type: 'nail' },
+  { name: 'Hair', image: require('../resources/hair2.jpg'), type: 'hair' },
+  { name: 'Bridal', image: require('../resources/bridalMakeup.jpg'), type: 'bridal' },
 ];
 
 const categories = [
@@ -29,13 +31,16 @@ const products = [
   { id: '4', name: 'Facial Cream', size: '250g', oldPrice: 'Rs.2000.00', newPrice: 'Rs.1100.00', image:  require('../resources/productDummy.jpg') },
   { id: '5', name: 'Body Spray', size: '120ml', oldPrice: 'Rs.2000.00', newPrice: 'Rs.1400.00', image:  require('../resources/productDummy.jpg') },
   { id: '6', name: 'Recovery Cream', size: '100ml', oldPrice: 'Rs.2000.00', newPrice: 'Rs.1100.00', image:  require('../resources/productDummy.jpg') },
-  { id: '7', name: 'Facial Cleaner', size: '380ml', oldPrice: 'Rs.2200.00', newPrice: 'Rs.1500.00', image:  require('../resources/productDummy.jpg') },
-  { id: '8', name: 'Vintage Facial', size: '200ml', oldPrice: 'Rs.4500.00', newPrice: 'Rs.3700.00', image:  require('../resources/productDummy.jpg') },
-  { id: '9', name: 'Recovery Cream', size: '100ml', oldPrice: 'Rs.2500.00', newPrice: 'Rs.1600.00', image:  require('../resources/productDummy.jpg') },
+  // { id: '7', name: 'Facial Cleaner', size: '380ml', oldPrice: 'Rs.2200.00', newPrice: 'Rs.1500.00', image:  require('../resources/productDummy.jpg') },
+  // { id: '8', name: 'Vintage Facial', size: '200ml', oldPrice: 'Rs.4500.00', newPrice: 'Rs.3700.00', image:  require('../resources/productDummy.jpg') },
+  // { id: '9', name: 'Recovery Cream', size: '100ml', oldPrice: 'Rs.2500.00', newPrice: 'Rs.1600.00', image:  require('../resources/productDummy.jpg') },
+
 ];
 
 
 export default function HomeScreen() {
+  const navigation = useNavigation();
+
   const renderItem = ({ item }) => <ProductCard product={item} />;
 
   return (
@@ -54,19 +59,25 @@ export default function HomeScreen() {
           </View>
         </View>
       </View>
+      {/* Glam Services Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Glam Services</Text>
         <View style={styles.serviceSection}>
-          {services.map((service, index) => (
-            <TouchableOpacity key={index} style={styles.serviceItem}>
-              <View style={styles.imageContainer}>
-                <Image source={service.image} style={styles.serviceImage} />
-              </View>
-              <Text style={styles.serviceText}>{service.name}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+        {services.map((service, index) => (
+          <TouchableOpacity
+            key={index}
+            style={styles.serviceItem}
+            onPress={() => navigation.navigate('Services', { serviceType: service.type })}
+          >
+            <View style={styles.imageContainer}>
+              <Image source={service.image} style={styles.serviceImage} />
+            </View>
+            <Text style={styles.serviceText}>{service.name}</Text>
+          </TouchableOpacity>
+        ))}
       </View>
+      </View>
+      {/* Categories Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Categories</Text>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollViewContent}>

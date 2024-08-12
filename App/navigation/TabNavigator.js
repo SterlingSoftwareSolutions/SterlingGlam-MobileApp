@@ -2,16 +2,13 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../Screens/HomeScreen';
-import SplashScreen from '../Screens/SplashScreen';
-import GetStartedScreen from '../Screens/GetStartedScreen';
-import CustomerProfile from '../Screens/CustomerProfile';
-import WelcomeScreen from '../Screens/Welcome';
 import { Entypo, MaterialCommunityIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import ServicesScreen from '../Screens/ServicesScreen';
 import BookingScreen from '../Screens/Booking';
-import ReviewBookingScreen from '../Screens/ReviewBookingScreen';
 import BookingConfirmationScreen from '../Screens/BookingConfirmationScreen';
-import BookingConfirmation from '../Screens/BookingConfirmationScreen';
+import ProfileScreen from '../Screens/ProfileScreen';
+import AppointmentNavigator from './AppointmentNavigator';
+import ReviewBookingScreen from '../Screens/ReviewBookingScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -33,7 +30,6 @@ const CustomTabBarButton = (props) => {
 const TabNavigator = () => {
     return (
         <Tab.Navigator
-        
             screenOptions={{
                 headerShown:false,
                 tabBarShowLabel: false,
@@ -51,7 +47,7 @@ const TabNavigator = () => {
         >
             <Tab.Screen
                 name='Home'
-                component={HomeScreen}
+                component={AppointmentNavigator}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <Entypo name="home" size={24} color={focused ? '#E7BD8D' : 'white'} />
@@ -60,7 +56,7 @@ const TabNavigator = () => {
             />
             <Tab.Screen
                 name='Services'
-                component={ServicesScreen}
+                component={ProfileScreen}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <MaterialCommunityIcons name="shopping" size={24} color={focused ? '#E7BD8D' : 'white'} />
@@ -81,7 +77,7 @@ const TabNavigator = () => {
             />
             <Tab.Screen
                 name='Notification'
-                component={BookingScreen}
+                component={ProfileScreen}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <Ionicons name="notifications" size={24} color={focused ? '#E7BD8D' : 'white'} />
@@ -89,8 +85,8 @@ const TabNavigator = () => {
                 }}
             />
             <Tab.Screen
-                name='Welcome'
-                component={ReviewBookingScreen}
+                name='Profile'
+                component={ProfileScreen}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <FontAwesome5 name="user-alt" size={24} color={focused ? '#E7BD8D' : 'white'} />
@@ -104,7 +100,7 @@ const TabNavigator = () => {
 
 const styles = StyleSheet.create({
     customButton: {
-        top: -15, 
+        top: -13, 
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#24150E',

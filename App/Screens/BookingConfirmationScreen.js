@@ -1,123 +1,162 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button,Image } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
 
-const BookingConfirmationScreen = () => {
+import tickImage from '../resources/blackTick.png'; 
+
+export default function BookingConfirmationScreen() {
   return (
-    <View style={styles.container}>
-      {/* <Icon name="check-circle" size={100} color="#000" style={styles.icon} /> */}
-      <Image source={require('../resources/tick.png')} style={styles.icon} />
-
+    <ScrollView style={styles.container}>
       <Text style={styles.header}>Booking Confirmation</Text>
-      <Text style={styles.subHeader}>
+      
+      {/* Checkmark Icon */}
+      <View style={styles.checkmarkContainer}>
+        <Image 
+          source={tickImage} 
+          style={styles.checkmark} 
+        />
+      </View>
+
+      {/* Confirmation Message */}
+      <Text style={styles.confirmationText}>
         Congratulations! Your booking of face makeup has been confirmed!
       </Text>
 
-
-      <View style={styles.detailsContainer}>
-        <View style={styles.subContainer}>
-        <Icon name="file" size={25} color="#000" />
-        <Text style={styles.detailHeader}>Services Booked</Text>
-        </View>
-        <Text style={styles.detailText}>Foundation        Blush</Text>
-
-        <View style={styles.subContainer}>
-        <Icon name="clock-o" size={25} color="#000" />
-        <Text style={styles.detailHeader}>Date & Time</Text>
-        </View>
-          <Text style={styles.detailText}>Wednesday 14 August 2024 at 11.00 - 12.00</Text>
-
-        <View style={styles.subContainer}>
-        <Icon name="user" size={25} color="#000" />
-        <Text style={styles.detailHeader}>Specialist</Text>
-        </View>
-        <Text style={styles.detailText}>Specialist: Katherine</Text>
-
-        <View style={styles.subContainer}>
-        <Icon name="tag" size={25} color="#000" />
-        <Text style={styles.detailHeader}>Price</Text>
-        </View>
-        <Text style={styles.detailText}>Price: Rs. 3,800.00</Text>
-
-       
-        
-       
-        <View style={styles.detailRow}>
-          <Text style={styles.boldText}>Charges: </Text>
-          <Text style={styles.detailText}>Rs. 3,800.00</Text>
-        </View>
-        <View style={styles.detailRow}>
-          <Text style={styles.boldText}>Service Charge: </Text>
-          <Text style={styles.detailText}>Rs. 1,250.00</Text>
-        </View>
-        <View style={styles.detailRow}>
-          <Text style={styles.boldText}>Grand Total: </Text>
-          <Text style={styles.boldText}>Rs. 5,050.00</Text>
+      {/* Services Booked */}
+      <View style={styles.sectionContainer}>
+        <Text style={styles.sectionTitle}>Services Booked</Text>
+        <View style={styles.servicesContainer}>
+          <Text style={styles.serviceItem}>Foundation</Text>
+          <Text style={styles.serviceItem}>Blush</Text>
         </View>
       </View>
-      <View style={styles.buttonContainer}>
-        <Button title="Download" color="#4B371C" />
+
+      {/* Date & Time */}
+      <View style={styles.sectionContainer}>
+        <Text style={styles.sectionTitle}>Date & Time</Text>
+        <Text style={styles.sectionContent}>Wednesday 14 August 2024 at 11.00 - 12.00</Text>
       </View>
-    </View>
+
+      {/* Specialist */}
+      <View style={styles.sectionContainer}>
+        <Text style={styles.sectionTitle}>Specialist</Text>
+        <Text style={styles.sectionContent}>Katherine</Text>
+      </View>
+
+      {/* Price */}
+      <View style={styles.sectionContainer}>
+        <Text style={styles.sectionTitle}>Price</Text>
+        <Text style={styles.sectionContent}>Rs. 3,800.00</Text>
+      </View>
+
+      {/* Charges */}
+      <View style={styles.chargesContainer}>
+        <View style={styles.chargeRow}>
+          <Text style={styles.chargeTitle}>Charges</Text>
+          <Text style={styles.chargeAmount}>Rs. 3,800.00</Text>
+        </View>
+        <View style={styles.chargeRow}>
+          <Text style={styles.chargeTitle}>Service Charge</Text>
+          <Text style={styles.chargeAmount}>Rs. 1,250.00</Text>
+        </View>
+        <View style={styles.chargeRow}>
+          <Text style={styles.grandTotalTitle}>Grand Total</Text>
+          <Text style={styles.grandTotalAmount}>Rs. 5,050.00</Text>
+        </View>
+      </View>
+
+      {/* Download Button */}
+      <TouchableOpacity style={styles.downloadButton}>
+        <Text style={styles.downloadButtonText}>Download</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF',
     padding: 20,
-    alignItems: 'center',
-  },
-  icon: {
-    marginTop: 50,
-    height:100,
-    width:100
+    backgroundColor: '#FFFFFF',
   },
   header: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginVertical: 20,
-  },
-  subHeader: {
-    fontSize: 16,
     textAlign: 'center',
-    marginVertical: 10,
+    color: '#24150E',
   },
-  detailsContainer: {
-    width: '100%',
+  checkmarkContainer: {
+    alignItems: 'center',
     marginVertical: 20,
   },
-  detailHeader: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    left:15
+  checkmark: {
+    width: 120,
+    height: 120,
   },
-  detailText: {
+  confirmationText: {
+    textAlign: 'center',
+    color: '#544D4D',
     fontSize: 16,
+    marginBottom: 20,
+  },
+  sectionContainer: {
     marginBottom: 10,
-    color:'grey',
-    fontWeight:'bold',
-    borderBottomColor:'grey',
+  },
+  sectionTitle: {
+    fontWeight: 'bold',
+    color: '#24150E',
+    marginBottom: 5,
+  },
+  sectionContent: {
+    color: '#888888',
     borderBottomWidth:1,
+    borderColor: '#EEEEEE',
+    paddingBottom:10
   },
-  detailRow: {
+  servicesContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
+    borderBottomWidth:1,
+    borderColor: '#EEEEEE',
+    paddingBottom:10
   },
-  boldText: {
-    fontSize: 16,
+  serviceItem: {
+    marginRight: 10,
+    color: '#888888',
+  },
+  chargesContainer: {
+    marginTop: 10,
+    // borderTopWidth: 1,
+    // borderColor: '#EEEEEE',
+    // paddingTop: 10,
+  },
+  chargeRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 5,
+  },
+  chargeTitle: {
+    color: '#888888',
+  },
+  chargeAmount: {
+    color: '#888888',
+  },
+  grandTotalTitle: {
+    fontWeight: 'bold',
+    color: '#24150E',
+  },
+  grandTotalAmount: {
+    fontWeight: 'bold',
+    color: '#24150E',
+  },
+  downloadButton: {
+    backgroundColor: '#24150E',
+    padding: 15,
+    borderRadius: 5,
+    marginTop: 20,
+    alignItems: 'center',
+    marginBottom: 100
+  },
+  downloadButtonText: {
+    color: '#FFFFFF',
     fontWeight: 'bold',
   },
-  buttonContainer: {
-    marginTop: 20,
-    width: '100%',
-  },
-  subContainer:{
-    flexDirection:'row'
-  }
 });
-
-export default BookingConfirmationScreen;

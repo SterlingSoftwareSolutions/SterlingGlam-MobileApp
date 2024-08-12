@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-import Logo from '../Assets/logoSmall.png'; 
+import Logo from '../resources/lllll.png'; 
 
 const SignUp = () => {
   const navigation = useNavigation();
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   },
   signupBtn: {
     width: '80%',
-    backgroundColor: '#7E0681',
+    backgroundColor: '#24150E',
     borderRadius: 25,
     height: 50,
     alignItems: 'center',
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   loginHighlight: {
-    color: '#7E0681',
+    color: '#24150E',
     fontSize: 16,
     marginLeft: 5,
   },

@@ -10,7 +10,7 @@ import BackButton from "../components/BackButton";
 
 const Tab = createBottomTabNavigator();
 
-function AppNavigator(props) {
+function ApplictaionNavigator(props) {
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -61,4 +61,4 @@ function AppNavigator(props) {
 }
 
 
-export default AppNavigator;
+export default ApplictaionNavigator;

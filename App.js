@@ -1,8 +1,8 @@
 import { NavigationContainer, StackActions } from '@react-navigation/native';
 import { StyleSheet, Text, View, StatusBar } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import MainNavigator from './App/navigation/MainNavigator';
-import TabNavigator from './App/navigation/TabNavigator';
+import RootNavigator from './App/navigation/RootNavigator';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -10,7 +10,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <StatusBar barStyle="light-content" />
-      <TabNavigator/>
+      <RootNavigator/>
     </NavigationContainer>
   );
 }

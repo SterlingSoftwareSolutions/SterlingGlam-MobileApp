@@ -8,8 +8,11 @@ import {
   FlatList,
 } from 'react-native';
 import { format, addDays } from 'date-fns';
+import { useNavigation } from '@react-navigation/native';
+
 
 const BookingScreen = () => {
+  const navigation = useNavigation();
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [selectedService, setSelectedService] = useState(null);
@@ -35,6 +38,12 @@ const BookingScreen = () => {
     { id: 2, name: 'Hair Makeup', image: 'hair-makeup-image-uri' },
     { id: 3, name: 'Bridal Makeup', image: 'bridal-makeup-image-uri' },
   ];
+
+  // handleBooking
+  const handleBooking = () => {
+    navigation.navigate("BookingConfirm");
+  };
+
 
   const selectDate = (date) => {
     setSelectedDate(date);
@@ -131,7 +140,7 @@ const BookingScreen = () => {
         />
       </View> */}
 
-      <TouchableOpacity style={styles.bookButton}>
+      <TouchableOpacity style={styles.bookButton} onPress={handleBooking}>
         <Text style={styles.bookButtonText}>Book</Text>
       </TouchableOpacity>
     </ScrollView>
@@ -155,7 +164,9 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 20,
+    color:'#24150E',
+    marginTop:10
   },
   dateNavigation: {
     flexDirection: 'row',

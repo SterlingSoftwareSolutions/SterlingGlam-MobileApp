@@ -37,9 +37,10 @@ const ReviewBookingScreen = () => {
     '15.00 - 16.00',
     '16.00 - 17.00',
     '17.00 - 18.00',
+    '18.00 - 19.00',
   ];
 
-  const daysToShow = 6; // Number of days to display for selection
+  const daysToShow = 6; 
   const currentDate = new Date();
 
   const toggleService = (service) => {
@@ -231,7 +232,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#795548',
   },
   slotText: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#000',
   },
   confirmButton: {
@@ -241,6 +242,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     margin: 20,
     borderRadius: 5,
+    marginBottom:80
   },
   confirmButtonText: {
     color: '#fff',
