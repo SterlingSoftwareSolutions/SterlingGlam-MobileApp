@@ -6,26 +6,25 @@ import AppoinmentHistory from '../Screens/AppoinmentHistory';
 import { Color } from "../Styles/GlobalStyles";
 import CustomerProfile from "../Screens/CustomerProfile";
 import RootNavigator from "./RootNavigator";
-
+import BackButton from "../components/BackButton";
 
 const Tab = createBottomTabNavigator();
 
-function AppNavigator(props) {
+function ApplictaionNavigator(props) {
   return (
     <Tab.Navigator
-    initialRouteName="Home"
-    screenOptions={{
-      tabBarActiveTintColor: Color.colorPurple,
-      headerShown: false,
-      tabBarHideOnKeyboard: true,
-      activeTintColor: Color.colorPurple,
-      inactiveTintColor: 'grey',
-      tabBarInactiveTintColor: Color.colorBlack,
-      tabBarLabelStyle: {
-        paddingBottom: 5
-      }
-    }}
-  >
+      initialRouteName="Home"
+      screenOptions={({ route }) => ({
+        tabBarActiveTintColor: Color.colorPurple,
+        tabBarHideOnKeyboard: true,
+        tabBarLabelStyle: { paddingBottom: 5 },
+        headerShown: true,
+        headerStyle: { backgroundColor: Color.colorPurple },
+        headerTintColor: 'white',
+        headerTitleAlign: 'center',
+        headerLeft: route.name !== 'Home' ? () => <BackButton /> : undefined, 
+      })}
+    >
     <Tab.Screen
       name="Home"
       component={RootNavigator}
@@ -34,6 +33,7 @@ function AppNavigator(props) {
         tabBarIcon: ({ color, size }) => (
           <MaterialCommunityIcons name="home" color={color} size={size} />
         ),
+        headerShown: false,
       }}
     />
     <Tab.Screen
@@ -61,4 +61,4 @@ function AppNavigator(props) {
 }
 
 
-export default AppNavigator;
+export default ApplictaionNavigator;

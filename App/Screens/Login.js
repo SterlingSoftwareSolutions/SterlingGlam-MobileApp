@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-import Logo from '../Assets/logoSmall.png'; 
+import Logo from '../resources/lllll.png'; 
 
 const Login = () => {
   const navigation = useNavigation();
@@ -15,7 +15,7 @@ const Login = () => {
 
   const handleSignup = () => {
     // Navigate to SignUp screen
-    navigation.navigate("SignUp");
+    navigation.navigate("Signup");
   };
 
   return (
@@ -59,24 +59,26 @@ const styles = StyleSheet.create({
   logo: {
     width:250,
     height: 120,
-    marginBottom:20
+    marginBottom:50
   },
   inputView: {
     width: '80%',
-    backgroundColor: '#f2f2f2',
     borderRadius: 25,
     height: 50,
     marginBottom: 20,
     justifyContent: 'center',
     padding: 20,
+    // borderColor:'#24150E',
+    // borderWidth:1,
+    backgroundColor: '#f2f2f2',
   },
   inputText: {
     height: 50,
-    color: '#6e6e6e',
+    color: '#24150E',
   },
   loginBtn: {
     width: '80%',
-    backgroundColor: '#7E0681',
+    backgroundColor: '#24150E',
     borderRadius: 25,
     height: 50,
     alignItems: 'center',
@@ -89,24 +91,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
   },
-  signupText: {
-    color: '#5e6d6c',
-    fontSize: 16,
-  },
-  signupText: {
-    color: '#6e6e6e',
-    fontSize: 16,
-  },
   signupContainer: {
     flexDirection: 'row',
-    marginTop: 10,
+    marginTop: 15,
   },
   signupText: {
     color: '#6e6e6e',
     fontSize: 16,
   },
   signupHighlight: {
-    color: '#7E0681',
+    color: '#24150E',
     fontSize: 16,
     marginLeft: 5, 
   },
