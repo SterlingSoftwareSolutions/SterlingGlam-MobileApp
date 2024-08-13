@@ -9,6 +9,7 @@ import BookingConfirmationScreen from '../Screens/BookingConfirmationScreen';
 import ProfileScreen from '../Screens/ProfileScreen';
 import AppointmentNavigator from './AppointmentNavigator';
 import ReviewBookingScreen from '../Screens/ReviewBookingScreen';
+import Overview from '../Screens/Overview';
 
 const Tab = createBottomTabNavigator();
 
@@ -65,7 +66,7 @@ const TabNavigator = () => {
             />
             <Tab.Screen
                 name='Appointment'
-                component={BookingConfirmationScreen}
+                component={Overview}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <Ionicons name="calendar" size={28} color={focused ? '#E7BD8D' : 'white'} />
