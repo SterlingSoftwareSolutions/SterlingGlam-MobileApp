@@ -1,20 +1,31 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useNavigation } from '@react-navigation/native';
 
-const localProfilePicture = require('../resources/specialist1.jpeg');
+
+const plusIcon = require('../resources/plusIcon.png');
 
 
 const Overview = () => {
+  const navigation = useNavigation();
+
+  const handlePlus = () => {
+    navigation.navigate("Home");
+};
+
+
   return (
     <ScrollView style={styles.container}>
       {/* Header Section */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <Text style={styles.greeting}>Hi Jenifer!</Text>
+          <Text style={styles.greeting}>Book New Service!</Text>
           <Text style={styles.tagline}>“Unleash Your Inner Glam”</Text>
         </View>
-        <Image source={localProfilePicture} style={styles.profileImage} />
+        <TouchableOpacity onPress={handlePlus}>
+        <Image source={plusIcon} style={styles.profileImage} />
+        </TouchableOpacity>
       </View>
 
       {/* Search Section */}
@@ -50,20 +61,16 @@ const Overview = () => {
         <View style={styles.overviewBoxes}>
           <View style={styles.overviewBox}>
             <Text style={styles.overviewLabel}>New Appointments</Text>
-            <Text style={styles.overviewCount}>02</Text>
+            <Text style={styles.overviewCount}>01</Text>
           </View>
           <View style={styles.overviewBox}>
             <Text style={styles.overviewLabel}>All Appointments</Text>
-            <Text style={styles.overviewCount}>10</Text>
+            <Text style={styles.overviewCount}>02</Text>
           </View>
         </View>
       </View>
 
-      {/* Offers Section */}
-      <View style={styles.offers}>
-        <Text style={styles.sectionTitle}>Offers for You</Text>
-        <Image source={{ uri: 'https://via.placeholder.com/150' }} style={styles.offerImage} />
-      </View>
+      
     </ScrollView>
   );
 };

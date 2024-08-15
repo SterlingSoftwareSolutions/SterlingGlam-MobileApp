@@ -9,10 +9,11 @@ import {
 } from 'react-native';
 import { RadioButton } from 'react-native-paper';
 import { servicesData } from '../components/dummyData';
-import { useNavigation } from '@react-navigation/native';
+import {useRoute, useNavigation } from '@react-navigation/native';
 
 
-const ServicesScreen = ({ route }) => {
+const ServicesScreen = () => {
+  const route = useRoute();
   const navigation = useNavigation();
 
   const { serviceType } = route.params;

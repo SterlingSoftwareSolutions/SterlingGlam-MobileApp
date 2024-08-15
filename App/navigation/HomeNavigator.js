@@ -8,7 +8,7 @@ import BookingConfirmationScreen from "../Screens/BookingConfirmationScreen";
 
 const Stack = createStackNavigator();
 
-const AppointmentNavigator = () => {
+const HomeNavigator = () => {
   return (
     <Stack.Navigator initialRouteName="Dashboard">
     <Stack.Screen name="Dashboard" component={HomeScreen} options={{ headerShown: false }} />
@@ -21,4 +21,4 @@ const AppointmentNavigator = () => {
   );
 };
 
-export default AppointmentNavigator;
+export default HomeNavigator;

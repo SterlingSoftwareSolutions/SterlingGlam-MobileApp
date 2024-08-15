@@ -1,17 +1,13 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const localProfilePicture = require('../resources/specialist1.jpeg');
 
-
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      {/* Back Arrow */}
-      {/* <TouchableOpacity style={styles.backButton}>
-        <Icon name="arrow-back" size={24} color="black" />
-      </TouchableOpacity> */}
 
       {/* Profile Section */}
       <View style={styles.profileSection}>
@@ -25,23 +21,25 @@ export default function ProfileScreen() {
 
       {/* Menu Items */}
       <ScrollView contentContainerStyle={styles.menuContainer}>
-        <MenuItem title="Account" />
-        <MenuItem title="Notifications" />
-        <MenuItem title="Language Support" />
-        {/* <MenuItem title="Rewards" /> */}
-        <MenuItem title="Help and Support" />
-        <MenuItem title="Settings" />
-        <MenuItem title="Recent Bookings" />
-        <MenuItem title="Log Out" logout />
+        <MenuItem title="Account" iconName="account" onPress={() => navigation.navigate('EditProfile')}/>
+        <MenuItem title="Notifications" iconName="bell" onPress={() => navigation.navigate('Notification')} />
+        <MenuItem title="Language Support" iconName="translate" onPress={() => navigation.navigate('Language')}/>
+        <MenuItem title="Invite Friend" iconName="account-multiple-plus" onPress={() => navigation.navigate('Invite')} />
+        <MenuItem title="About" iconName="information-outline" onPress={() => navigation.navigate('About')} />
+        {/* <MenuItem title="Help" iconName="help-circle-outline" /> */}
+        <MenuItem title="Log Out" iconName="logout" logout />
       </ScrollView>
     </View>
   );
 }
 
-function MenuItem({ title, logout }) {
+function MenuItem({ title, logout, iconName, onPress }) {
   return (
-    <TouchableOpacity style={logout ? [styles.menuItem, styles.logout] : styles.menuItem}>
-      <Text style={logout ? [styles.menuText, styles.logoutText] : styles.menuText}>{title}</Text>
+    <TouchableOpacity style={logout ? [styles.menuItem, styles.logout] : styles.menuItem} onPress={onPress}>
+      <View style={styles.menuItemContent}>
+        <MaterialCommunityIcons name={iconName} size={24} color="#4D2906" />
+        <Text style={logout ? [styles.menuText, styles.logoutText] : styles.menuText}>{title}</Text>
+      </View>
       {!logout && <Icon name="chevron-forward" size={24} color="black" />}
     </TouchableOpacity>
   );
@@ -52,14 +50,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  backButton: {
-    marginTop: 10,
-    marginLeft: 10,
-  },
   profileSection: {
     alignItems: 'center',
     marginVertical: 15,
-    marginTop:20
+    marginTop: 20,
   },
   profileImage: {
     width: 100,
@@ -89,9 +83,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#eee',
   },
+  menuItemContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   menuText: {
     fontSize: 16,
     color: '#000',
+    marginLeft: 10,
   },
   logout: {
     borderBottomWidth: 0,
@@ -100,18 +99,5 @@ const styles = StyleSheet.create({
   logoutText: {
     color: '#4D2906',
     fontWeight: 'bold',
-  },
-  bottomNav: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    backgroundColor: '#EDEDED',
-  },
-  activeNavItem: {
-    backgroundColor: '#4D2906',
-    padding: 10,
-    borderRadius: 50,
   },
 });

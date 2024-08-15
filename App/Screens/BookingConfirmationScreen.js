@@ -1,29 +1,30 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
-
-import tickImage from '../resources/blackTick.png'; 
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { MaterialIcons, FontAwesome, Ionicons } from '@expo/vector-icons';
 
 export default function BookingConfirmationScreen() {
+  const navigation = useNavigation();
+
+  const handlePay = () => {
+    navigation.navigate("Payment");
+  };
+
+  const handlePayVenue = () => {
+    Alert.alert('Success', 'Your Booking has been confirmed');
+    navigation.navigate("AppointmentOverview");
+  };
+
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.header}>Booking Confirmation</Text>
-      
-      {/* Checkmark Icon */}
-      <View style={styles.checkmarkContainer}>
-        <Image 
-          source={tickImage} 
-          style={styles.checkmark} 
-        />
-      </View>
-
-      {/* Confirmation Message */}
-      <Text style={styles.confirmationText}>
-        Congratulations! Your booking of face makeup has been confirmed!
-      </Text>
+      <Text style={styles.header}>Review Booking</Text>
 
       {/* Services Booked */}
       <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>Services Booked</Text>
+        <View style={styles.sectionHeader}>
+          <MaterialIcons name="work" size={24} color="#24150E" />
+          <Text style={styles.sectionTitle}>Services Booked</Text>
+        </View>
         <View style={styles.servicesContainer}>
           <Text style={styles.serviceItem}>Foundation</Text>
           <Text style={styles.serviceItem}>Blush</Text>
@@ -32,19 +33,28 @@ export default function BookingConfirmationScreen() {
 
       {/* Date & Time */}
       <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>Date & Time</Text>
-        <Text style={styles.sectionContent}>Wednesday 14 August 2024 at 11.00 - 12.00</Text>
+        <View style={styles.sectionHeader}>
+          <Ionicons name="calendar" size={24} color="#24150E" />
+          <Text style={styles.sectionTitle}>Date & Time</Text>
+        </View>
+        <Text style={styles.sectionContent}>Wednesday 14 August 2024 at 11:00 - 12:00</Text>
       </View>
 
       {/* Specialist */}
       <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>Specialist</Text>
+        <View style={styles.sectionHeader}>
+          <FontAwesome name="user" size={24} color="#24150E" />
+          <Text style={styles.sectionTitle}>Specialist</Text>
+        </View>
         <Text style={styles.sectionContent}>Katherine</Text>
       </View>
 
       {/* Price */}
       <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>Price</Text>
+        <View style={styles.sectionHeader}>
+          <Ionicons name="pricetag" size={24} color="#24150E" />
+          <Text style={styles.sectionTitle}>Price</Text>
+        </View>
         <Text style={styles.sectionContent}>Rs. 3,800.00</Text>
       </View>
 
@@ -64,10 +74,16 @@ export default function BookingConfirmationScreen() {
         </View>
       </View>
 
-      {/* Download Button */}
-      <TouchableOpacity style={styles.downloadButton}>
-        <Text style={styles.downloadButtonText}>Download</Text>
-      </TouchableOpacity>
+      {/* Payment Buttons */}
+      <View style={styles.buttonsContainer}>
+        <TouchableOpacity style={styles.paymentButton} onPress={handlePayVenue}>
+          <Text style={styles.paymentButtonText}>Pay at Venue</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.paymentButton} onPress={handlePay}>
+          <Text style={styles.paymentButtonText}>Pay Now</Text>
+        </TouchableOpacity>
+      </View>
+
     </ScrollView>
   );
 }
@@ -79,84 +95,84 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   header: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#24150E',
-  },
-  checkmarkContainer: {
-    alignItems: 'center',
-    marginVertical: 20,
-  },
-  checkmark: {
-    width: 120,
-    height: 120,
-  },
-  confirmationText: {
-    textAlign: 'center',
-    color: '#544D4D',
-    fontSize: 16,
     marginBottom: 20,
   },
   sectionContainer: {
+    marginBottom: 20,
+    borderBottomWidth: 1,
+    borderColor: '#EEEEEE',
+    paddingBottom: 10,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 10,
   },
   sectionTitle: {
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#24150E',
-    marginBottom: 5,
+    marginLeft: 10,
   },
   sectionContent: {
     color: '#888888',
-    borderBottomWidth:1,
-    borderColor: '#EEEEEE',
-    paddingBottom:10
+    fontSize: 16,
   },
   servicesContainer: {
     flexDirection: 'row',
-    borderBottomWidth:1,
-    borderColor: '#EEEEEE',
-    paddingBottom:10
   },
   serviceItem: {
     marginRight: 10,
     color: '#888888',
+    fontSize: 16,
   },
   chargesContainer: {
-    marginTop: 10,
-    // borderTopWidth: 1,
-    // borderColor: '#EEEEEE',
-    // paddingTop: 10,
+    marginTop: 20,
+    paddingVertical: 10,
   },
   chargeRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 5,
+    marginBottom: 10,
   },
   chargeTitle: {
     color: '#888888',
+    fontSize: 16,
   },
   chargeAmount: {
     color: '#888888',
+    fontSize: 16,
   },
   grandTotalTitle: {
     fontWeight: 'bold',
     color: '#24150E',
+    fontSize: 18,
   },
   grandTotalAmount: {
     fontWeight: 'bold',
     color: '#24150E',
+    fontSize: 18,
   },
-  downloadButton: {
+  paymentButton: {
     backgroundColor: '#24150E',
     padding: 15,
     borderRadius: 5,
-    marginTop: 20,
     alignItems: 'center',
-    marginBottom: 100
+    width: '48%',
   },
-  downloadButtonText: {
+  paymentButtonText: {
     color: '#FFFFFF',
     fontWeight: 'bold',
+    fontSize: 16,
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 30,
   },
 });
+
