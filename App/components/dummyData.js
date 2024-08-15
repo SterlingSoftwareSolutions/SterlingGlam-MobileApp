@@ -1,7 +1,7 @@
 export const servicesData = {
   // Haircut and Styling
   haircutStyling: {
-    headerImage: require('../resources/service1.png'),
+    headerImage: require('../resources/service7.png'),
     headerTitle: 'HAIRCUT AND STYLING',
     headerSubtitle: 'Get the perfect haircut and styling to suit your personality and occasion.',
     services: [
@@ -37,7 +37,7 @@ export const servicesData = {
 
   // Hair Treatments
   hairTreatments: {
-    headerImage: require('../resources/service3.png'),
+    headerImage: require('../resources/service4.png'),
     headerTitle: 'HAIR TREATMENTS',
     headerSubtitle: 'Nourish and repair your hair with specialized treatments.',
     services: [
@@ -55,7 +55,7 @@ export const servicesData = {
 
   // Manicure and Pedicure
   manicurePedicure: {
-    headerImage: require('../resources/service4.png'),
+    headerImage: require('../resources/service5.png'),
     headerTitle: 'MANICURE AND PEDICURE',
     headerSubtitle: 'Pamper your hands and feet with our luxurious manicure and pedicure services.',
     services: [
@@ -73,7 +73,7 @@ export const servicesData = {
 
   // Eyebrow Threading
   eyebrowThreading: {
-    headerImage: require('../resources/service5.png'),
+    headerImage: require('../resources/service3.png'),
     headerTitle: 'EYEBROW THREADING',
     headerSubtitle: 'Get perfectly shaped eyebrows with our threading services.',
     services: [
@@ -109,7 +109,7 @@ export const servicesData = {
 
   // Hair Extensions
   hairExtensions: {
-    headerImage: require('../resources/service9.png'),
+    headerImage: require('../resources/service8.png'),
     headerTitle: 'HAIR EXTENSIONS',
     headerSubtitle: 'Enhance the length and volume of your hair with our premium hair extensions.',
     services: [
@@ -127,7 +127,7 @@ export const servicesData = {
 
    // Fillers
    fillers: {
-    headerImage: require('../resources/service10.png'),
+    headerImage: require('../resources/service15.jpg'),
     headerTitle: 'FILLERS',
     headerSubtitle: 'Enhance your features and reduce wrinkles with our range of filler treatments.',
     services: [
@@ -144,7 +144,7 @@ export const servicesData = {
   },
 // Facial Treatments
 facialTreatments: {
-  headerImage: require('../resources/service7.png'),
+  headerImage: require('../resources/service8.png'),
   headerTitle: 'FACIAL TREATMENTS',
   headerSubtitle: 'Rejuvenate your skin with our luxurious facial treatments.',
   services: [
@@ -162,7 +162,7 @@ facialTreatments: {
 
 // Bridal Services
 bridalServices: {
-  headerImage: require('../resources/service8.png'),
+  headerImage: require('../resources/service1.png'),
   headerTitle: 'BRIDAL SERVICES',
   headerSubtitle: 'Make your special day perfect with our premium bridal services.',
   services: [
@@ -176,6 +176,43 @@ bridalServices: {
     { id: 2, name: 'Mia', rating: '4.7', image: require('../resources/specialist2.jpeg') },
     { id: 3, name: 'Charlotte', rating: '4.9', image: require('../resources/specialist1.jpeg') },
   ],
-}
+},
+
+// Beard Trim
+beardTrim: {
+  headerImage: require('../resources/service11.jpg'),
+  headerTitle: 'BEARD TRIM',
+  headerSubtitle: 'Achieve a sharp and clean look with our expert beard trimming services.',
+  services: [
+    { id: 1, name: 'Full Beard Trim', description: 'Comprehensive beard trimming and shaping.', price: 'Rs. 2000.00' },
+    { id: 2, name: 'Goatee Trim', description: 'Precise trimming and shaping of your goatee.', price: 'Rs. 1500.00' },
+    { id: 3, name: 'Mustache Trim', description: 'Expert trimming and styling of your mustache.', price: 'Rs. 1000.00' },
+    { id: 4, name: 'Beard Line-Up', description: 'Sharp and defined beard lines for a clean look.', price: 'Rs. 1200.00' },
+  ],
+  specialists: [
+    { id: 1, name: 'Ava', rating: '4.8', image: require('../resources/specialist3.jpeg') },
+    { id: 2, name: 'Mia', rating: '4.7', image: require('../resources/specialist2.jpeg') },
+    { id: 3, name: 'Charlotte', rating: '4.9', image: require('../resources/specialist1.jpeg') },
+  ],
+},
+
+// Shaving
+shaving: {
+  headerImage: require('../resources/service10.png'),
+  headerTitle: 'SHAVING SERVICES',
+  headerSubtitle: 'Enjoy a smooth and clean shave with our professional shaving services.',
+  services: [
+    { id: 1, name: 'Classic Shave', description: 'Traditional shave using a razor for a close and comfortable finish.', price: 'Rs. 1500.00' },
+    { id: 2, name: 'Hot Towel Shave', description: 'Relaxing shave with a hot towel treatment to soften the beard.', price: 'Rs. 2000.00' },
+    { id: 3, name: 'Luxury Shave', description: 'Premium shave experience with additional moisturizing and aftercare.', price: 'Rs. 2500.00' },
+    { id: 4, name: 'Beard Shaping and Shave', description: 'Shaping of the beard followed by a clean shave for a well-groomed look.', price: 'Rs. 1800.00' },
+  ],
+  specialists: [
+    { id: 1, name: 'Ava', rating: '4.8', image: require('../resources/specialist3.jpeg') },
+    { id: 2, name: 'Mia', rating: '4.7', image: require('../resources/specialist2.jpeg') },
+    { id: 3, name: 'Charlotte', rating: '4.9', image: require('../resources/specialist1.jpeg') },
+  ],
+},
+
   
 };
