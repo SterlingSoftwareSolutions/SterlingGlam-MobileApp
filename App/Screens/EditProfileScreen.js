@@ -1,30 +1,47 @@
-import React from 'react';
-import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 
 const localProfilePicture = require('../resources/specialist1.jpeg');
 
-
 const EditProfileScreen = () => {
+  const [firstName, setFirstName] = useState('Jenifer');
+  const [lastName, setLastName] = useState('Lopez');
+  const [email, setEmail] = useState('jeniferlopez100@gmail.com');
+  const [password, setPassword] = useState('•••••••');
+  const [phoneNumber, setPhoneNumber] = useState('0766032444');
+
+  const [editableField, setEditableField] = useState(null);
+
+  const handleEdit = (field) => {
+    setEditableField(field);
+  };
+
+  const handleSave = () => {
+    setEditableField(null);
+    // Here you would typically save the updated profile information to a server or local storage
+  };
+
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Accounts Settings</Text>
       <View style={styles.profileSection}>
         <Image
           source={localProfilePicture}
           style={styles.profileImage}
         />
-        <Text style={styles.name}>Jenifer Lopez</Text>
-        <Text style={styles.email}>jeniferlopez100@gmail.com</Text>
+        <Text style={styles.name}>{firstName} {lastName}</Text>
+        <Text style={styles.email}>{email}</Text>
       </View>
       <View style={styles.inputSection}>
         <Text style={styles.label}>First Name</Text>
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
-            value="Jenifer"
-            editable={false}
+            value={firstName}
+            editable={editableField === 'firstName'}
+            onChangeText={setFirstName}
           />
-          <TouchableOpacity style={styles.editIcon}>
+          <TouchableOpacity style={styles.editIcon} onPress={() => handleEdit('firstName')}>
             <Text style={styles.editText}>✎</Text>
           </TouchableOpacity>
         </View>
@@ -33,10 +50,11 @@ const EditProfileScreen = () => {
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
-            value="Lopez"
-            editable={false}
+            value={lastName}
+            editable={editableField === 'lastName'}
+            onChangeText={setLastName}
           />
-          <TouchableOpacity style={styles.editIcon}>
+          <TouchableOpacity style={styles.editIcon} onPress={() => handleEdit('lastName')}>
             <Text style={styles.editText}>✎</Text>
           </TouchableOpacity>
         </View>
@@ -45,10 +63,12 @@ const EditProfileScreen = () => {
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
-            value="jeniferlopez100@gmail.com"
-            editable={false}
+            value={email}
+            editable={editableField === 'email'}
+            onChangeText={setEmail}
+            keyboardType="email-address"
           />
-          <TouchableOpacity style={styles.editIcon}>
+          <TouchableOpacity style={styles.editIcon} onPress={() => handleEdit('email')}>
             <Text style={styles.editText}>✎</Text>
           </TouchableOpacity>
         </View>
@@ -57,11 +77,12 @@ const EditProfileScreen = () => {
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
-            value="•••••••"
-            editable={false}
+            value={password}
+            editable={editableField === 'password'}
+            onChangeText={setPassword}
             secureTextEntry
           />
-          <TouchableOpacity style={styles.editIcon}>
+          <TouchableOpacity style={styles.editIcon} onPress={() => handleEdit('password')}>
             <Text style={styles.editText}>✎</Text>
           </TouchableOpacity>
         </View>
@@ -70,32 +91,31 @@ const EditProfileScreen = () => {
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
-            value="0094771347137"
-            editable={false}
+            value={phoneNumber}
+            editable={editableField === 'phoneNumber'}
+            onChangeText={setPhoneNumber}
+            keyboardType="phone-pad"
           />
-          <TouchableOpacity style={styles.editIcon}>
+          <TouchableOpacity style={styles.editIcon} onPress={() => handleEdit('phoneNumber')}>
             <Text style={styles.editText}>✎</Text>
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+      {editableField && (
+        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+          <Text style={styles.saveButtonText}>Save Changes</Text>
+        </TouchableOpacity>
+      )}
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: '#fff',
     paddingHorizontal: 20,
     paddingTop: 40,
-  },
-  backButton: {
-    position: 'absolute',
-    top: 10,
-    left: 10,
-  },
-  backText: {
-    fontSize: 24,
   },
   title: {
     fontSize: 24,
@@ -151,6 +171,18 @@ const styles = StyleSheet.create({
   editText: {
     fontSize: 16,
     color: 'gray',
+  },
+  saveButton: {
+    backgroundColor: '#007BFF',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  saveButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
