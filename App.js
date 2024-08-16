@@ -1,23 +1,17 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import Welcome from './App/Screens/Welcome';
-import Signup from './App/Screens/SignUp';
-import Login from './App/Screens/Login';
-import Dashboard from './App/Screens/Dashboard';
-import CustomerProfile from './App/Screens/customerProfile';
-import Setting from './App/Screens/Setting';
-import Appoinment from './App/Screens/Appoinment';
-// import AppoinmentHistory from './App/Screens/AppoinmentHistory';
- 
- 
+import { NavigationContainer, StackActions } from '@react-navigation/native';
+import { StyleSheet, Text, View, StatusBar } from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import RootNavigator from './App/navigation/RootNavigator';
+
+
+const Stack = createNativeStackNavigator();
+
 export default function App() {
   return (
-
-    <View style={styles.container}>
-     <Appoinment/>
-      
-    </View>
-    
+    <NavigationContainer>
+      <StatusBar barStyle="light-content" />
+      <RootNavigator/>
+    </NavigationContainer>
   );
 }
 
@@ -25,6 +19,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-     
+
   },
 });
