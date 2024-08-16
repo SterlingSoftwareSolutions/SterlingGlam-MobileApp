@@ -41,6 +41,8 @@ const TabNavigator = () => {
                     borderRadius: 30,
                     height: 60,
                 },
+                tabBarHideOnKeyboard: true, // Hide tab bar when keyboard appears
+
             }}
         >
             <Tab.Screen
