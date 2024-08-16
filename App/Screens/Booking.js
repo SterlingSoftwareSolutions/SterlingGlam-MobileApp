@@ -10,40 +10,25 @@ import {
 import { format, addDays } from 'date-fns';
 import { useNavigation } from '@react-navigation/native';
 
-
 const BookingScreen = () => {
   const navigation = useNavigation();
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
-  const [selectedService, setSelectedService] = useState(null);
   const [startDayOffset, setStartDayOffset] = useState(0);
 
   const daysToShow = 6; 
   const currentDate = new Date();
 
-  const slots = [
-    '09.00 - 10.00',
-    '10.00 - 11.00',
-    '11.00 - 12.00',
-    '13.00 - 14.00',
-    '14.00 - 15.00',
-    '15.00 - 16.00',
-    '16.00 - 17.00',
-    '17.00 - 18.00',
-    '18.00 - 19.00',
-  ];
-
-  const otherServices = [
-    { id: 1, name: 'Eye Makeup', image: 'eye-makeup-image-uri' },
-    { id: 2, name: 'Hair Makeup', image: 'hair-makeup-image-uri' },
-    { id: 3, name: 'Bridal Makeup', image: 'bridal-makeup-image-uri' },
-  ];
+  // Generating time slots in 30-minute increments from 9:00 AM to 6:00 PM
+  const slots = [];
+  for (let i = 9; i < 18; i++) {
+    slots.push(`${i}:00`, `${i}:30`);
+  }
 
   // handleBooking
   const handleBooking = () => {
     navigation.navigate("BookingConfirm");
   };
-
 
   const selectDate = (date) => {
     setSelectedDate(date);
@@ -73,8 +58,22 @@ const BookingScreen = () => {
         ]}
         onPress={() => selectDate(item)}
       >
-        <Text style={styles.dateText}>{dateFormatted.split(' ')[0]}</Text>
-        <Text style={styles.dateText}>{dateFormatted.split(' ')[1]}</Text>
+        <Text
+          style={[
+            styles.dateText,
+            selectedDate?.toDateString() === item.toDateString() && styles.selectedDateText,
+          ]}
+        >
+          {dateFormatted.split(' ')[0]}
+        </Text>
+        <Text
+          style={[
+            styles.dateText,
+            selectedDate?.toDateString() === item.toDateString() && styles.selectedDateText,
+          ]}
+        >
+          {dateFormatted.split(' ')[1]}
+        </Text>
       </TouchableOpacity>
     );
   };
@@ -104,7 +103,7 @@ const BookingScreen = () => {
       </View>
 
       <View style={styles.slotsContainer}>
-        <Text style={styles.sectionTitle}>Slots</Text>
+        <Text style={styles.sectionTitle}>Available Slots</Text>
         <View style={styles.slotsGrid}>
           {slots.map((slot, index) => (
             <TouchableOpacity
@@ -115,30 +114,18 @@ const BookingScreen = () => {
               ]}
               onPress={() => selectSlot(slot)}
             >
-              <Text style={styles.slotText}>{slot}</Text>
+              <Text
+                style={[
+                  styles.slotText,
+                  selectedSlot === slot && styles.selectedSlotText,
+                ]}
+              >
+                {slot}
+              </Text>
             </TouchableOpacity>
           ))}
         </View>
       </View>
-
-      {/* <View style={styles.otherServicesContainer}>
-        <Text style={styles.sectionTitle}>Other Services (3)</Text>
-        <FlatList
-          data={otherServices}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.otherServiceItem}
-              onPress={() => setSelectedService(item.id)}
-            >
-              <View style={styles.serviceImage} />
-              <Text style={styles.serviceText}>{item.name}</Text>
-            </TouchableOpacity>
-          )}
-          horizontal
-          keyExtractor={(item) => item.id.toString()}
-          showsHorizontalScrollIndicator={false}
-        />
-      </View> */}
 
       <TouchableOpacity style={styles.bookButton} onPress={handleBooking}>
         <Text style={styles.bookButtonText}>Book</Text>
@@ -151,7 +138,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    
   },
   headerText: {
     fontSize: 24,
@@ -159,10 +145,10 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   datePickerContainer: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 20,
     color:'#24150E',
@@ -191,12 +177,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   selectedDateItem: {
-    backgroundColor: '#795548',
+    backgroundColor: '#24150E',
   },
   dateText: {
     fontSize: 16,
     color: '#000',
     fontWeight:"bold"
+  },
+  selectedDateText: {
+    color: '#fff',
   },
   slotsContainer: {
     paddingHorizontal: 20,
@@ -205,42 +194,29 @@ const styles = StyleSheet.create({
   slotsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent:'space-evenly',
+    justifyContent:'space-between',
   },
   slotItem: {
     padding: 10,
     marginBottom: 10,
-    borderRadius: 5,
-    backgroundColor: '#f0f0f0',
-    width: '30%',
+    borderRadius: 10,
+    // backgroundColor: '#f0f0f0',
+    width: '47%', // Adjust to fit 2 slots per row
     alignItems: 'center',
-    marginTop:15
+    marginTop:15,
+    borderWidth:1,
+    borderColor:'#795548'
   },
   selectedSlotItem: {
-    backgroundColor: '#795548',
+    backgroundColor: '#24150E',
   },
   slotText: {
     fontSize: 14,
     color: '#000',
     fontWeight: 'bold',
   },
-  otherServicesContainer: {
-    paddingHorizontal: 20,
-    marginTop: 20,
-  },
-  otherServiceItem: {
-    marginRight: 15,
-    alignItems: 'center',
-  },
-  serviceImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#ccc',
-    marginBottom: 10,
-  },
-  serviceText: {
-    fontSize: 14,
+  selectedSlotText: {
+    color: '#fff',
   },
   bookButton: {
     backgroundColor: '#24150E',
@@ -249,6 +225,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     margin: 20,
     borderRadius: 5,
+    marginBottom:80
   },
   bookButtonText: {
     color: '#fff',
