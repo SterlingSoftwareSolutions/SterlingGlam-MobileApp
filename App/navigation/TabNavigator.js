@@ -1,14 +1,12 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from '../Screens/HomeScreen';
-import { Entypo, MaterialCommunityIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
-import ServicesScreen from '../Screens/ServicesScreen';
-import BookingScreen from '../Screens/Booking';
-import BookingConfirmationScreen from '../Screens/BookingConfirmationScreen';
-import ProfileScreen from '../Screens/ProfileScreen';
+import { Entypo, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import AppointmentNavigator from './AppointmentNavigator';
-import ReviewBookingScreen from '../Screens/ReviewBookingScreen';
+import NotificationScreen from '../Screens/NotificationScreen';
+import MiddleTabNavigator from './MiddleTabNavigator';
+import HomeNavigator from './HomeNavigator';
+import AccountNavigator from './AccountNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -43,50 +41,52 @@ const TabNavigator = () => {
                     borderRadius: 30,
                     height: 60,
                 },
+                tabBarHideOnKeyboard: true, // Hide tab bar when keyboard appears
+
             }}
         >
             <Tab.Screen
                 name='Home'
-                component={AppointmentNavigator}
+                component={HomeNavigator}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <Entypo name="home" size={24} color={focused ? '#E7BD8D' : 'white'} />
                     ),
                 }}
             />
-            <Tab.Screen
+            {/* <Tab.Screen
                 name='Services'
-                component={ProfileScreen}
+                component={AppointmentNavigator}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <MaterialCommunityIcons name="shopping" size={24} color={focused ? '#E7BD8D' : 'white'} />
                     ),
                 }}
-            />
+            /> */}
             <Tab.Screen
-                name='Appointment'
-                component={BookingConfirmationScreen}
+                name='AppointmentOverview'
+                component={MiddleTabNavigator}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <Ionicons name="calendar" size={28} color={focused ? '#E7BD8D' : 'white'} />
+                        <Ionicons name="calendar" size={28} color={focused ? '#FFD29F' : 'white'} />
                     ),
                     tabBarButton: (props) => (
                         <CustomTabBarButton {...props} />
                     ),
                 }}
             />
-            <Tab.Screen
+            {/* <Tab.Screen
                 name='Notification'
-                component={ProfileScreen}
+                component={NotificationScreen}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <Ionicons name="notifications" size={24} color={focused ? '#E7BD8D' : 'white'} />
                     ),
                 }}
-            />
+            /> */}
             <Tab.Screen
                 name='Profile'
-                component={ProfileScreen}
+                component={AccountNavigator}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <FontAwesome5 name="user-alt" size={24} color={focused ? '#E7BD8D' : 'white'} />
