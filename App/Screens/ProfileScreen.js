@@ -26,7 +26,6 @@ export default function ProfileScreen({ navigation }) {
         <MenuItem title="Language Support" iconName="translate" onPress={() => navigation.navigate('Language')}/>
         <MenuItem title="Invite Friend" iconName="account-multiple-plus" onPress={() => navigation.navigate('Invite')} />
         <MenuItem title="About" iconName="information-outline" onPress={() => navigation.navigate('About')} />
-        {/* <MenuItem title="Help" iconName="help-circle-outline" /> */}
         <MenuItem title="Log Out" iconName="logout" logout />
       </ScrollView>
     </View>

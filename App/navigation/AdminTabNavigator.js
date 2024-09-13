@@ -7,6 +7,8 @@ import NotificationScreen from '../Screens/NotificationScreen';
 import MiddleTabNavigator from './MiddleTabNavigator';
 import HomeNavigator from './HomeNavigator';
 import AccountNavigator from './AccountNavigator';
+import AdminNavigation from './AdminNavigation';
+import UpcomingAppointments from '../Screens/UpcomingAppointments';
 
 const Tab = createBottomTabNavigator();
 
@@ -25,7 +27,7 @@ const CustomTabBarButton = (props) => {
     );
 };
 
-const TabNavigator = () => {
+const AdminTabNavigator = () => {
     return (
         <Tab.Navigator
             screenOptions={{
@@ -47,7 +49,7 @@ const TabNavigator = () => {
         >
             <Tab.Screen
                 name='Home'
-                component={HomeNavigator}
+                component={AdminNavigation}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <Entypo name="home" size={24} color={focused ? 'white' : '#636363'} />
@@ -65,10 +67,10 @@ const TabNavigator = () => {
             /> */}
             <Tab.Screen
                 name='AppointmentOverview'
-                component={MiddleTabNavigator}
+                component={UpcomingAppointments}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <Ionicons name="calendar" size={28} color={focused ? 'white' : '#636363'} />
+                        <Ionicons name="grid" size={28} color={focused ? 'white' : '#636363'} />
                     ),
                     tabBarButton: (props) => (
                         <CustomTabBarButton {...props} />
@@ -103,7 +105,7 @@ const styles = StyleSheet.create({
         top: -13, 
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#24150E',
+        backgroundColor: '#141414',
         borderRadius: 30,
         width: 60,
         height: 60,
@@ -118,4 +120,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default TabNavigator;
+export default AdminTabNavigator;

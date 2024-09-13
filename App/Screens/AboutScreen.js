@@ -1,13 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
-import GradientBackground from '../components/GradientBackground';
 
 const AboutScreen = ({ navigation }) => {
-
-  const handlePress = () => {
-    navigation.navigate('Login');
-  };
 
   return (
     <View style={styles.container}>

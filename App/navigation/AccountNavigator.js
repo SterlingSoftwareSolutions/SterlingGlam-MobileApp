@@ -19,8 +19,6 @@ const AccountNavigator = () => {
     <Stack.Screen name="Language" component={LanguageSettingsScreen} options={{ headerShown: false }} />
     <Stack.Screen name="Invite" component={InviteFriend} options={{ headerShown: false }} />
 
-
-
   </Stack.Navigator>
   );
 };

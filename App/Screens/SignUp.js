@@ -16,7 +16,6 @@ const SignUp = () => {
   const handleSignUp = () => {
     // Implement your signup logic here, e.g., API call, form validation
     console.log('Signing up with:', { email, username, contactNumber, password, confirmPassword });
-    // For demo purposes, navigate to Dashboard screen after signup
     navigation.navigate("Dashboard");
   };
 
@@ -104,7 +103,9 @@ const styles = StyleSheet.create({
   },
   inputView: {
     width: '80%',
-    backgroundColor: '#f2f2f2',
+    borderColor:'#000000',
+    borderWidth:1,
+    // backgroundColor: '#f2f2f2',
     borderRadius: 25,
     height: 50,
     marginBottom: 20,
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
   },
   signupBtn: {
     width: '80%',
-    backgroundColor: '#24150E',
+    backgroundColor: '#000000',
     borderRadius: 25,
     height: 50,
     alignItems: 'center',
@@ -135,7 +136,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   loginText: {
-    color: '#6e6e6e',
+    color: '#141414',
     fontSize: 16,
   },
   loginHighlight: {

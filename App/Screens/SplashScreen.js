@@ -20,10 +20,12 @@ const SplashScreen = () => {
     <GradientBackground>
       <View style={styles.innerContainer}>
         <Image
-          source={require('../resources/sterlingglamlogo.png')} 
+          source={require('../resources/salonsameeralogo.png')} 
           style={styles.logo}
         />
-        <Text style={styles.appName}>Sterling Glam</Text>
+        <Text style={styles.appName}>Refine Your Edge</Text>
+        <Text style={styles.appName}>Where Grooming Meets Excellence</Text>
+
       </View>
     </GradientBackground>
   );
@@ -35,17 +37,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logo: {
-    width: 220, 
-    height: 220, 
+    width: 270, 
+    height: 270, 
     resizeMode: 'contain',
   },
   appName: {
-    marginTop: 20,
-    fontSize: 29, 
-    color: '#8D6651', 
+    // marginTop: 20,
+    fontSize: 18, 
+    color: '#000000', 
     fontWeight: 'bold',
-    textTransform: 'uppercase',
-    letterSpacing: 2,
+    // textTransform: 'uppercase',
+    // letterSpacing: 2,
   },
 });
 

@@ -2,19 +2,16 @@ import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-import Logo from '../resources/lllll.png'; 
+import Logo from '../resources/salonsameeralogo.png'; 
 
 const Login = () => {
   const navigation = useNavigation();
 
   const handleLogin = () => {
-    // Handle login logic here
-    // For demo purposes, just navigate to Dashboard screen
     navigation.navigate("Dashboard");
   };
 
   const handleSignup = () => {
-    // Navigate to SignUp screen
     navigation.navigate("Signup");
   };
 
@@ -57,8 +54,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   logo: {
-    width:250,
-    height: 120,
+    width:220,
+    height: 220,
     marginBottom:50
   },
   inputView: {
@@ -68,9 +65,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     justifyContent: 'center',
     padding: 20,
-    // borderColor:'#24150E',
-    // borderWidth:1,
-    backgroundColor: '#f2f2f2',
+    borderColor:'#000000',
+    borderWidth:1,
+    // backgroundColor: '#f2f2f2',
   },
   inputText: {
     height: 50,
@@ -78,7 +75,7 @@ const styles = StyleSheet.create({
   },
   loginBtn: {
     width: '80%',
-    backgroundColor: '#24150E',
+    backgroundColor: '#000000',
     borderRadius: 25,
     height: 50,
     alignItems: 'center',
@@ -96,7 +93,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   signupText: {
-    color: '#6e6e6e',
+    color: '#141414',
     fontSize: 16,
   },
   signupHighlight: {
