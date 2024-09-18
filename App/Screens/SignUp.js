@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import usersApi from "../api/users";
 
 import Logo from '../resources/lllll.png'; 
 
@@ -8,15 +9,43 @@ const SignUp = () => {
   const navigation = useNavigation();
 
   const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [contactNumber, setContactNumber] = useState('');
+  const [first_name, setFirstName] = useState('');
+  const [phone_number, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [password_confirmation, setConfirmPassword] = useState('');
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
 
-  const handleSignUp = () => {
-    // Implement your signup logic here, e.g., API call, form validation
-    console.log('Signing up with:', { email, username, contactNumber, password, confirmPassword });
-    navigation.navigate("Dashboard");
+  const handleSubmit = async () => {
+    console.log('First Name:', first_name);
+    console.log('Email:', email);
+    console.log('Contact Number:', phone_number);
+    console.log('Password:', password);
+    console.log('Confirm Password:', password_confirmation);
+    console.log('Role:', 'user');
+
+    const role = "user";  // Default role set to 'user'
+
+    try {
+      const result = await usersApi.register(email, first_name, phone_number, password, password_confirmation, role);
+      console.log(result);
+
+      setError(!result.ok);
+      const errorMessage = result.data?.message || "An unknown error occurred.";
+      setErrorMessage(errorMessage);
+
+      if (result.ok) {
+        navigation.navigate('Login');
+      } else {
+        console.log('Register Failed', result.data.user);
+        setError(true);
+        setErrorMessage("Registration failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Registration failed:", error);
+      setErrorMessage("Registration failed. Please try again.");
+      setError(true);
+    }
   };
 
   return (
@@ -36,10 +65,10 @@ const SignUp = () => {
       <View style={styles.inputView}>
         <TextInput
           style={styles.inputText}
-          placeholder="Username"
+          placeholder="First Name"
           placeholderTextColor="#6e6e6e"
-          value={username}
-          onChangeText={text => setUsername(text)}
+          value={first_name}
+          onChangeText={text => setFirstName(text)}
         />
       </View>
 
@@ -48,8 +77,8 @@ const SignUp = () => {
           style={styles.inputText}
           placeholder="Contact Number"
           placeholderTextColor="#6e6e6e"
-          value={contactNumber}
-          onChangeText={text => setContactNumber(text)}
+          value={phone_number}
+          onChangeText={text => setPhoneNumber(text)}
           keyboardType="phone-pad"
         />
       </View>
@@ -71,12 +100,12 @@ const SignUp = () => {
           placeholder="Confirm Password"
           placeholderTextColor="#6e6e6e"
           secureTextEntry
-          value={confirmPassword}
+          value={password_confirmation}
           onChangeText={text => setConfirmPassword(text)}
         />
       </View>
 
-      <TouchableOpacity style={styles.signupBtn} onPress={handleSignUp}>
+      <TouchableOpacity style={styles.signupBtn} onPress={handleSubmit}>
         <Text style={styles.signupText}>Sign Up</Text>
       </TouchableOpacity>
 
@@ -105,7 +134,6 @@ const styles = StyleSheet.create({
     width: '80%',
     borderColor:'#000000',
     borderWidth:1,
-    // backgroundColor: '#f2f2f2',
     borderRadius: 25,
     height: 50,
     marginBottom: 20,

@@ -1,0 +1,28 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const storeToken = async (token) => {
+    try {
+        if (token) {
+            await AsyncStorage.setItem('authToken', token);
+        } else {
+            await AsyncStorage.removeItem('authToken');
+        }
+    } catch (error) {
+        console.error('Error storing token:', error);
+    }
+};
+
+const storeUser = async (user) => {
+    try {
+        if (user) {
+            const userJSON = JSON.stringify(user);
+            await AsyncStorage.setItem('user', userJSON);
+        } else {
+            await AsyncStorage.removeItem('user');
+        }
+    } catch (error) {
+        console.error('Error storing user:', error);
+    }
+};
+
+export default { storeToken, storeUser };

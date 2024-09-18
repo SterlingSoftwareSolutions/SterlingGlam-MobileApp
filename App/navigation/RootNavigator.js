@@ -6,6 +6,7 @@ import SplashScreen from "../Screens/SplashScreen";
 import GetStartedScreen from "../Screens/GetStartedScreen";
 import TabNavigator from "./TabNavigator";
 import AdminTabNavigator from "./AdminTabNavigator";
+import HomeNavigator from "./HomeNavigator";
 
 const Stack = createStackNavigator();
 
@@ -17,6 +18,7 @@ const RootNavigator = () => {
     <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
     <Stack.Screen name="Signup" component={SignUp} options={{ headerShown: false }} />
     <Stack.Screen name="Dashboard" component={AdminTabNavigator} options={{ headerShown: false }} />
+    <Stack.Screen name="ClientDashboard" component={TabNavigator} options={{ headerShown: false }} />
   </Stack.Navigator>
   );
 };

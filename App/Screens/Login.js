@@ -1,14 +1,48 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import authApi from '../api/auth';
+import useAuth from '../auth/useAuth';
+import authService from '../auth/authService';
 
 import Logo from '../resources/salonsameeralogo.png'; 
 
 const Login = () => {
+  const { logIn } = useAuth();
   const navigation = useNavigation();
 
-  const handleLogin = () => {
-    navigation.navigate("Dashboard");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = async () => {
+    try {
+      const result = await authApi.login(email, password);
+
+      if (result.ok) {
+          const loggedInUser = result.data.user;
+
+          if(loggedInUser.role === 'admin'){
+              const token = result.data.token;
+              authService.storeToken(token);
+              logIn(token, loggedInUser);
+              navigation.navigate('Dashboard');
+          } else{
+              const token = result.data.token;
+              authService.storeToken(token);
+              logIn(token, loggedInUser);
+              navigation.navigate('ClientDashboard');
+          }
+
+      } else{
+          setError(true);
+          setErrorMessage(result.data?.message || "An unknown error occurred.");
+      }
+
+    } catch (error) {
+        console.error("Login failed:", error);
+        setErrorMessage("Login failed. Please try again.");
+        setError(true);
+    }
   };
 
   const handleSignup = () => {
@@ -24,6 +58,8 @@ const Login = () => {
           style={styles.inputText}
           placeholder="Email Address"
           placeholderTextColor="#6e6e6e"
+          value={email}
+          onChangeText={text => setEmail(text)}
         />
       </View>
       <View style={styles.inputView}>
@@ -32,6 +68,8 @@ const Login = () => {
           placeholder="Password"
           placeholderTextColor="#6e6e6e"
           secureTextEntry
+          value={password}
+          onChangeText={text => setPassword(text)}
         />
       </View>
       <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>
