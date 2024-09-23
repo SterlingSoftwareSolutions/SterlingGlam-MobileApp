@@ -25,4 +25,14 @@ const storeUser = async (user) => {
     }
 };
 
-export default { storeToken, storeUser };
+const getToken = async () => {
+    try {
+        const token = await AsyncStorage.getItem('authToken');
+        return token;
+    } catch (error) {
+        console.error('Error getting token:', error);
+        return null;
+    }
+};
+
+export default { storeToken, storeUser, getToken };

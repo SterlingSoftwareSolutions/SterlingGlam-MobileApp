@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
+import { Ionicons } from '@expo/vector-icons';
 
 const SalonServicesScreen = () => {
   const navigation = useNavigation();
@@ -30,7 +30,13 @@ const SalonServicesScreen = () => {
 
   return (
     <View style={styles.container}>
+       <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
         <Text style={styles.heading}>Services</Text>
+      </View>
+
       <FlatList
         data={[...services, '+ Add new']}
         renderItem={({ item }) =>
@@ -56,6 +62,7 @@ const styles = StyleSheet.create({
     padding: 10,
     justifyContent: 'center',
     backgroundColor: '#fff',
+    paddingTop: 50
   },
   row: {
     justifyContent: 'space-between',
@@ -84,7 +91,13 @@ const styles = StyleSheet.create({
     color: '#000',
     alignContent:'center',
     alignSelf:'center',
-    margin:20
+    margin:20,
+    paddingLeft: 120
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
   }
 });
 
