@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-
+import { Ionicons } from '@expo/vector-icons';
 
 const AddStylistScreen = () => {
   const navigation = useNavigation();
@@ -42,7 +42,13 @@ const AddStylistScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Add New Stylist</Text>
+      <View style={styles.header}> 
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back" size={24} color="black" />
+          </TouchableOpacity>
+        <Text style={styles.headerTitle}>Add New Stylist</Text>
+      </View>
+      
 
       {/* Stylist Name Input */}
       <Text style={styles.label}>Stylist Name</Text>
@@ -104,12 +110,23 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: '#fff',
+    paddingTop: 80,
   },
   heading: {
     fontSize: 22,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginLeft: 10,
   },
   label: {
     fontSize: 16,
