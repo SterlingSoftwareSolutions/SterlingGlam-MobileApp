@@ -27,6 +27,7 @@ const SignUp = () => {
     const role = "user";  // Default role set to 'user'
 
     try {
+      console.log('result');
       const result = await usersApi.register(email, first_name, phone_number, password, password_confirmation, role);
       console.log(result);
 
