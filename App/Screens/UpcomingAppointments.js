@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
-import { format, addDays, subDays } from 'date-fns'; // Add subDays for backward navigation
+import { format, addDays, subDays } from 'date-fns'; 
+import Footer from '../components/footer'; 
 
-// Sample data for appointments
 const appointments = [
   { id: '1', name: 'Dhanushka', services: 'Haircut, Shaving', time: '10:00', stylist: 'Anderson' },
   { id: '2', name: 'Umindu', services: 'Shaving, Facial', time: '12:30', stylist: 'Clinton' },
@@ -12,20 +12,18 @@ const appointments = [
   { id: '6', name: 'Gamika', services: 'Massage Therapy', time: '10:00', stylist: 'Clinton' },
 ];
 
-const UpcomingAppointments = () => {
+const UpcomingAppointments = ({ navigation }) => {
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
-  const [startDate, setStartDate] = useState(new Date()); 
-  // Generate a list of dates (e.g., next 6 days)
+  const [startDate, setStartDate] = useState(new Date());
+
   const getNextDays = (start, days) => {
     return Array.from({ length: days }, (_, index) => addDays(start, index));
   };
 
-  // Handle cancel appointment action
   const cancelAppointment = (id) => {
     console.log(`Appointment ${id} cancelled`);
   };
 
-  // Handle previous and next arrow presses
   const handlePrevious = () => {
     const newStartDate = subDays(startDate, 6); 
     setStartDate(newStartDate);
@@ -51,10 +49,8 @@ const UpcomingAppointments = () => {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <Text style={styles.header}>Upcoming Appointments</Text>
 
-      {/* Date Picker */}
       <View style={styles.datePicker}>
         <TouchableOpacity onPress={handlePrevious}>
           <Text style={styles.arrow}>{"<"}</Text>
@@ -65,7 +61,6 @@ const UpcomingAppointments = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Horizontal Date Selection */}
       <View style={styles.dateRow}>
         {getNextDays(startDate, 6).map((date) => (
           <TouchableOpacity
@@ -96,13 +91,15 @@ const UpcomingAppointments = () => {
         ))}
       </View>
 
-      {/* Appointment List */}
       <FlatList
         data={appointments}
         keyExtractor={(item) => item.id}
         renderItem={renderAppointment}
         contentContainerStyle={styles.appointmentList}
       />
+
+      {/* Footer */}
+      <Footer navigation={navigation} />
     </View>
   );
 };
