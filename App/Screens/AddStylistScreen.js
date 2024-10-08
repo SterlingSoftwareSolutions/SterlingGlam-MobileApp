@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import Footer from "../components/footer"; // Import the Footer component
+import authClient from "../api/authClient"; // Ensure you import authClient
 
 const AddStylistScreen = () => {
   const navigation = useNavigation();
@@ -11,18 +13,24 @@ const AddStylistScreen = () => {
   const [contactNumber, setContactNumber] = useState('');
   const [selectedRating, setSelectedRating] = useState(0);
   const [selectedServices, setSelectedServices] = useState([]);
+  const [services, setServices] = useState([]); // State to store services from the backend
 
-  const services = [
-    { id: 1, name: 'Hair Cut' },
-    { id: 2, name: 'Beard Grooming' },
-    { id: 3, name: 'Facial' },
-    { id: 4, name: 'Shaving' },
-    { id: 5, name: 'Massage Therapy' },
-    { id: 6, name: 'Eyebrow Grooming' },
-    { id: 7, name: 'Hair Coloring' },
-    { id: 8, name: 'Waxing' }
-  ];
+  // Fetch services from the backend when the component mounts
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await authClient.get('/services'); // Use authClient to make the request
+        setServices(response.data); // Set the services from response.data
+      } catch (error) {
+        console.error('Failed to fetch services', error); // Log the error
+        Alert.alert('Error', 'Failed to fetch services.');
+      }
+    };
 
+    fetchServices();
+  }, []);
+
+  // Toggle service selection
   const toggleService = (service) => {
     if (selectedServices.includes(service)) {
       setSelectedServices(selectedServices.filter(item => item !== service));
@@ -31,76 +39,98 @@ const AddStylistScreen = () => {
     }
   };
 
-  const handleAddStylist = () => {
-    if (stylistName && contactNumber && selectedRating && selectedServices.length > 0) {
-      Alert.alert('Stylist Added', `Stylist: ${stylistName}\nContact: ${contactNumber}\nRating: ${selectedRating} stars\nServices: ${selectedServices.join(', ')}`);
-      navigation.navigate("AdminDashboard");
-    } else {
+  // Handle adding a new stylist
+  const handleAddStylist = async () => {
+    // Validate input fields
+    if (!stylistName || !contactNumber || selectedRating === 0 || selectedServices.length === 0) {
       Alert.alert('Error', 'Please fill all fields and select at least one service.');
+      return;
+    }
+
+    try {
+      // Call the API to add a stylist using authClient
+      const response = await authClient.post('/staff', {
+        name: stylistName,
+        contact_number: contactNumber,
+        ratings: selectedRating,
+        category_ids: selectedServices.map(service => service.id), // Send service IDs
+      });
+
+      if (response.status === 201) {
+        Alert.alert('Success', 'Stylist added successfully.');
+        navigation.navigate('AdminDashboard'); // Navigate to the admin dashboard
+      } else {
+        Alert.alert('Error', response.data.message || 'Failed to add stylist.');
+      }
+    } catch (error) {
+      console.error('Error adding stylist:', error); // Log the error
+      Alert.alert('Error', 'Something went wrong. Please try again later.');
     }
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}> 
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <Ionicons name="arrow-back" size={24} color="black" />
           </TouchableOpacity>
-        <Text style={styles.headerTitle}>Add New Stylist</Text>
-      </View>
-      
+          <Text style={styles.headerTitle}>Add New Stylist</Text>
+        </View>
 
-      {/* Stylist Name Input */}
-      <Text style={styles.label}>Stylist Name</Text>
-      <TextInput
-        style={styles.input}
-        // placeholder="Full Name"
-        value={stylistName}
-        onChangeText={setStylistName}
-      />
+        {/* Stylist Name Input */}
+        <Text style={styles.label}>Stylist Name</Text>
+        <TextInput
+          style={styles.input}
+          value={stylistName}
+          onChangeText={setStylistName}
+        />
 
-      {/* Stylist Rating */}
-      <Text style={styles.label}>Stylist Ratings</Text>
-      <View style={styles.ratingContainer}>
-        {[1, 2, 3, 4, 5].map(star => (
-          <TouchableOpacity key={star} onPress={() => setSelectedRating(star)}>
-            <FontAwesome
-              name={star <= selectedRating ? 'star' : 'star-o'}
-              size={24}
-              color="gold"
-            />
-          </TouchableOpacity>
-        ))}
-      </View>
+        {/* Stylist Rating */}
+        <Text style={styles.label}>Stylist Ratings</Text>
+        <View style={styles.ratingContainer}>
+          {[1, 2, 3, 4, 5].map(star => (
+            <TouchableOpacity key={star} onPress={() => setSelectedRating(star)}>
+              <FontAwesome
+                name={star <= selectedRating ? 'star' : 'star-o'}
+                size={24}
+                color="gold"
+              />
+            </TouchableOpacity>
+          ))}
+        </View>
 
-      {/* Stylist Contact Number */}
-      <Text style={styles.label}>Stylist Contact Number</Text>
-      <TextInput
-        style={styles.input}
-        // placeholder="Mobile Number"
-        keyboardType="numeric"
-        value={contactNumber}
-        onChangeText={setContactNumber}
-      />
+        {/* Stylist Contact Number */}
+        <Text style={styles.label}>Stylist Contact Number</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          value={contactNumber}
+          onChangeText={setContactNumber}
+        />
 
-      {/* Services */}
-      <Text style={styles.label}>Services</Text>
-      <View style={styles.servicesContainer}>
-        {services.map(service => (
-          <TouchableOpacity
-            key={service.id}
-            style={[styles.serviceBox, selectedServices.includes(service.name) && styles.selectedService]}
-            onPress={() => toggleService(service.name)}
-          >
-            <Text style={styles.serviceText}>{service.name}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+        {/* Services */}
+        <Text style={styles.label}>Services</Text>
+        <View style={styles.servicesContainer}>
+          {services.map(service => (
+            <TouchableOpacity
+              key={service.id}
+              style={[styles.serviceBox, selectedServices.includes(service) && styles.selectedService]}
+              onPress={() => toggleService(service)}
+            >
+              <Text style={styles.serviceText}>{service.name}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
 
-      {/* Add Stylist Button */}
-      <TouchableOpacity style={styles.addButton} onPress={handleAddStylist}>
-        <Text style={styles.addButtonText}>Add Stylist</Text>
-      </TouchableOpacity>
+        {/* Add Stylist Button */}
+        <TouchableOpacity style={styles.addButton} onPress={handleAddStylist}>
+          <Text style={styles.addButtonText}>Add Stylist</Text>
+        </TouchableOpacity>
+      </ScrollView>
+
+      {/* Footer */}
+      <Footer navigation={navigation} />
     </View>
   );
 };
@@ -108,9 +138,11 @@ const AddStylistScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     backgroundColor: '#fff',
     paddingTop: 80,
+  },
+  scrollContainer: {
+    padding: 20,
   },
   heading: {
     fontSize: 22,
@@ -131,7 +163,6 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     marginBottom: 5,
-    // fontWeight:'bold'
   },
   input: {
     backgroundColor: '#f0f0f0',

@@ -1,9 +1,16 @@
 import React from "react";
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import { BarChart } from "react-native-chart-kit";
 import { Picker } from "@react-native-picker/picker";
 import Icon from "react-native-vector-icons/FontAwesome";
-import Footer from '../components/footer'; // Import the Footer component
+import Footer from "../components/footer"; // Import the Footer component
 import { format } from "date-fns"; // Import the format function
 const screenWidth = Dimensions.get("window").width;
 
@@ -81,8 +88,8 @@ const StatisticsScreen = ({ navigation }) => {
           style={styles.chart}
         />
 
- {/* Current Month and Year */}
- <Text style={styles.currentMonthYear}>{currentMonthYear}</Text>
+        {/* Current Month and Year */}
+        <Text style={styles.currentMonthYear}>{currentMonthYear}</Text>
 
         {/* Services Date Picker and Print Icon */}
         <View style={[styles.rowContainer, styles.marginTopRow]}>
@@ -165,8 +172,6 @@ const styles = StyleSheet.create({
   chartContainer: {
     alignItems: "center",
     marginVertical: 10,
-    
-
   },
   chart: {
     borderRadius: 10,
