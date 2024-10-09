@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext  } from 'react';
 import { View, Text, TextInput, StyleSheet, Image, ScrollView, TouchableOpacity, Dimensions, ImageBackground } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
+import AuthContext from '../auth/context';
 
 const { width } = Dimensions.get('window');
 
@@ -32,6 +33,7 @@ const categoriesData = {
 };
 
 const HomeScreen = () => {
+  const { user } = useContext(AuthContext);
   const [selectedGender, setSelectedGender] = useState('female');
   const navigation = useNavigation();
 
@@ -43,15 +45,21 @@ const HomeScreen = () => {
     setSelectedGender(gender);
   };
 
+  const handleUserProfile = () => {
+    console.log('User Details', user);
+  };
+
   return (
     <ScrollView style={styles.container}>
       {/* Header Section */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <Text style={styles.greeting}>Hi Jenifer!</Text>
-          <Text style={styles.tagline}>“Unleash Your Inner Glam”</Text>
+        <Text style={styles.greeting}>Hi {user ? user.first_name : 'User'}</Text> 
+        <Text style={styles.tagline}>“Unleash Your Inner Glam”</Text>
         </View>
-        <Image source={localProfilePicture} style={styles.profileImage} />
+        <TouchableOpacity onPress={handleUserProfile}>
+          <Image source={localProfilePicture} style={styles.profileImage}/>
+        </TouchableOpacity>
       </View>
 
       {/* Search Section */}
