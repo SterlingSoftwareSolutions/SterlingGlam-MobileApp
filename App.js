@@ -6,6 +6,7 @@ import RootNavigator from './App/navigation/RootNavigator';
 import AuthContext from "./App/auth/context";
 import AdminNavigation from "./App/navigation/AdminNavigation";
 import HomeNavigator from "./App/navigation/HomeNavigator";
+import TabNavigator from './App/navigation/TabNavigator';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,7 +24,7 @@ export default function App() {
       return <AdminNavigation />;
     } else {
       console.log('User logged in', user);
-      return <HomeNavigator />;
+      return <TabNavigator />;
     }
   };
 
