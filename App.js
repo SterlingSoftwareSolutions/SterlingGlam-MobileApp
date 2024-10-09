@@ -1,13 +1,10 @@
 import React, {useState} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'react-native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import RootNavigator from './App/navigation/RootNavigator';
 import AuthContext from "./App/auth/context";
 import AdminNavigation from "./App/navigation/AdminNavigation";
 import TabNavigator from './App/navigation/TabNavigator';
-
-const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [user, setUser] = useState();
