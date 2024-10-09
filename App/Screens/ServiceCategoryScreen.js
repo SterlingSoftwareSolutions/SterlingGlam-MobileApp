@@ -5,13 +5,18 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  ScrollView,
+  ScrollView, 
+  Platform, 
+  StatusBar
 } from "react-native";
-
+import { Ionicons } from '@expo/vector-icons';
 import Footer from "../components/footer"; // Import the Footer component
+import { SafeAreaView } from "react-native-safe-area-context";
 
-const ServiceCategoryScreen = ({ navigation }) => {
+const ServiceCategoryScreen = ({ route, navigation }) => {
+  const { serviceCatId, serviceCatName } = route.params;
   const [stylists, setStylists] = useState(["Allen", "Anderson", "Clinton"]);
+  console.log("serviceCatName",serviceCatName)
 
   const removeStylist = (index) => {
     const updatedStylists = stylists.filter((_, i) => i !== index);
@@ -28,10 +33,15 @@ const ServiceCategoryScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Text style={styles.header}>Haircuts</Text>
-
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>{serviceCatName}</Text>
+      </View>
+        
         {/* Service Name */}
         <Text style={styles.label}>Service Category Name</Text>
         <TextInput style={styles.input} value="Haircuts" editable={false} />
@@ -95,7 +105,7 @@ const ServiceCategoryScreen = ({ navigation }) => {
 
       {/* Footer */}
       <Footer navigation={navigation} />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -103,19 +113,34 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   scrollContainer: {
-    padding: 10,
+    padding: 20,
   },
+  // header: {
+  //   fontSize: 20,
+  //   fontWeight: "bold",
+  //   marginBottom: 20,
+  //   textAlign: 'center',
+  // },
   header: {
-    fontSize: 20,
-    fontWeight: "bold",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 20,
-    textAlign: 'center',
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginLeft: 10,
+    alignContent:'center',
+    alignSelf:'center',
+    paddingLeft: 120
   },
   label: {
     fontSize: 16,
     marginBottom: 10,
+    fontWeight: 'bold',
   },
   input: {
     backgroundColor: "#E0E0E0",

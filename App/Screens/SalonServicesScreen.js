@@ -1,30 +1,70 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import admin from '../api/admin';
 
 const SalonServicesScreen = () => {
   const navigation = useNavigation();
+  const [ServiceCategory, setServiceCategoryData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [services, setServices] = useState([
-    'Haircut', 
-    'Shaving', 
-    'Hair Coloring', 
-    'Waxing', 
-    'Facial', 
-    'Manicure', 
-    'Pedicure', 
-    'Beard Trim',
-  ]);
+  // const [services, setServices] = useState([
+  //   'Haircut', 
+  //   'Shaving', 
+  //   'Hair Coloring', 
+  //   'Waxing', 
+  //   'Facial', 
+  //   'Manicure', 
+  //   'Pedicure', 
+  //   'Beard Trim',
+  // ]);
 
 
   const handleAddNewService = () => {
     navigation.navigate("AddService");
   };
 
+  const handleService = (item) => {
+    console.log('eeeeeeeee',item.name);
+    navigation.navigate("ServiceCategory",{serviceCatId: id, serviceCatName: name});
+  };
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+        const api = await admin();
+        const response = await api.get('/categories');
+        console.log(response);
+       
+        if (response.ok) {
+          
+          setServiceCategoryData(response.data);
+          console.log('ServiceCategory:', ServiceCategory);
+        } else {
+            console.error('Error fetching data. Status:', response.status);
+            console.error('Error details:', response.data);
+        }
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        const errorMessage = response.data?.message || 'An error occurred while adding the service.';
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useFocusEffect(
+      React.useCallback(() => {
+          fetchData(); // Fetch data when the screen comes into focus
+      }, [])
+  );
+
   const renderServiceBox = ({ item }) => (
-    <TouchableOpacity style={styles.serviceBox} onPress={() => console.log(item)}>
-      <Text style={styles.serviceText}>{item}</Text>
+    <TouchableOpacity style={styles.serviceBox} onPress={handleService}>
+      <Text style={styles.serviceText}>{item.name}</Text>
     </TouchableOpacity>
   );
 
@@ -38,11 +78,11 @@ const SalonServicesScreen = () => {
       </View>
 
       <FlatList
-        data={[...services, '+ Add new']}
+        data={[...ServiceCategory, { id: 'add_new', name: '+ Add new' }]}
         renderItem={({ item }) =>
-          item === '+ Add new' ? (
+          item.id === 'add_new' ? (
             <TouchableOpacity style={styles.serviceBox} onPress={handleAddNewService}>
-              <Text style={styles.serviceText}>{item}</Text>
+              <Text style={styles.serviceText}>{item.name}</Text>
             </TouchableOpacity>
           ) : (
             renderServiceBox({ item })
@@ -62,7 +102,7 @@ const styles = StyleSheet.create({
     padding: 10,
     justifyContent: 'center',
     backgroundColor: '#fff',
-    paddingTop: 50
+    paddingTop: 80
   },
   row: {
     justifyContent: 'space-between',
