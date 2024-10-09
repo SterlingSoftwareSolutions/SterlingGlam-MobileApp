@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useState, useContext  } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import useAuth from '../auth/useAuth';
+import AuthContext from '../auth/context';
 
 const localProfilePicture = require('../resources/specialist1.jpeg');
 
 export default function ProfileScreen({ navigation }) {
+  const { user } = useContext(AuthContext);
+  
   return (
     <View style={styles.container}>
 
@@ -15,8 +19,8 @@ export default function ProfileScreen({ navigation }) {
           source={localProfilePicture} 
           style={styles.profileImage}
         />
-        <Text style={styles.profileName}>Jenifer Lopez</Text>
-        <Text style={styles.profileRole}>User</Text>
+        <Text style={styles.profileName}>{user?.first_name || 'User Name'}</Text>
+        <Text style={styles.profileRole}>{user?.role || 'User Role'}</Text>
       </View>
 
       {/* Menu Items */}
@@ -26,7 +30,7 @@ export default function ProfileScreen({ navigation }) {
         <MenuItem title="Language Support" iconName="translate" onPress={() => navigation.navigate('Language')}/>
         <MenuItem title="Invite Friend" iconName="account-multiple-plus" onPress={() => navigation.navigate('Invite')} />
         <MenuItem title="About" iconName="information-outline" onPress={() => navigation.navigate('About')} />
-        <MenuItem title="Log Out" iconName="logout" logout />
+        <MenuItem title="Log Out" iconName="logout" logout/>
       </ScrollView>
     </View>
   );
