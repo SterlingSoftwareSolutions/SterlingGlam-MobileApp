@@ -13,10 +13,13 @@ const Login = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(false);  
+  const [errorMessage, setErrorMessage] = useState('');  
 
   const handleLogin = async () => {
     try {
       const result = await authApi.login(email, password);
+      console.log("Login API result:", result);
 
       if (result.ok) {
           const loggedInUser = result.data.user;
@@ -72,14 +75,17 @@ const Login = () => {
           onChangeText={text => setPassword(text)}
         />
       </View>
+
+      {error && <Text style={styles.errorText}>{errorMessage}</Text>}
+
       <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>
         <Text style={styles.loginText}>Login</Text>
       </TouchableOpacity>
+
       <TouchableOpacity onPress={handleSignup} style={styles.signupContainer}>
         <Text style={styles.signupText}>New to Sterling Glam? </Text>
         <Text style={[styles.signupText, styles.signupHighlight]} onPress={handleSignup}>Signup</Text>
       </TouchableOpacity>
-      
     </View>
   );
 };
@@ -139,6 +145,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 5, 
   },
+  errorText:{
+    color:'red'
+  }
 });
 
 export default Login;
