@@ -1,48 +1,55 @@
-import React, { useState, useContext  } from 'react';
-import { View, Text, TextInput, StyleSheet, Image, ScrollView, TouchableOpacity, Dimensions, ImageBackground } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, Text, TextInput, StyleSheet, Image, ScrollView, TouchableOpacity, Dimensions, ImageBackground,ActivityIndicator  } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 import AuthContext from '../auth/context';
+import admin from '../api/admin';
 
 const { width } = Dimensions.get('window');
 
 const localProfilePicture = require('../resources/specialist1.jpeg');
-const banner1 = require('../resources/slider1.png');
-
-const categoriesData = {
-  male: [
-    { id: '1', title: 'Haircut and Styling', image: require('../resources/service7.png'), type: 'haircutStyling' },
-    { id: '2', title: 'Beard Trim', image: require('../resources/service11.jpg'), type: 'beardTrim' },
-    { id: '3', title: 'Shaving', image: require('../resources/service12.jpg'), type: 'shaving' },
-    { id: '4', title: 'Facial Treatments', image: require('../resources/service13.png'), type: 'facialTreatments' },
-    { id: '5', title: 'Hair Coloring', image: require('../resources/service14.jpg'), type: 'hairColoring' },
-    { id: '6', title: 'Waxing Services', image: require('../resources/service6.png'), type: 'waxingServices' },
-  ],
-  female: [
-    { id: '1', title: 'Haircut and Styling', image: require('../resources/service7.png'), type: 'haircutStyling' },
-    { id: '2', title: 'Hair Coloring', image: require('../resources/service2.png'), type: 'hairColoring' },
-    { id: '3', title: 'Hair Treatments', image: require('../resources/service4.png'), type: 'hairTreatments' },
-    { id: '4', title: 'Manicure and Pedicure', image: require('../resources/service5.png'), type: 'manicurePedicure' },
-    { id: '5', title: 'Eyebrow Threading', image: require('../resources/service3.png'), type: 'eyebrowThreading' },
-    { id: '6', title: 'Waxing Services', image: require('../resources/service6.png'), type: 'waxingServices' },
-    { id: '7', title: 'Facial Treatments', image: require('../resources/service8.png'), type: 'facialTreatments' },
-    { id: '8', title: 'Bridal Services', image: require('../resources/service1.png'), type: 'bridalServices' },
-    { id: '9', title: 'Hair Extensions', image: require('../resources/service9.png'), type: 'hairExtensions' },
-    { id: '10', title: 'Fillers', image: require('../resources/service3.png'), type: 'fillers' },
-  ]
-};
+const banner1 = require('../resources/Banner01.png');
 
 const HomeScreen = () => {
   const { user } = useContext(AuthContext);
-  const [selectedGender, setSelectedGender] = useState('female');
   const navigation = useNavigation();
+  const [categoriesData, setCategoriesData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const api = await admin(); 
+        const response = await api.get('/categories');  
+        console.log(response)
+        
+        if (response.ok) {
+          setCategoriesData(response.data);  
+          setLoading(false);
+        } else {
+          setError('Failed to fetch categories');
+          setLoading(false);
+        }
+      } catch (err) {
+        setError('Error: ' + err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
+
+  if (error) {
+    return <Text>{error}</Text>;
+  }
 
   const handleCategoryPress = (type) => {
     navigation.navigate('Services', { serviceType: type });
-  };
-
-  const toggleGender = (gender) => {
-    setSelectedGender(gender);
   };
 
   const handleUserProfile = () => {
@@ -54,8 +61,8 @@ const HomeScreen = () => {
       {/* Header Section */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-        <Text style={styles.greeting}>Hi {user ? user.first_name : 'User'}</Text> 
-        <Text style={styles.tagline}>“Unleash Your Inner Glam”</Text>
+          <Text style={styles.greeting}>Hi {user ? user.first_name : 'User'}</Text> 
+          <Text style={styles.tagline}>“Stay Sharp, Stay Stylish”</Text>
         </View>
         <TouchableOpacity onPress={handleUserProfile}>
           <Image source={localProfilePicture} style={styles.profileImage}/>
@@ -76,33 +83,21 @@ const HomeScreen = () => {
         <Image source={banner1} style={styles.offerImage} />
       </View>
 
-      {/* Gender Toggle */}
-      <View style={styles.genderToggle}>
-        <TouchableOpacity
-          style={[styles.genderButton, selectedGender === 'male' && styles.genderButtonActive]}
-          onPress={() => toggleGender('male')}
-        >
-          <Text style={[styles.genderText, selectedGender === 'male' && styles.genderTextActive]}>Male</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.genderButton, selectedGender === 'female' && styles.genderButtonActive]}
-          onPress={() => toggleGender('female')}
-        >
-          <Text style={[styles.genderText, selectedGender === 'female' && styles.genderTextActive]}>Female</Text>
-        </TouchableOpacity>
-      </View>
-
       {/* Categories Section */}
       <View style={styles.categoriesContainer}>
-        {categoriesData[selectedGender].map((item) => (
+        {categoriesData.map((item) => (
           <TouchableOpacity
             key={item.id}
             style={styles.categoryContainer}
-            onPress={() => handleCategoryPress(item.type)}
+            onPress={() => handleCategoryPress(item.type)} 
           >
-            <ImageBackground source={item.image} style={styles.image} imageStyle={styles.imageStyle}>
+            <ImageBackground 
+              source={{ uri: item.image }}
+              style={styles.image}
+              imageStyle={styles.imageStyle}
+            >
               <View style={styles.overlay}>
-                <Text style={styles.categoryText}>{item.title}</Text>
+                <Text style={styles.categoryText}>{item.name}</Text>
               </View>
             </ImageBackground>
           </TouchableOpacity>
@@ -164,30 +159,7 @@ const styles = StyleSheet.create({
     height: 150,
     width: '100%',
     borderRadius: 8,
-  },
-  genderToggle: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginVertical: 16,
-  },
-  genderButton: {
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#A3A3A3',
-    marginHorizontal: 8,
-  },
-  genderButtonActive: {
-    backgroundColor: '#24150E',
-  },
-  genderText: {
-    fontSize: 16,
-    color: '#A3A3A3',
-  },
-  genderTextActive: {
-    fontSize: 16,
-    color: '#FFF',
+    marginBottom:10
   },
   categoriesContainer: {
     flexDirection: 'row',
