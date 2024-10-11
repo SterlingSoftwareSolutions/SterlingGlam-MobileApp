@@ -1,30 +1,70 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image, StyleSheet, FlatList } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, Image, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { servicesData } from '../components/dummyData';
+import admin from '../api/admin';
 
 const ServicesScreen = () => {
   const [selectedSpecialist, setSelectedSpecialist] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('haircutStyling');
-  const [selectedServiceId, setSelectedServiceId] = useState(null); // Added state for tracking selected service
+  const [selectedServices, setSelectedServices] = useState([]); // Multi-selection state
+  const [categoriesData, setCategoriesData] = useState([]);
+  const [servicesData, setServicesData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigation = useNavigation();
 
-  const categoriesData = Object.keys(servicesData).map((key) => ({
-    id: key,
-    title: servicesData[key].headerTitle,
-  }));
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const api = await admin();
+
+        const categoriesResponse = await api.get('/categories');
+        const servicesResponse = await api.get('/services');
+        console.log(servicesResponse)
+
+
+        if (categoriesResponse.ok && servicesResponse.ok) {
+          setCategoriesData(categoriesResponse.data);
+          setServicesData(servicesResponse.data);
+        console.log('Services servicesResponse',servicesData)
+        } else {
+          setError('Failed to fetch data');
+        }
+      } catch (err) {
+        setError('Error: ' + err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleCategoryPress = (categoryKey) => {
     setSelectedCategory(categoryKey);
   };
 
-  const handleAppointment = () => {
-    navigation.navigate("Booking");
+  const handleServiceSelection = (serviceId) => {
+    setSelectedServices((prevSelected) => {
+      if (prevSelected.includes(serviceId)) {
+        return prevSelected.filter((id) => id !== serviceId);
+      } else {
+        return [...prevSelected, serviceId];
+      }
+    });
   };
 
-  const handleBookButtonPress = (serviceId) => {
-    setSelectedServiceId(serviceId);
+  const handleAppointment = () => {
+    navigation.navigate('Booking', { selectedServices });
   };
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
+
+  if (error) {
+    return <Text>{error}</Text>;
+  }
 
   const renderCategoryItem = ({ item }) => (
     <TouchableOpacity
@@ -41,12 +81,40 @@ const ServicesScreen = () => {
           selectedCategory === item.id && styles.activeCategoryTitle,
         ]}
       >
-        {item.title}
+        {item.name}
       </Text>
     </TouchableOpacity>
   );
 
-  const selectedServiceData = servicesData[selectedCategory];
+  const renderServiceItem = ({ item }) => {
+    const isSelected = selectedServices.includes(item.id);
+
+    return (
+      <View key={item.id} style={styles.serviceItem}>
+        <View style={styles.serviceTextContainer}>
+          <Text style={styles.serviceName}>{item.name}</Text>
+          <Text style={styles.serviceDescription}>{item.description}</Text>
+          <Text style={styles.servicePrice}>{item.price}</Text>
+        </View>
+        <TouchableOpacity
+          style={[
+            styles.bookButton,
+            isSelected ? styles.bookButtonSelected : styles.bookButtonDefault,
+          ]}
+          onPress={() => handleServiceSelection(item.id)}
+        >
+          <Text
+            style={[
+              styles.bookButtonText,
+              isSelected ? styles.bookButtonTextSelected : styles.bookButtonTextDefault,
+            ]}
+          >
+            {isSelected ? 'Selected' : 'Select'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -64,49 +132,12 @@ const ServicesScreen = () => {
           contentContainerStyle={{ paddingBottom: 10 }}
         />
 
-        {selectedServiceData.services.map((service) => (
-          <View key={service.id} style={styles.serviceItem}>
-            <View style={styles.serviceTextContainer}>
-              <Text style={styles.serviceName}>{service.name}</Text>
-              <Text style={styles.serviceDescription}>{service.description}</Text>
-              <Text style={styles.servicePrice}>{service.price}</Text>
-            </View>
-            <TouchableOpacity 
-              style={[
-                styles.bookButton,
-                selectedServiceId === service.id ? styles.bookButtonSelected : styles.bookButtonDefault
-              ]}
-              onPress={() => handleBookButtonPress(service.id)}
-            >
-              <Text style={[
-                styles.bookButtonText,
-                selectedServiceId === service.id ? styles.bookButtonTextSelected : styles.bookButtonTextDefault
-              ]}>
-                {selectedServiceId === service.id ? 'Selected' : 'Select'}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-      </View>
+        <FlatList
+  data={servicesData.filter(service => service.category.id === selectedCategory)}
+  renderItem={renderServiceItem}
+          keyExtractor={(item) => item.id}
+        />
 
-      <View style={styles.specialistContainer}>
-        <Text style={styles.sectionHeader}>Select a Specialist</Text>
-        <View style={styles.specialistList}>
-          {selectedServiceData.specialists.map((specialist) => (
-            <TouchableOpacity
-              key={specialist.id}
-              style={[
-                styles.specialistCard,
-                selectedSpecialist === specialist.id && styles.selectedSpecialistCard,
-              ]}
-              onPress={() => setSelectedSpecialist(specialist.id)}
-            >
-              <Image source={specialist.image} style={styles.specialistImage} />
-              <Text style={styles.specialistName}>{specialist.name}</Text>
-              <Text style={styles.specialistRating}>⭐ {specialist.rating}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
       </View>
 
       <TouchableOpacity style={styles.bookNowButton} onPress={handleAppointment}>
@@ -126,64 +157,18 @@ const styles = StyleSheet.create({
   serviceName: { fontSize: 16, fontWeight: 'bold', color: '#24150E' },
   serviceDescription: { fontSize: 14, color: '#24150E', marginVertical: 5 },
   servicePrice: { fontSize: 16, color: 'green' },
-  bookButton: { 
-    borderRadius: 20, 
-    paddingVertical: 10, 
-    paddingHorizontal: 20, 
-    alignSelf: 'center' 
-  },
-  bookButtonDefault: { 
-    backgroundColor: '#FFF', 
-    borderColor: '#24150E', 
-    borderWidth: 1
-  },
-  bookButtonSelected: { 
-    backgroundColor: '#24150E' 
-  },
-  bookButtonText: { 
-    fontWeight: 'bold', 
-    fontSize: 12 
-  },
-  bookButtonTextDefault: {
-    color: '#24150E'
-  },
-  bookButtonTextSelected: {
-    color: '#FFF'
-  },
-  specialistContainer: { marginBottom: 20 },
-  specialistList: { flexDirection: 'row', justifyContent: 'space-around' },
-  specialistCard: { alignItems: 'center', padding: 10, borderRadius: 10, backgroundColor: '#6B4E35', width: 100 },
-  selectedSpecialistCard: { backgroundColor: '#24150E' },
-  specialistImage: { width: 50, height: 50, borderRadius: 25, marginBottom: 10 },
-  specialistName: { color: '#FFF', fontWeight: 'bold' },
-  specialistRating: { color: '#FFF' },
-  bookNowButton: { backgroundColor: '#24150E', padding: 15, borderRadius: 10, alignItems: 'center', marginTop: 20 , marginBottom:95},
+  bookButton: { borderRadius: 20, paddingVertical: 10, paddingHorizontal: 20, alignSelf: 'center' },
+  bookButtonDefault: { backgroundColor: '#FFF', borderColor: '#24150E', borderWidth: 1 },
+  bookButtonSelected: { backgroundColor: '#24150E' },
+  bookButtonText: { fontWeight: 'bold', fontSize: 12 },
+  bookButtonTextDefault: { color: '#24150E' },
+  bookButtonTextSelected: { color: '#FFF' },
+  bookNowButton: { backgroundColor: '#24150E', padding: 15, borderRadius: 10, alignItems: 'center', marginTop: 20, marginBottom: 95 },
   bookNowButtonText: { color: '#FFF', fontSize: 18 },
-  categoryContainer: {
-    alignItems: 'center',
-    marginRight: 20,
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 10,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    marginBottom:10
-  },
-  activeCategoryContainer: {
-    backgroundColor: '#24150E',
-  },
-  categoryTitle: {
-    fontSize: 14,
-    color: '#24150E',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  activeCategoryTitle: {
-    color: '#FFF',
-  },
+  categoryContainer: { alignItems: 'center', marginRight: 20, backgroundColor: '#fff', borderRadius: 20, padding: 10, elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.3, shadowRadius: 3, marginBottom: 10 },
+  activeCategoryContainer: { backgroundColor: '#24150E' },
+  categoryTitle: { fontSize: 14, color: '#24150E', fontWeight: 'bold', textAlign: 'center' },
+  activeCategoryTitle: { color: '#FFF' },
 });
 
 export default ServicesScreen;
