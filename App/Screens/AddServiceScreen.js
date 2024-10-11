@@ -37,7 +37,7 @@ const AddServiceScreen = () => {
         console.log('null',image);
         const api = await admin();
 
-        const response = await api.post('/services', {
+        const response = await authClient.post('/services', {
           name, category_id, description, price, estimated_time, image
         });
      
