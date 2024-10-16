@@ -24,62 +24,113 @@ const ServiceCategoryScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(false);
   const [selectedStylist, setSelectedStylist] = useState(null);
 
-  const removeStylist = (stylistId) => {
-    const updatedStylists = selectedStylists.filter((id) => id !== stylistId);
-    setSelectedStylists(updatedStylists);
-  };
+  //select stylist remove function from category_stylist table
+  const removeStylist = async (stylistId) => {
+    try {
+      // Ensure there is a stylist ID to delete
+      if (stylistId) {
+        const api = await admin(); // Get the configured API client
 
+        // Prepare the delete payload for the single stylist
+        const deletes = [
+          {
+            staff_id: stylistId,
+            category_id: serviceCatId, // Ensure this is the correct category ID
+          },
+        ];
+
+        // Log the prepared deletes for debugging
+        console.log("Prepared deletes:", deletes);
+
+        // Send DELETE request to the backend with the payload
+        const response = await api.post("/staff/delete-category", {
+          deletes,
+          _method: "DELETE",
+        }); // Use the payload as data
+
+        // Handle response based on the status
+        if (response.status === 200) {
+          Alert.alert("Success", "Stylist deleted successfully", [
+            {
+              text: "OK",
+              onPress: () => {
+                // Remove the deleted stylist from the selectedStylists array
+                setSelectedStylists(
+                  selectedStylists.filter((id) => id !== stylistId)
+                );
+                navigation.goBack(); // Navigate back after deletion
+              },
+            },
+          ]);
+        } else {
+          Alert.alert("Error", "Failed to delete the stylist");
+          console.error(
+            "Error Failed to delete the stylist. Status:",
+            response.data.error
+          );
+        }
+      } else {
+        Alert.alert("Warning", "No stylist selected for deletion.");
+      }
+    } catch (error) {
+      console.error("Error deleting stylist:", error);
+      Alert.alert("Error", "Failed to delete the stylist. Please try again.");
+    }
+  };
+  //
   const addStylist = (stylistId) => {
     if (!selectedStylists.includes(stylistId)) {
       setSelectedStylists([...selectedStylists, stylistId]);
     }
-  };handleUpdateStylists
+  };
+  handleUpdateStylists;
 
-  // Modify the handleUpdateStylists to send the selected stylists to backend
+  //add new stylist to category_stylist table
   const handleUpdateStylists = async () => {
     try {
-        if (selectedStylists.length > 0) {
-            console.log("Selected stylists:", selectedStylists);
-            console.log("Service Category ID:", serviceCatId);
+      if (selectedStylists.length > 0) {
+        console.log("Selected stylists:", selectedStylists);
+        console.log("Service Category ID:", serviceCatId);
 
-            const api = await admin(); // Assuming admin() is your configured API client
+        const api = await admin(); // Assuming admin() is your configured API client
 
-            // Log API configuration
-            console.log("API Client Configured:", api);
+        // Log API configuration
+        console.log("API Client Configured:", api);
 
-            // Prepare the updates array with stylist IDs and the corresponding category ID
-            const updates = selectedStylists.map(stylistId => ({
-                staff_id: stylistId,       // Assuming selectedStylists contains stylist IDs
-                category_id: serviceCatId  // Assuming serviceCatId is the category you want to assign
-            }));
+        // Prepare the updates array with stylist IDs and the corresponding category ID
+        const updates = selectedStylists.map((stylistId) => ({
+          staff_id: stylistId, // Assuming selectedStylists contains stylist IDs
+          category_id: serviceCatId, // Assuming serviceCatId is the category you want to assign
+        }));
 
-            // Log the prepared updates array
-            console.log("Prepared updates:", updates);
+        // Log the prepared updates array
+        console.log("Prepared updates:", updates);
 
-            // Post selected stylists to the backend
-            const response = await api.post('/staff-update-categories', { updates });
+        // Post selected stylists to the backend
+        const response = await api.post("/staff-update-categories", {
+          updates,
+        });
 
-            // Log the entire response object
-            console.log("Response staff:", response);
+        // Log the entire response object
+        console.log("Response staff:", response);
 
-            if (response.status === 200) {
-                alert("Stylists updated successfully");
-            } else {
-                console.log("Error status:", response.status);
-                alert("Error updating stylists");
-            }
+        if (response.status === 200) {
+          alert("Stylists updated successfully");
         } else {
-            console.log("No stylists selected.");
-            alert("No stylists selected.");
+          console.log("Error status:", response.status);
+          alert("Error updating stylists");
         }
+      } else {
+        console.log("No stylists selected.");
+        alert("No stylists selected.");
+      }
     } catch (error) {
-        console.error("Error updating stylists:", error);
-        alert("Failed to update stylists.");
+      console.error("Error updating stylists:", error);
+      alert("Failed to update stylists.");
     }
-};
+  };
 
-
-  
+  // fetch service function
   const fetchService = async () => {
     setLoading(true);
     try {
@@ -108,6 +159,8 @@ const ServiceCategoryScreen = ({ route, navigation }) => {
     fetchService();
   }, [serviceCatId]);
 
+
+  //already add stylist
   const fetchStylists = async () => {
     setLoading(true);
     try {
@@ -117,13 +170,12 @@ const ServiceCategoryScreen = ({ route, navigation }) => {
       if (response.status === 200) {
         setStylists(StaffData);
 
-         // Filter stylists that belong to the selected category
-         const filteredStylists = StaffData.filter((stylist) =>
+        // Filter stylists that belong to the selected category
+        const filteredStylists = StaffData.filter((stylist) =>
           stylist.categories.some((category) => category.id === serviceCatId)
         );
 
         setSelectedStylists(filteredStylists.map((stylist) => stylist.id)); // Save only IDs
-
       } else {
         console.error("Error fetching stylists. Status:", response.status);
       }
@@ -133,18 +185,17 @@ const ServiceCategoryScreen = ({ route, navigation }) => {
     setLoading(false);
   };
 
-   useEffect(() => {
+  useEffect(() => {
     fetchService();
     fetchStylists(); // Fetch all stylists and filter for selected ones
   }, [serviceCatId]);
-
 
   //delete function
   const deleteCategory = async () => {
     try {
       const api = await admin();
       const response = await api.delete(`/categories/${serviceCatId}`);
-  
+
       if (response.status === 200) {
         Alert.alert("Success", "Category deleted successfully", [
           { text: "OK", onPress: () => navigation.goBack() }, // Navigate back after deletion
@@ -158,7 +209,6 @@ const ServiceCategoryScreen = ({ route, navigation }) => {
     }
   };
 
-
   const renderServiceBox = (service) => (
     <TouchableOpacity key={service} style={styles.categoryButton}>
       <Text>{service}</Text>
@@ -167,16 +217,20 @@ const ServiceCategoryScreen = ({ route, navigation }) => {
 
   const renderSelectedStylistBox = (stylist) => (
     <View key={stylist.id} style={styles.selectedStylistContainer}>
-      <Text style={styles.selectedStylistName}>{stylist.name}</Text>
       <TouchableOpacity
-        onPress={() => removeStylist(stylist.id)}
+        onPress={() => removeStylist(stylist.id)} // Pass the stylist's ID on click
+      >
+        <Text style={styles.selectedStylistName}>{stylist.name}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => removeStylist(stylist.id)} // Pass the stylist's ID on trash icon click
         style={styles.removeButton}
       >
         <Ionicons name="trash-bin" size={16} color="red" />
       </TouchableOpacity>
     </View>
   );
-  
+
   const renderHeader = () => (
     <>
       <View style={styles.header}>
@@ -201,16 +255,15 @@ const ServiceCategoryScreen = ({ route, navigation }) => {
       >
         <Text>+ Add new</Text>
       </TouchableOpacity>
-  
+
       <Text style={styles.label}>Selected Stylists</Text>
       <View style={styles.selectedStylistsContainer}>
-        {selectedStylists
-          .map((id) => {
-            const stylist = stylists.find((s) => s.id === id);
-            return stylist ? renderSelectedStylistBox(stylist) : null;
-          })}
+        {selectedStylists.map((id) => {
+          const stylist = stylists.find((s) => s.id === id);
+          return stylist ? renderSelectedStylistBox(stylist) : null;
+        })}
       </View>
-  
+
       <Text style={styles.label}>Stylists</Text>
       <View style={styles.dropdownContainer}>
         <Picker
@@ -233,14 +286,14 @@ const ServiceCategoryScreen = ({ route, navigation }) => {
           ))}
         </Picker>
       </View>
-  
+
       <TouchableOpacity
         style={styles.updateButton}
         onPress={handleUpdateStylists} // Call the function on button press
       >
         <Text style={styles.updateButtonText}>Update</Text>
       </TouchableOpacity>
-  
+
       <TouchableOpacity
         style={styles.deleteButton}
         onPress={() => {
@@ -256,7 +309,6 @@ const ServiceCategoryScreen = ({ route, navigation }) => {
       >
         <Text style={styles.deleteButtonText}>Delete Category</Text>
       </TouchableOpacity>
-      
     </>
   );
 
