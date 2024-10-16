@@ -19,7 +19,7 @@ const AddStylistScreen = () => {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await authClient.get('/services'); // Use authClient to make the request
+        const response = await authClient.get('/categories'); // Use authClient to make the request
         setServices(response.data); // Set the services from response.data
       } catch (error) {
         console.error('Failed to fetch services', error); // Log the error
@@ -56,7 +56,7 @@ const AddStylistScreen = () => {
         category_ids: selectedServices.map(service => service.id), // Send service IDs
       });
 
-      if (response.status === 201) {
+      if (response.status === 200) {
         Alert.alert('Success', 'Stylist added successfully.');
         navigation.navigate('AdminDashboard'); // Navigate to the admin dashboard
       } else {
@@ -110,7 +110,7 @@ const AddStylistScreen = () => {
         />
 
         {/* Services */}
-        <Text style={styles.label}>Services</Text>
+        <Text style={styles.label}>Categories</Text>
         <View style={styles.servicesContainer}>
           {services.map(service => (
             <TouchableOpacity

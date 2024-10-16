@@ -1,48 +1,70 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import admin from '../api/admin';
 
 const SalonServicesScreen = () => {
   const navigation = useNavigation();
-
-  const [services, setServices] = useState([
-    'Haircut', 
-    'Shaving', 
-    'Hair Coloring', 
-    'Waxing', 
-    'Facial', 
-    'Manicure', 
-    'Pedicure', 
-    'Beard Trim',
-  ]);
-
+  const [serviceCategories, setServiceCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const handleAddNewService = () => {
     navigation.navigate("AddService");
   };
 
+  const handleService = (id, name) => {
+    navigation.navigate("ServiceCategory", { serviceCatId: id, serviceCatName: name });
+  };
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const api = await admin();
+      const response = await api.get('/categories');
+
+      if (response.ok) {
+        setServiceCategories(response.data);
+      } else {
+        console.error('Error fetching categories:', response.status);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchData(); // Fetch data when the screen comes into focus
+    }, [])
+  );
+
   const renderServiceBox = ({ item }) => (
-    <TouchableOpacity style={styles.serviceBox} onPress={() => console.log(item)}>
-      <Text style={styles.serviceText}>{item}</Text>
+    <TouchableOpacity style={styles.serviceBox} onPress={() => handleService(item.id, item.name)}>
+      <Text style={styles.serviceText}>{item.name}</Text>
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
-       <View style={styles.header}>
+      <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
-        <Text style={styles.heading}>Services</Text>
+        <Text style={styles.heading}>Category/Services</Text>
       </View>
 
       <FlatList
-        data={[...services, '+ Add new']}
+        data={[...serviceCategories, { id: 'add_new'}]}
         renderItem={({ item }) =>
-          item === '+ Add new' ? (
-            <TouchableOpacity style={styles.serviceBox} onPress={handleAddNewService}>
-              <Text style={styles.serviceText}>{item}</Text>
+          item.id === 'add_new' ? (
+            <TouchableOpacity >
+              <Text style={styles.serviceText}>{item.name}</Text>
             </TouchableOpacity>
           ) : (
             renderServiceBox({ item })
@@ -62,7 +84,7 @@ const styles = StyleSheet.create({
     padding: 10,
     justifyContent: 'center',
     backgroundColor: '#fff',
-    paddingTop: 50
+    paddingTop: 80
   },
   row: {
     justifyContent: 'space-between',
@@ -77,22 +99,22 @@ const styles = StyleSheet.create({
     margin: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius:10,
-    paddingVertical:34
+    borderRadius: 10,
+    paddingVertical: 34
   },
   serviceText: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#000',
   },
-  heading:{
+  heading: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#000',
-    alignContent:'center',
-    alignSelf:'center',
-    margin:20,
-    paddingLeft: 120
+    alignContent: 'center',
+    alignSelf: 'center',
+    margin: 20,
+    paddingLeft: 80
   },
   header: {
     flexDirection: 'row',

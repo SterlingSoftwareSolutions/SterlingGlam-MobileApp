@@ -14,9 +14,7 @@ const AdminScreen = () => {
   const handleServices = () => {
     navigation.navigate("Services");
   };
-  const handleServicesCategorie = () => {
-    navigation.navigate("ServiceCategory");
-  };
+ 
 
   const handleStylist = () => {
     navigation.navigate("Stylists");
@@ -81,10 +79,6 @@ const AdminScreen = () => {
             <Text style={styles.buttonText}>Stylists</Text>
           </TouchableOpacity>
         </View>
-
-        <TouchableOpacity style={styles.button} onPress={handleServicesCategorie}>
-        <Text style={styles.buttonText}>Go to Service Category</Text>
-      </TouchableOpacity>
       </ScrollView>
 
       {/* Footer */}

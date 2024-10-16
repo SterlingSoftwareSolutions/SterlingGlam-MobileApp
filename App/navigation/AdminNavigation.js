@@ -16,6 +16,7 @@ import UpcomingAppointments from "../Screens/UpcomingAppointments";
 import EditStylistScreen from "../Screens/EditStylistScreen";
 import StatisticsScreen from "../Screens/StatisticsScreen";
 import ServiceCategoryScreen from "../Screens/ServiceCategoryScreen";
+import UpdateStylistScreen from "../Screens/UpdateStylistScreen"
 const Stack = createStackNavigator();
 
 const AdminNavigation = () => {
@@ -31,6 +32,7 @@ const AdminNavigation = () => {
     <Stack.Screen name="UpcomingAppointments" component={UpcomingAppointments} options={{ headerShown: false }} />
     <Stack.Screen name="Statistics" component={StatisticsScreen} options={{ headerShown: false }} /> 
     <Stack.Screen name="ServiceCategory" component={ServiceCategoryScreen} options={{ headerShown: false }}/>
+    <Stack.Screen name="UpdateStylist" component={UpdateStylistScreen} options={{headerShown:false}}/>
   </Stack.Navigator>
   );
 };

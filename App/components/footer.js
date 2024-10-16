@@ -3,31 +3,33 @@ import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons'; // Use Ionicons or your preferred icon set
 
 const Footer = ({ navigation }) => {
-    
+  
   const handleViewStatistics = () => {
     navigation.navigate('Statistics'); // Navigate to the Statistics screen
   };
-  const handleViewHome=()=>{
-    navigation.navigate('AdminDashboard')
-  }
 
-  const upcomingView=()=>{
-    navigation.navigate('UpcomingAppointments')
-  }
+  const handleViewHome = () => {
+    navigation.navigate('AdminDashboard'); // Navigate to Admin Dashboard
+  };
+
+  const upcomingView = () => {
+    navigation.navigate('UpcomingAppointments'); // Navigate to Upcoming Appointments
+  };
+
   return (
     <View style={styles.footer}>
-      <TouchableOpacity style={styles.iconContainer} onPress={() => navigation.navigate('Appointments')}>
-        <Icon name="calendar-outline" onPress={upcomingView} size={25} color="#fff" />
+      <TouchableOpacity style={styles.iconContainer} onPress={upcomingView}>
+        <Icon name="calendar-outline" size={25} color="#fff" />
       </TouchableOpacity>
 
-      <TouchableOpacity style={[styles.iconContainer, styles.middleIconContainer]} onPress={() => navigation.navigate('Home')}>
-        <View style={styles.middleIconBackground} >
-          <Icon name="grid-outline" onPress={handleViewHome} size={25} color="#fff" />
+      <TouchableOpacity style={[styles.iconContainer, styles.middleIconContainer]} onPress={handleViewHome}>
+        <View style={styles.middleIconBackground}>
+          <Icon name="grid-outline" size={25} color="#fff" />
         </View>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.iconContainer} onPress={() => navigation.navigate('Settings')}>
-        <Icon name="bar-chart-outline" onPress={handleViewStatistics} size={25} color="#fff" />
+      <TouchableOpacity style={styles.iconContainer} onPress={handleViewStatistics}>
+        <Icon name="bar-chart-outline" size={25} color="#fff" />
       </TouchableOpacity>
     </View>
   );

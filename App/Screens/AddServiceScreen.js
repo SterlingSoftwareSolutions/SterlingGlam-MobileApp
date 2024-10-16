@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,  } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView ,Alert, ActivityIndicator} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -37,7 +37,7 @@ const AddServiceScreen = () => {
         console.log('null',image);
         const api = await admin();
 
-        const response = await api.post('/services', {
+        const response = await authClient.post('/services', {
           name, category_id, description, price, estimated_time, image
         });
      
