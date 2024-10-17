@@ -1,32 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, ScrollView, TouchableOpacity, FlatList, ActivityIndicator, StyleSheet, Image } from 'react-native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import admin from '../api/admin';
 
 const ServicesScreen = () => {
+  const route = useRoute();
+  const navigation = useNavigation();
+
+  const [selectedCategory, setSelectedCategory] = useState(route.params.serviceType);
+  const [selectedServices, setSelectedServices] = useState([]);
   const [selectedSpecialist, setSelectedSpecialist] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState('haircutStyling');
-  const [selectedServices, setSelectedServices] = useState([]); // Multi-selection state
   const [categoriesData, setCategoriesData] = useState([]);
   const [servicesData, setServicesData] = useState([]);
+  const [specialistsData, setSpecialistsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigation = useNavigation();
+  const localProfilePicture = require('../resources/specialist1.jpeg');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const api = await admin();
-
         const categoriesResponse = await api.get('/categories');
         const servicesResponse = await api.get('/services');
-        console.log(servicesResponse)
-
+        const specialistsResponse = await api.get('/staff');
 
         if (categoriesResponse.ok && servicesResponse.ok) {
           setCategoriesData(categoriesResponse.data);
           setServicesData(servicesResponse.data);
-        console.log('Services servicesResponse',servicesData)
+          setSpecialistsData(specialistsResponse.data.data);
+          
         } else {
           setError('Failed to fetch data');
         }
@@ -40,10 +43,15 @@ const ServicesScreen = () => {
     fetchData();
   }, []);
 
+  // Filter services by selected category
+  const filteredServices = servicesData.filter(service => service.category.id === selectedCategory);
+
+  // Handle category selection from the slider
   const handleCategoryPress = (categoryKey) => {
     setSelectedCategory(categoryKey);
   };
 
+  // Handle service selection
   const handleServiceSelection = (serviceId) => {
     setSelectedServices((prevSelected) => {
       if (prevSelected.includes(serviceId)) {
@@ -54,6 +62,7 @@ const ServicesScreen = () => {
     });
   };
 
+  // Handle appointment
   const handleAppointment = () => {
     navigation.navigate('Booking', { selectedServices });
   };
@@ -66,6 +75,7 @@ const ServicesScreen = () => {
     return <Text>{error}</Text>;
   }
 
+  // Render category item (horizontal slider)
   const renderCategoryItem = ({ item }) => (
     <TouchableOpacity
       key={item.id}
@@ -86,6 +96,7 @@ const ServicesScreen = () => {
     </TouchableOpacity>
   );
 
+  // Render service item
   const renderServiceItem = ({ item }) => {
     const isSelected = selectedServices.includes(item.id);
 
@@ -120,32 +131,55 @@ const ServicesScreen = () => {
     <ScrollView style={styles.container}>
       <Text style={styles.header}>Make an Appointment</Text>
 
-      <View style={styles.servicesContainer}>
-        <Text style={styles.sectionHeader}>Services</Text>
+      {/* Horizontal Slider for Categories */}
+      <FlatList
+        data={categoriesData}
+        renderItem={renderCategoryItem}
+        keyExtractor={(item) => item.id}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 10 }}
+      />
 
+      {/* Services Section */}
+      {filteredServices.length > 0 ? (
         <FlatList
-          data={categoriesData}
-          renderItem={renderCategoryItem}
-          keyExtractor={(item) => item.id}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 10 }}
-        />
-
-        <FlatList
-  data={servicesData.filter(service => service.category.id === selectedCategory)}
-  renderItem={renderServiceItem}
+          data={filteredServices} // Only show services of the selected category
+          renderItem={renderServiceItem}
           keyExtractor={(item) => item.id}
         />
+      ) : (
+        <Text>No services available for this category.</Text> // Handle no services case
+      )}
 
+      <View style={styles.specialistContainer}>
+        <Text style={styles.sectionHeader}>Select a Specialist</Text>
+        <View style={styles.specialistList}>
+          {specialistsData.map((specialist) => (
+            <TouchableOpacity
+              key={specialist.id}
+              style={[
+                styles.specialistCard,
+                selectedSpecialist === specialist.id && styles.selectedSpecialistCard,
+              ]}
+              onPress={() => setSelectedSpecialist(specialist.id)}
+            >
+              <Image source={localProfilePicture} style={styles.specialistImage} />
+              <Text style={styles.specialistName}>{specialist.name}</Text>
+              <Text style={styles.specialistRating}>⭐ {specialist.ratings}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
 
+      {/* Book Now Button */}
       <TouchableOpacity style={styles.bookNowButton} onPress={handleAppointment}>
         <Text style={styles.bookNowButtonText}>Book Now</Text>
       </TouchableOpacity>
     </ScrollView>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: '#FFF' },
@@ -169,6 +203,13 @@ const styles = StyleSheet.create({
   activeCategoryContainer: { backgroundColor: '#24150E' },
   categoryTitle: { fontSize: 14, color: '#24150E', fontWeight: 'bold', textAlign: 'center' },
   activeCategoryTitle: { color: '#FFF' },
+  specialistContainer: { marginBottom: 20 },
+  specialistList: { flexDirection: 'row', justifyContent: 'space-around' },
+  specialistCard: { alignItems: 'center', padding: 10, borderRadius: 10, backgroundColor: '#6B4E35', width: 100 },
+  selectedSpecialistCard: { backgroundColor: '#24150E' },
+  specialistImage: { width: 50, height: 50, borderRadius: 25, marginBottom: 10 },
+  specialistName: { color: '#FFF', fontWeight: 'bold' },
+  specialistRating: { color: '#FFF' },
 });
 
 export default ServicesScreen;
