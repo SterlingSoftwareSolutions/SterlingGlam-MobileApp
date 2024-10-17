@@ -128,7 +128,7 @@ const BookingScreen = () => {
       </View>
 
       <TouchableOpacity style={styles.bookButton} onPress={handleBooking}>
-        <Text style={styles.bookButtonText}>Book</Text>
+        <Text style={styles.bookButtonText}>Proceed</Text>
       </TouchableOpacity>
     </ScrollView>
   );
