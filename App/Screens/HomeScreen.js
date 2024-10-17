@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Image, ScrollView, TouchableOpacity, Dimensions, ImageBackground,ActivityIndicator  } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { View, Text, ScrollView, TouchableOpacity, ImageBackground, ActivityIndicator, StyleSheet, Dimensions,Image,TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AuthContext from '../auth/context';
 import admin from '../api/admin';
 
@@ -13,32 +13,34 @@ const banner1 = require('../resources/Banner01.png');
 const HomeScreen = () => {
   const { user } = useContext(AuthContext);
   const navigation = useNavigation();
-  const [categoriesData, setCategoriesData] = useState(null);
+  const [categoriesData, setCategoriesData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const api = await admin(); 
-        const response = await api.get('/categories');  
-        console.log(response)
-        
+        const api = await admin();
+        const response = await api.get('/categories');
+
         if (response.ok) {
-          setCategoriesData(response.data);  
-          setLoading(false);
+          setCategoriesData(response.data);
         } else {
           setError('Failed to fetch categories');
-          setLoading(false);
         }
       } catch (err) {
         setError('Error: ' + err.message);
+      } finally {
         setLoading(false);
       }
     };
 
     fetchCategories();
   }, []);
+
+  const handleCategoryPress = (category) => {
+    navigation.navigate('Services', { serviceType: category.id });
+  };
 
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
@@ -47,10 +49,6 @@ const HomeScreen = () => {
   if (error) {
     return <Text>{error}</Text>;
   }
-
-  const handleCategoryPress = (type) => {
-    navigation.navigate('Services', { serviceType: type });
-  };
 
   const handleUserProfile = () => {
     console.log('User Details', user);
@@ -83,13 +81,13 @@ const HomeScreen = () => {
         <Image source={banner1} style={styles.offerImage} />
       </View>
 
-      {/* Categories Section */}
+      {/* Categories */}
       <View style={styles.categoriesContainer}>
         {categoriesData.map((item) => (
           <TouchableOpacity
             key={item.id}
             style={styles.categoryContainer}
-            onPress={() => handleCategoryPress(item.type)} 
+            onPress={() => handleCategoryPress(item)}
           >
             <ImageBackground 
               source={{ uri: item.image }}
