@@ -1,9 +1,9 @@
-import {useContext} from 'react';
+import { useContext } from 'react';
 import AuthContext from "./context";
 import authService from "./authService";
 
-export default useAuth = () => {
-    const {user, setUser} = useContext(AuthContext);
+const useAuth = () => {
+    const { user, setUser } = useContext(AuthContext);
 
     const logIn = (authToken, user) => {
         setUser(user);
@@ -12,5 +12,11 @@ export default useAuth = () => {
         authService.storeToken(authToken);
     };
 
-  return { logIn };
+    const getUser = () => {
+        return user;  // Return the current user from context
+    };
+
+    return { logIn, getUser, setUser };  // Include setUser in the return statement
 };
+
+export default useAuth;

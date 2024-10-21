@@ -17,6 +17,9 @@ import EditStylistScreen from "../Screens/EditStylistScreen";
 import StatisticsScreen from "../Screens/StatisticsScreen";
 import ServiceCategoryScreen from "../Screens/ServiceCategoryScreen";
 import UpdateStylistScreen from "../Screens/UpdateStylistScreen"
+import AdminProfileScreen from "../Screens/AdminProfileScreen";
+import AdminEditProfileScreen from "../Screens/AdminEditProfileScreen";
+import Login from "../Screens/Login";
 const Stack = createStackNavigator();
 
 const AdminNavigation = () => {
@@ -33,6 +36,9 @@ const AdminNavigation = () => {
     <Stack.Screen name="Statistics" component={StatisticsScreen} options={{ headerShown: false }} /> 
     <Stack.Screen name="ServiceCategory" component={ServiceCategoryScreen} options={{ headerShown: false }}/>
     <Stack.Screen name="UpdateStylist" component={UpdateStylistScreen} options={{headerShown:false}}/>
+    <Stack.Screen name="AdminProfile" component={AdminProfileScreen} options={{headerShown:false}}/>
+    <Stack.Screen name="AdminEditProfile" component={AdminEditProfileScreen} options={{headerShown:false}}/>
+    <Stack.Screen name="Login" component={Login} options={{headerShown:false}}/>
   </Stack.Navigator>
   );
 };
