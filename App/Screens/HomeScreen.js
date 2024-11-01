@@ -8,8 +8,10 @@ import Swiper from 'react-native-swiper';
 
 const { width } = Dimensions.get('window');
 
-const localProfilePicture = require('../resources/specialist1.jpeg');
+const localProfilePicture = require('../resources/avatar.jpg');
 const banner1 = require('../resources/Banner01.png');
+const banner2 = require('../resources/BannerNew.png');
+
 
 const HomeScreen = () => {
   const { user } = useContext(AuthContext);
@@ -86,7 +88,7 @@ const HomeScreen = () => {
         loop
       >
         <Image source={banner1} style={styles.offerImage} />
-        <Image source={banner1} style={styles.offerImage} />
+        <Image source={banner2} style={styles.offerImage} />
       </Swiper>
     </View>
 
@@ -162,12 +164,6 @@ const styles = StyleSheet.create({
     padding: 16,
     marginTop: 10,
   },
-  offerImage: {
-    height: 150,
-    width: '100%',
-    borderRadius: 8,
-    marginBottom:10
-  },
   categoriesContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -206,6 +202,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
+    borderRadius:10
   },
 });
 

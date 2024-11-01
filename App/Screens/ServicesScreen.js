@@ -15,7 +15,7 @@ const ServicesScreen = () => {
   const [specialistsData, setSpecialistsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const localProfilePicture = require('../resources/specialist1.jpeg');
+  const localProfilePicture = require('../resources/avatar.jpg');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
   specialistList: { flexDirection: 'row', justifyContent: 'space-around' },
   specialistCard: { alignItems: 'center', padding: 10, borderRadius: 10, backgroundColor: '#6B4E35', width: 100 },
   selectedSpecialistCard: { backgroundColor: '#24150E' },
-  specialistImage: { width: 50, height: 50, borderRadius: 25, marginBottom: 10 },
+  specialistImage: { width: 60, height: 60, borderRadius: 35, marginBottom: 10 },
   specialistName: { color: '#FFF', fontWeight: 'bold' },
   specialistRating: { color: '#FFF' },
 });

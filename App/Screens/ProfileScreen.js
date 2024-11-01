@@ -26,7 +26,7 @@ export default function ProfileScreen({ navigation }) {
       {/* Menu Items */}
       <ScrollView contentContainerStyle={styles.menuContainer}>
         <MenuItem title="Account" iconName="account" onPress={() => navigation.navigate('EditProfile')}/>
-        <MenuItem title="Notifications" iconName="bell" onPress={() => navigation.navigate('Notification')} />
+        {/* <MenuItem title="Notifications" iconName="bell" onPress={() => navigation.navigate('Notification')} /> */}
         <MenuItem title="Language Support" iconName="translate" onPress={() => navigation.navigate('Language')}/>
         <MenuItem title="Invite Friend" iconName="account-multiple-plus" onPress={() => navigation.navigate('Invite')} />
         <MenuItem title="About" iconName="information-outline" onPress={() => navigation.navigate('About')} />
