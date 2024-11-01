@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  FlatList,
-} from 'react-native';
+import {View,Text,StyleSheet,ScrollView,TouchableOpacity,FlatList,} from 'react-native';
 import { format, addDays } from 'date-fns';
 import { useRoute, useNavigation } from '@react-navigation/native';
 
@@ -28,14 +21,19 @@ const BookingScreen = () => {
 
   // handleBooking
   const handleBooking = () => {
+    const [hour, minute] = selectedSlot.split(':');
+  
+    const formattedSlot = `${hour.padStart(2, '0')}:${minute.padStart(2, '0')}:00`; 
+  
     navigation.navigate("BookingConfirm", {
       selectedServices: route.params.selectedServices,
       selectedSpecialist: route.params.selectedSpecialist,
       selectedDate,
-      selectedSlot,
+      selectedSlot: formattedSlot,
       totalPrice: route.params.totalPrice
     });
-  };  
+  };
+  
 
   const selectDate = (date) => {
     setSelectedDate(date);
@@ -43,7 +41,7 @@ const BookingScreen = () => {
 
   const selectSlot = (slot) => {
     setSelectedSlot(slot);
-  };
+  }
 
   const moveDaysBack = () => {
     if (startDayOffset > 0) {

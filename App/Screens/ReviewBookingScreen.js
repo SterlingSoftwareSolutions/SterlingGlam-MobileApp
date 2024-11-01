@@ -8,64 +8,71 @@ const ReviewBookingScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
 
-  // Retrieve passed params from previous screens
   const { selectedServices, selectedSpecialist, selectedDate, selectedSlot } = route.params;
-
   const [services, setServices] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
-  // Fetch the service details based on selected service IDs
-  useEffect(() => {
-    const fetchServiceDetails = async () => {
-      try {
-        const api = await admin();
-        const response = await api.get('/services');
-        const servicesData = response.data;
-
-        // Filter the services based on selectedServices
-        const filteredServices = servicesData.filter(service =>
-          selectedServices.some(selected => parseInt(selected.id, 10) === parseInt(service.id, 10))
-        );
-
-        setServices(filteredServices);
-
-        // Calculate total price
-        const price = filteredServices.reduce((sum, service) => sum + (parseFloat(service.price) || 0), 0);
-        setTotalPrice(price);
-      } catch (error) {
-        console.error('Error fetching service details:', error);
-      }
-    };
-
-    if (selectedServices.length > 0) {
-      fetchServiceDetails();
-    }
-  }, [selectedServices]);
-
-  // Confirm booking and send the POST request to the backend
-  const handleConfirmBooking = async () => {
+ useEffect(() => {
+  const fetchServiceDetails = async () => {
     try {
-      const bookingData = {
-        date: selectedDate.toISOString().split('T')[0], // Format date to 'YYYY-MM-DD'
-        start_time: selectedSlot, // Assuming the slot is already in the 'HH:mm:ss' format
-        staff_id: selectedSpecialist, // ID of the selected specialist
-        service_ids: selectedServices.map(service => service.id), // Array of selected service IDs
-      };
-
       const api = await admin();
-      const response = await api.post('/booking', bookingData);
+      const response = await api.get('/services');
+      const servicesData = response.data;
 
-      if (response.status === 201) {
-        Alert.alert('Success', 'Your booking has been confirmed!', [
-          { text: 'OK', onPress: () => navigation.navigate('Home') },
-        ]);
-      } else {
-        throw new Error('Failed to confirm booking');
-      }
+      // Filter the services based on selectedServices
+      const filteredServices = servicesData.filter(service =>
+        selectedServices.some(selected => parseInt(selected.id, 10) === parseInt(service.id, 10))
+      );
+
+      setServices(filteredServices);
+
+      // Calculate total price
+      const price = filteredServices.reduce((sum, service) => sum + (parseFloat(service.price) || 0), 0);
+      setTotalPrice(price);
     } catch (error) {
-      Alert.alert('Error', 'Failed to confirm booking. Please try again later.');
+      console.error('Error fetching service details:', error);
     }
   };
+
+  if (selectedServices.length > 0) {
+    fetchServiceDetails();
+  }
+}, [selectedServices]);
+
+
+// Confirm Booking
+const handleConfirmBooking = async () => {
+  try {
+    const formattedDate = selectedDate.toISOString().split('T')[0];
+
+    const bookingData = {
+      date: formattedDate,
+      start_time: selectedSlot,
+      staff_id: selectedSpecialist,
+      service_ids: selectedServices.map(service => service.id),
+    };
+
+    console.log("Preparing booking data:", bookingData);
+
+    const api = await admin(); 
+    const response = await api.post('/booking', bookingData); 
+
+    console.log("Response:", response.data);
+
+    if (response.status !== 200) {
+      console.error("Booking API response error:", response.data);
+      throw new Error('Failed to confirm booking');
+    }
+
+    console.log("Booking confirmed successfully:", response.data);
+    Alert.alert('Success', 'Booking confirmed successfully!');
+
+  } catch (error) {
+    console.error('Error in booking:', error.message);
+    Alert.alert('Error', 'Booking failed. Please try again.');
+  }
+};
+
 
   return (
     <ScrollView style={styles.container}>

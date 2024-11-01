@@ -18,35 +18,40 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const result = await authApi.login(email, password);
-      console.log("Login API result:", result);
+        const result = await authApi.login(email, password);
+        console.log("Login API result:", result);
 
-      if (result.ok) {
-          const loggedInUser = result.data.user;
+        if (result.ok) {
+            const loggedInUser = result.data.user;
+            const token = result.data.access_token; 
+ 
+            if (token) {
+                await authService.storeToken(token); 
+                const storedToken = await authService.getToken(); 
+            } else {
+                console.error("No token received in login response.");
+            }
 
-          if(loggedInUser.role === 'admin'){
-              const token = result.data.token;
-              authService.storeToken(token);
-              logIn(token, loggedInUser);
-              navigation.navigate('Dashboard');
-          } else{
-              const token = result.data.token;
-              authService.storeToken(token);
-              logIn(token, loggedInUser);
-              navigation.navigate('ClientDashboard');
-          }
-
-      } else{
-          setError(true);
-          setErrorMessage(result.data?.message || "An unknown error occurred.");
-      }
-
+            await authService.storeUser(loggedInUser); 
+            console.log("User stored successfully:", loggedInUser); // Log stored user
+            
+            // Navigate based on user role
+            if (loggedInUser.role === 'admin') {
+                navigation.navigate('Dashboard');
+            } else {
+                navigation.navigate('ClientDashboard');
+            }
+        } else {
+            setError(true);
+            setErrorMessage(result.data?.message || "An unknown error occurred.");
+        }
     } catch (error) {
         console.error("Login failed:", error);
         setErrorMessage("Login failed. Please try again.");
         setError(true);
     }
-  };
+};
+
 
   const handleSignup = () => {
     navigation.navigate("Signup");
