@@ -1,6 +1,8 @@
 import { create } from "apisauce";
 import authService from "../auth/authService";
 
+export const BASE_URL = 'https://salonapp.sterlingbpo.com'
+
 const admin = async () => {
     const token = await authService.getToken();
     const prodEnv = true;

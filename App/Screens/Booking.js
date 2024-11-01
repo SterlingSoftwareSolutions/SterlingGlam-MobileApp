@@ -8,9 +8,10 @@ import {
   FlatList,
 } from 'react-native';
 import { format, addDays } from 'date-fns';
-import { useNavigation } from '@react-navigation/native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
 const BookingScreen = () => {
+  const route = useRoute();
   const navigation = useNavigation();
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
@@ -27,8 +28,14 @@ const BookingScreen = () => {
 
   // handleBooking
   const handleBooking = () => {
-    navigation.navigate("BookingConfirm");
-  };
+    navigation.navigate("BookingConfirm", {
+      selectedServices: route.params.selectedServices,
+      selectedSpecialist: route.params.selectedSpecialist,
+      selectedDate,
+      selectedSlot,
+      totalPrice: route.params.totalPrice
+    });
+  };  
 
   const selectDate = (date) => {
     setSelectedDate(date);

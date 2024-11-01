@@ -3,7 +3,8 @@ import { View, Text, ScrollView, TouchableOpacity, ImageBackground, ActivityIndi
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AuthContext from '../auth/context';
-import admin from '../api/admin';
+import admin , {BASE_URL} from '../api/admin';
+import Swiper from 'react-native-swiper';
 
 const { width } = Dimensions.get('window');
 
@@ -78,8 +79,16 @@ const HomeScreen = () => {
 
       {/* Offers Section */}
       <View style={styles.offers}>
+      <Swiper
+        autoplay
+        autoplayTimeout={3}
+        showsPagination={false}
+        loop
+      >
         <Image source={banner1} style={styles.offerImage} />
-      </View>
+        <Image source={banner1} style={styles.offerImage} />
+      </Swiper>
+    </View>
 
       {/* Categories */}
       <View style={styles.categoriesContainer}>
@@ -90,7 +99,7 @@ const HomeScreen = () => {
             onPress={() => handleCategoryPress(item)}
           >
             <ImageBackground 
-              source={{ uri: item.image }}
+              source={{ uri: BASE_URL + item.image }}
               style={styles.image}
               imageStyle={styles.imageStyle}
             >
@@ -188,6 +197,15 @@ const styles = StyleSheet.create({
   categoryText: {
     color: 'white',
     fontSize: 15,
+  },
+  offers: {
+    height: 165, 
+    padding: 15
+  },
+  offerImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
   },
 });
 

@@ -1,144 +1,125 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  FlatList,
-} from 'react-native';
-import { format, addDays } from 'date-fns';
+import React, { useState, useEffect } from 'react';
+import { ScrollView, View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { useRoute, useNavigation } from '@react-navigation/native';
+import { MaterialIcons, FontAwesome, Ionicons } from '@expo/vector-icons';
+import admin from '../api/admin';
 
 const ReviewBookingScreen = () => {
-  const [selectedServices, setSelectedServices] = useState([]);
-  const [selectedSpecialist, setSelectedSpecialist] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedSlot, setSelectedSlot] = useState(null);
+  const route = useRoute();
+  const navigation = useNavigation();
 
-  const services = [
-    'Foundation',
-    'Primer',
-    'Setting Powder',
-    'Setting Spray',
-    'Blush',
-    'Bronzer',
-    'Contour',
-    'Highlighter',
-  ];
+  // Retrieve passed params from previous screens
+  const { selectedServices, selectedSpecialist, selectedDate, selectedSlot } = route.params;
 
-  const specialists = ['Selena', 'Rachelle', 'Katherine'];
+  const [services, setServices] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
 
-  const slots = [
-    '09.00 - 10.00',
-    '10.00 - 11.00',
-    '11.00 - 12.00',
-    '13.00 - 14.00',
-    '14.00 - 15.00',
-    '15.00 - 16.00',
-    '16.00 - 17.00',
-    '17.00 - 18.00',
-    '18.00 - 19.00',
-  ];
+  // Fetch the service details based on selected service IDs
+  useEffect(() => {
+    const fetchServiceDetails = async () => {
+      try {
+        const api = await admin();
+        const response = await api.get('/services');
+        const servicesData = response.data;
 
-  const daysToShow = 6; 
-  const currentDate = new Date();
+        // Filter the services based on selectedServices
+        const filteredServices = servicesData.filter(service =>
+          selectedServices.some(selected => parseInt(selected.id, 10) === parseInt(service.id, 10))
+        );
 
-  const toggleService = (service) => {
-    setSelectedServices((prevServices) =>
-      prevServices.includes(service)
-        ? prevServices.filter((s) => s !== service)
-        : [...prevServices, service]
-    );
-  };
+        setServices(filteredServices);
 
-  const renderDateItem = ({ item }) => {
-    const dateFormatted = format(item, 'EEE dd');
-    return (
-      <TouchableOpacity
-        style={[
-          styles.dateItem,
-          selectedDate?.toDateString() === item.toDateString() && styles.selectedDateItem,
-        ]}
-        onPress={() => setSelectedDate(item)}
-      >
-        <Text style={styles.dateText}>{dateFormatted.split(' ')[0]}</Text>
-        <Text style={styles.dateText}>{dateFormatted.split(' ')[1]}</Text>
-      </TouchableOpacity>
-    );
+        // Calculate total price
+        const price = filteredServices.reduce((sum, service) => sum + (parseFloat(service.price) || 0), 0);
+        setTotalPrice(price);
+      } catch (error) {
+        console.error('Error fetching service details:', error);
+      }
+    };
+
+    if (selectedServices.length > 0) {
+      fetchServiceDetails();
+    }
+  }, [selectedServices]);
+
+  // Confirm booking and send the POST request to the backend
+  const handleConfirmBooking = async () => {
+    try {
+      const bookingData = {
+        date: selectedDate.toISOString().split('T')[0], // Format date to 'YYYY-MM-DD'
+        start_time: selectedSlot, // Assuming the slot is already in the 'HH:mm:ss' format
+        staff_id: selectedSpecialist, // ID of the selected specialist
+        service_ids: selectedServices.map(service => service.id), // Array of selected service IDs
+      };
+
+      const api = await admin();
+      const response = await api.post('/booking', bookingData);
+
+      if (response.status === 201) {
+        Alert.alert('Success', 'Your booking has been confirmed!', [
+          { text: 'OK', onPress: () => navigation.navigate('Home') },
+        ]);
+      } else {
+        throw new Error('Failed to confirm booking');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to confirm booking. Please try again later.');
+    }
   };
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.headerText}>Review Booking</Text>
+      <Text style={styles.header}>Review Your Booking</Text>
 
-      <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>Services</Text>
-        <View style={styles.servicesContainer}>
-          {services.map((service, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[
-                styles.serviceItem,
-                selectedServices.includes(service) && styles.selectedServiceItem,
-              ]}
-              onPress={() => toggleService(service)}
-            >
-              <Text style={styles.serviceText}>{service}</Text>
-            </TouchableOpacity>
-          ))}
+      {/* Selected services */}
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <MaterialIcons name="work" size={24} color="#24150E" />
+          <Text style={styles.sectionTitleIcon}>Services Booked</Text>
         </View>
+        {services.length > 0 ? (
+          services.map((service) => (
+            <View key={service.id} style={styles.serviceItem}>
+              <Text>{service.name}</Text>
+              <Text>${parseFloat(service.price).toFixed(2)}</Text>
+            </View>
+          ))
+        ) : (
+          <Text>No services selected</Text>
+        )}
       </View>
 
-      <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>Specialist</Text>
-        <View style={styles.specialistsContainer}>
-          {specialists.map((specialist, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[
-                styles.specialistItem,
-                selectedSpecialist === specialist && styles.selectedSpecialistItem,
-              ]}
-              onPress={() => setSelectedSpecialist(specialist)}
-            >
-              <Text style={styles.specialistText}>{specialist}</Text>
-            </TouchableOpacity>
-          ))}
+      {/* Selected date and time */}
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Ionicons name="calendar" size={24} color="#24150E" />
+          <Text style={styles.sectionTitleIcon}>Date & Time</Text>
         </View>
+        <Text>{selectedDate.toDateString()}</Text>
+        <Text>{selectedSlot}</Text>
       </View>
 
-      <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>Day</Text>
-        <FlatList
-          data={[...Array(daysToShow).keys()].map(i => addDays(currentDate, i))}
-          renderItem={renderDateItem}
-          horizontal
-          keyExtractor={(item) => item.toString()}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.dateList}
-        />
-      </View>
-
-      <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>Slot</Text>
-        <View style={styles.slotsGrid}>
-          {slots.map((slot, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[
-                styles.slotItem,
-                selectedSlot === slot && styles.selectedSlotItem,
-              ]}
-              onPress={() => setSelectedSlot(slot)}
-            >
-              <Text style={styles.slotText}>{slot}</Text>
-            </TouchableOpacity>
-          ))}
+      {/* Selected specialist */}
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <FontAwesome name="user" size={24} color="#24150E" />
+          <Text style={styles.sectionTitleIcon}>Specialist</Text>
         </View>
+        <Text>{selectedSpecialist}</Text>
       </View>
 
-      <TouchableOpacity style={styles.confirmButton}>
-        <Text style={styles.confirmButtonText}>Confirm</Text>
+      {/* Total price */}
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Ionicons name="pricetag" size={24} color="#24150E" />
+          <Text style={styles.sectionTitleIcon}>Price</Text>
+        </View>
+        <Text>${totalPrice.toFixed(2)}</Text>
+      </View>
+
+      {/* Confirm booking button */}
+      <TouchableOpacity style={styles.confirmButton} onPress={handleConfirmBooking}>
+        <Text style={styles.confirmButtonText}>Confirm Booking</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -147,107 +128,55 @@ const ReviewBookingScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 20,
     backgroundColor: '#fff',
   },
-  headerText: {
+  header: {
     fontSize: 24,
     fontWeight: 'bold',
-    margin: 20,
-  },
-  sectionContainer: {
-    paddingHorizontal: 20,
     marginBottom: 20,
+  },
+  section: {
+    marginBottom: 15,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  servicesContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'flex-start',
+    marginBottom: 5,
+    color: '#24150E',
   },
   serviceItem: {
-    padding: 10,
-    marginRight: 10,
-    marginBottom: 10,
-    borderRadius: 5,
-    backgroundColor: '#f0f0f0',
-  },
-  selectedServiceItem: {
-    backgroundColor: '#795548',
-  },
-  serviceText: {
-    fontSize: 16,
-    color: '#000',
-  },
-  specialistsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
-  specialistItem: {
     padding: 10,
-    borderRadius: 5,
-    backgroundColor: '#f0f0f0',
-  },
-  selectedSpecialistItem: {
-    backgroundColor: '#795548',
-  },
-  specialistText: {
-    fontSize: 16,
-    color: '#000',
-  },
-  dateList: {
-    flexDirection: 'row',
-  },
-  dateItem: {
-    padding: 10,
-    marginRight: 10,
-    borderRadius: 5,
-    backgroundColor: '#f0f0f0',
-    alignItems: 'center',
-  },
-  selectedDateItem: {
-    backgroundColor: '#795548',
-  },
-  dateText: {
-    fontSize: 16,
-    color: '#000',
-  },
-  slotsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  slotItem: {
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 5,
-    backgroundColor: '#f0f0f0',
-    width: '30%',
-    alignItems: 'center',
-  },
-  selectedSlotItem: {
-    backgroundColor: '#795548',
-  },
-  slotText: {
-    fontSize: 14,
-    color: '#000',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
   },
   confirmButton: {
-    backgroundColor: '#795548',
-    paddingVertical: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 20,
+    backgroundColor: '#24150E',
+    padding: 15,
     borderRadius: 5,
-    marginBottom:80
+    alignItems: 'center',
   },
   confirmButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  sectionTitleIcon: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#24150E',
+    marginLeft: 10,
+  },
+  sectionContent: {
+    color: '#888888',
+    fontSize: 16,
   },
 });
 

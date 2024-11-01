@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import AuthContext from '../auth/context';
 
 const localProfilePicture = require('../resources/specialist1.jpeg');
 
 const EditProfileScreen = () => {
-  const [firstName, setFirstName] = useState('Jenifer');
-  const [lastName, setLastName] = useState('Lopez');
-  const [email, setEmail] = useState('jeniferlopez100@gmail.com');
-  const [password, setPassword] = useState('•••••••');
-  const [phoneNumber, setPhoneNumber] = useState('0766032444');
+  const { user } = useContext(AuthContext);
+
+  // Set initial state using user data
+  const [firstName, setFirstName] = useState(user?.first_name || '');
+  const [lastName, setLastName] = useState(user?.last_name || '');
+  const [email, setEmail] = useState(user?.email || '');
+  const [password, setPassword] = useState('•••••••'); // You might want to handle password differently
+  const [phoneNumber, setPhoneNumber] = useState(user?.phone_number || '');
 
   const [editableField, setEditableField] = useState(null);
 
@@ -17,13 +21,13 @@ const EditProfileScreen = () => {
   };
 
   const handleSave = () => {
+    // Handle saving user details, potentially update the context or backend
     setEditableField(null);
-    // Here you would typically save the updated profile information to a server or local storage
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Accounts Settings</Text>
+      <Text style={styles.title}>Account Settings</Text>
       <View style={styles.profileSection}>
         <Image
           source={localProfilePicture}
@@ -177,8 +181,8 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 20,
-    marginBottom:80
+    marginTop: 100,
+    marginBottom: 80,
   },
   saveButtonText: {
     color: '#fff',

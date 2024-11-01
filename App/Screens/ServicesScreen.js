@@ -62,10 +62,14 @@ const ServicesScreen = () => {
     });
   };
 
-  // Handle appointment
-  const handleAppointment = () => {
-    navigation.navigate('Booking', { selectedServices });
-  };
+ // Handle appointment
+const handleAppointment = () => {
+  const selectedServicesDetails = servicesData.filter(service => selectedServices.includes(service.id));
+  const totalPrice = selectedServicesDetails.reduce((acc, service) => acc + service.price, 0);
+
+  navigation.navigate('Booking', { selectedServices: selectedServicesDetails, selectedSpecialist, totalPrice });
+};
+
 
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;

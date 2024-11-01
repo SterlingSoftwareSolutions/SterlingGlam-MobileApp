@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 
 
-const plusIcon = require('../resources/plusIcon.png');
+const plusIcon = require('../resources/plusAdd1.png');
 
 
 const Overview = () => {
@@ -21,7 +21,7 @@ const Overview = () => {
       <View style={styles.header}>
         <View style={styles.headerLeft}>
           <Text style={styles.greeting}>Book New Service!</Text>
-          <Text style={styles.tagline}>“Unleash Your Inner Glam”</Text>
+          <Text style={styles.tagline}>“Stay Sharp, Stay Stylish”</Text>
         </View>
         <TouchableOpacity onPress={handlePlus}>
         <Image source={plusIcon} style={styles.profileImage} />
@@ -31,9 +31,9 @@ const Overview = () => {
       {/* Search Section */}
       <View style={styles.searchContainer}>
         <View style={styles.searchBox}>
-          <Icon name="magnify" size={24} color="#24150E" />
+          {/* <Icon name="magnify" size={24} color="#24150E" /> */}
           <TextInput style={styles.searchInput} placeholder="Search" />
-          <Icon name="tune" size={24} color="#24150E" />
+          <Icon name="magnify" size={24} color="#24150E" />
         </View>
       </View>
 
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
   profileImage: {
     width: 50,
     height: 50,
-    borderRadius: 24,
+    // borderRadius: 25,
   },
   searchContainer: {
     paddingHorizontal: 16,

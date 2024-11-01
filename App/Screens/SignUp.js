@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'reac
 import { useNavigation } from '@react-navigation/native';
 import usersApi from "../api/users";
 
-import Logo from '../resources/lllll.png'; 
+import Logo from '../resources/salonsameeralogo.png'; 
 
 const SignUp = () => {
   const navigation = useNavigation();
@@ -127,8 +127,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   logo: {
-    width: 250,
-    height: 120,
+    width: 200,
+    height: 200,
     marginBottom: 20,
   },
   inputView: {
