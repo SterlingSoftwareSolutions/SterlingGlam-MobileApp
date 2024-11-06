@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, TextInput, StyleSheet, Image, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import admin from '../api/admin';
 
 const Overview = () => {
@@ -9,28 +9,36 @@ const Overview = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
- 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const api = await admin();
-        const bookingResponse = await api.get('/booking');
-  
-        if (bookingResponse.ok) {
-          setBookings(bookingResponse.data.booking); 
-        } else {
-          setError('Failed to fetch data');
-        }
-      } catch (err) {
-        setError('Error: ' + err.message);
-      } finally {
-        setLoading(false);
+
+  const fetchData = async () => {
+    try {
+      const api = await admin();
+      const bookingResponse = await api.get('/booking');
+
+      if (bookingResponse.ok) {
+        setBookings(bookingResponse.data.booking);
+      } else {
+        setError('Failed to fetch data');
       }
-    };
-  
+    } catch (err) {
+      setError('Error: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Use useEffect to fetch data on initial mount
+  useEffect(() => {
     fetchData();
   }, []);
-  
+
+  // Use useFocusEffect to refetch data when the screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true); // Show loader when refetching
+      fetchData();
+    }, [])
+  );
 
   if (loading) {
     return <ActivityIndicator size="large" color="#24150E" style={{ flex: 1, justifyContent: 'center' }} />;
@@ -38,7 +46,6 @@ const Overview = () => {
 
   return (
     <ScrollView style={styles.container}>
-
       {/* Recent Appointments */}
       <View style={styles.recentAppointment}>
         <Text style={styles.sectionTitle}>Your Appointments</Text>
@@ -78,55 +85,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     paddingHorizontal: 20,
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 20,
-    marginBottom: 15,
-  },
-  headerLeft: {
-    flex: 1,
-  },
-  greeting: {
-    fontSize: 24,
-    color: '#24150E', // brown
-    fontWeight: '700',
-  },
-  tagline: {
-    fontSize: 14,
-    color: '#8A8A8A', // light grey
-    fontStyle: 'italic',
-    marginTop: 5,
-  },
-  profileImage: {
-    width: 40,
-    height: 40,
-    tintColor: '#24150E', // brown
-    marginLeft: 10,
-  },
-  searchContainer: {
-    marginVertical: 15,
-  },
-  searchBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F2F2F2', // light grey
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 16,
-    color: '#24150E', // brown
-    paddingLeft: 10,
-  },
   recentAppointment: {
     marginVertical: 20,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '700',
     color: '#000', // black
     marginBottom: 15,
@@ -191,6 +154,5 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
-
 
 export default Overview;

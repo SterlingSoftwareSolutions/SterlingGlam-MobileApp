@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, FlatList, ActivityIndicator, StyleSheet, Image } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, StyleSheet, Image, Alert, SafeAreaView } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import admin from '../api/admin';
 
@@ -29,7 +29,6 @@ const ServicesScreen = () => {
           setCategoriesData(categoriesResponse.data);
           setServicesData(servicesResponse.data);
           setSpecialistsData(specialistsResponse.data.data);
-          
         } else {
           setError('Failed to fetch data');
         }
@@ -62,17 +61,26 @@ const ServicesScreen = () => {
     });
   };
 
- // Handle appointment
-const handleAppointment = () => {
-  const selectedServicesDetails = servicesData.filter(service => selectedServices.includes(service.id));
-  const totalPrice = selectedServicesDetails.reduce((acc, service) => acc + service.price, 0);
+  // Handle appointment
+  const handleAppointment = () => {
+    if (selectedServices.length === 0) {
+      Alert.alert('Selection Required', 'Please select at least one service.');
+      return;
+    }
 
-  navigation.navigate('Booking', { selectedServices: selectedServicesDetails, selectedSpecialist, totalPrice });
-};
+    if (!selectedSpecialist) {
+      Alert.alert('Selection Required', 'Please select a specialist.');
+      return;
+    }
 
+    const selectedServicesDetails = servicesData.filter(service => selectedServices.includes(service.id));
+    const totalPrice = selectedServicesDetails.reduce((acc, service) => acc + service.price, 0);
+
+    navigation.navigate('Booking', { selectedServices: selectedServicesDetails, selectedSpecialist, totalPrice });
+  };
 
   if (loading) {
-  return <ActivityIndicator size="large" color="#111111" style={{ flex: 1, justifyContent: 'center' }} />;
+    return <ActivityIndicator size="large" color="#111111" style={{ flex: 1, justifyContent: 'center' }} />;
   }
 
   if (error) {
@@ -82,7 +90,6 @@ const handleAppointment = () => {
   // Render category item (horizontal slider)
   const renderCategoryItem = ({ item }) => (
     <TouchableOpacity
-      key={item.id}
       style={[
         styles.categoryContainer,
         selectedCategory === item.id && styles.activeCategoryContainer,
@@ -105,7 +112,7 @@ const handleAppointment = () => {
     const isSelected = selectedServices.includes(item.id);
 
     return (
-      <View key={item.id} style={styles.serviceItem}>
+      <View style={styles.serviceItem}>
         <View style={styles.serviceTextContainer}>
           <Text style={styles.serviceName}>{item.name}</Text>
           <Text style={styles.serviceDescription}>{item.description}</Text>
@@ -132,7 +139,7 @@ const handleAppointment = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.header}>Make an Appointment</Text>
 
       {/* Horizontal Slider for Categories */}
@@ -153,7 +160,7 @@ const handleAppointment = () => {
           keyExtractor={(item) => item.id}
         />
       ) : (
-        <Text>No services available for this category.</Text> 
+        <Text>No services available for this category.</Text>
       )}
 
       <View style={styles.specialistContainer}>
@@ -180,10 +187,9 @@ const handleAppointment = () => {
       <TouchableOpacity style={styles.bookNowButton} onPress={handleAppointment}>
         <Text style={styles.bookNowButtonText}>Book Now</Text>
       </TouchableOpacity>
-    </ScrollView>
+    </SafeAreaView>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: '#FFF' },
@@ -203,7 +209,7 @@ const styles = StyleSheet.create({
   bookButtonTextSelected: { color: '#FFF' },
   bookNowButton: { backgroundColor: 'black', padding: 15, borderRadius: 10, alignItems: 'center', marginTop: 20, marginBottom: 95 },
   bookNowButtonText: { color: '#FFF', fontSize: 18 },
-  categoryContainer: { alignItems: 'center', marginRight: 20, backgroundColor: '#fff', borderRadius: 20, padding: 10, elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.3, shadowRadius: 3, marginBottom: 10 },
+  categoryContainer: { alignItems: 'center', marginRight: 20, backgroundColor: '#fff', borderRadius: 20, paddingHorizontal: 10, paddingVertical: 8, elevation: 3, shadowColor: '#000',  shadowOpacity: 0.3, shadowRadius: 3, marginBottom: 10, height: 40 },
   activeCategoryContainer: { backgroundColor: '#111111' },
   categoryTitle: { fontSize: 14, color: '#111111', fontWeight: 'bold', textAlign: 'center' },
   activeCategoryTitle: { color: '#FFF' },
