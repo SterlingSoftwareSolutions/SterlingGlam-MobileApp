@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 20,
-    color:'#24150E',
+    color:'#222222',
     marginTop:10
   },
   dateNavigation: {
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   selectedDateItem: {
-    backgroundColor: '#24150E',
+    backgroundColor: '#222222',
   },
   dateText: {
     fontSize: 16,
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
     borderColor:'#795548'
   },
   selectedSlotItem: {
-    backgroundColor: '#24150E',
+    backgroundColor: '#222222',
   },
   slotText: {
     fontSize: 14,
@@ -224,12 +224,12 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   bookButton: {
-    backgroundColor: '#24150E',
+    backgroundColor: 'black',
     paddingVertical: 15,
     justifyContent: 'center',
     alignItems: 'center',
     margin: 20,
-    borderRadius: 5,
+    borderRadius: 10,
     marginBottom:80
   },
   bookButtonText: {

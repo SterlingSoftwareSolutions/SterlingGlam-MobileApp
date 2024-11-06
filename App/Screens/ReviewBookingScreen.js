@@ -68,7 +68,7 @@ const ReviewBookingScreen = () => {
 
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <MaterialIcons name="work" size={24} color="#24150E" />
+          <MaterialIcons name="work" size={24} color="#222222" />
           <Text style={styles.sectionTitle}>Services Booked</Text>
         </View>
         {services.length > 0 ? (
@@ -85,7 +85,7 @@ const ReviewBookingScreen = () => {
 
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Ionicons name="calendar" size={24} color="#24150E" />
+          <Ionicons name="calendar" size={24} color="#222222" />
           <Text style={styles.sectionTitle}>Date & Time</Text>
         </View>
         <Text>{selectedDate.toDateString()}</Text>
@@ -94,7 +94,7 @@ const ReviewBookingScreen = () => {
 
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Ionicons name="pricetag" size={24} color="#24150E" />
+          <Ionicons name="pricetag" size={24} color="#222222" />
           <Text style={styles.sectionTitle}>Price</Text>
         </View>
         <Text>${totalPrice.toFixed(2)}</Text>
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#24150E',
+    color: '#222222',
     marginLeft: 10,
   },
   serviceItem: {
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ddd',
   },
   confirmButton: {
-    backgroundColor: '#24150E',
+    backgroundColor: 'black',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',

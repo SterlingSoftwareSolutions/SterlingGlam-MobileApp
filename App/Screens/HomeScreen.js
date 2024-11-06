@@ -46,8 +46,10 @@ const HomeScreen = () => {
   };
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return <ActivityIndicator size="large" color="#24150E" style={{ flex: 1, justifyContent: 'center' }} />;
   }
+
+
 
   if (error) {
     return <Text>{error}</Text>;
@@ -125,7 +127,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    padding: 20,
+    marginTop:10
   },
   headerLeft: {
     flexDirection: 'column',
@@ -133,11 +136,11 @@ const styles = StyleSheet.create({
   greeting: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#624332',
+    color: 'black',
   },
   tagline: {
     fontSize: 16,
-    color: '#6F4E37',
+    color: '#444444',
   },
   profileImage: {
     width: 50,
@@ -161,7 +164,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   offers: {
-    padding: 16,
     marginTop: 10,
   },
   categoriesContainer: {

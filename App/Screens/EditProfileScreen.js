@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import AuthContext from '../auth/context';
 
-const localProfilePicture = require('../resources/specialist1.jpeg');
+const localProfilePicture = require('../resources/avatar.jpg');
 
 const EditProfileScreen = () => {
   const { user } = useContext(AuthContext);
@@ -11,9 +11,7 @@ const EditProfileScreen = () => {
   const [firstName, setFirstName] = useState(user?.first_name || '');
   const [lastName, setLastName] = useState(user?.last_name || '');
   const [email, setEmail] = useState(user?.email || '');
-  const [password, setPassword] = useState('•••••••'); // You might want to handle password differently
   const [phoneNumber, setPhoneNumber] = useState(user?.phone_number || '');
-
   const [editableField, setEditableField] = useState(null);
 
   const handleEdit = (field) => {
@@ -77,7 +75,7 @@ const EditProfileScreen = () => {
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.label}>Password</Text>
+        {/* <Text style={styles.label}>Password</Text>
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
@@ -89,7 +87,7 @@ const EditProfileScreen = () => {
           <TouchableOpacity style={styles.editIcon} onPress={() => handleEdit('password')}>
             <Text style={styles.editText}>✎</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
 
         <Text style={styles.label}>Phone Number</Text>
         <View style={styles.inputContainer}>
@@ -119,7 +117,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     backgroundColor: '#fff',
     paddingHorizontal: 20,
-    paddingTop: 40,
+    paddingTop: 30,
   },
   title: {
     fontSize: 24,
@@ -177,12 +175,12 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
   saveButton: {
-    backgroundColor: '#24150E',
+    backgroundColor: 'black',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 100,
-    marginBottom: 80,
+    marginTop: 15,
+    marginBottom: 90,
   },
   saveButtonText: {
     color: '#fff',

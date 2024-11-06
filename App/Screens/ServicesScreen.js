@@ -72,7 +72,7 @@ const handleAppointment = () => {
 
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+  return <ActivityIndicator size="large" color="#111111" style={{ flex: 1, justifyContent: 'center' }} />;
   }
 
   if (error) {
@@ -148,12 +148,12 @@ const handleAppointment = () => {
       {/* Services Section */}
       {filteredServices.length > 0 ? (
         <FlatList
-          data={filteredServices} // Only show services of the selected category
+          data={filteredServices}
           renderItem={renderServiceItem}
           keyExtractor={(item) => item.id}
         />
       ) : (
-        <Text>No services available for this category.</Text> // Handle no services case
+        <Text>No services available for this category.</Text> 
       )}
 
       <View style={styles.specialistContainer}>
@@ -187,30 +187,30 @@ const handleAppointment = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: '#FFF' },
-  header: { fontSize: 24, fontWeight: 'bold', color: '#24150E', textAlign: 'center', marginBottom: 20 },
+  header: { fontSize: 24, fontWeight: 'bold', color: '#111111', textAlign: 'center', marginBottom: 20 },
   servicesContainer: { marginBottom: 20 },
-  sectionHeader: { fontSize: 18, fontWeight: 'bold', color: '#24150E', marginBottom: 10 },
+  sectionHeader: { fontSize: 18, fontWeight: 'bold', color: '#111111', marginBottom: 10 },
   serviceItem: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 15 },
   serviceTextContainer: { flex: 1, marginRight: 10 },
-  serviceName: { fontSize: 16, fontWeight: 'bold', color: '#24150E' },
-  serviceDescription: { fontSize: 14, color: '#24150E', marginVertical: 5 },
+  serviceName: { fontSize: 16, fontWeight: 'bold', color: '#111111' },
+  serviceDescription: { fontSize: 14, color: '#111111', marginVertical: 5 },
   servicePrice: { fontSize: 16, color: 'green' },
   bookButton: { borderRadius: 20, paddingVertical: 10, paddingHorizontal: 20, alignSelf: 'center' },
-  bookButtonDefault: { backgroundColor: '#FFF', borderColor: '#24150E', borderWidth: 1 },
-  bookButtonSelected: { backgroundColor: '#24150E' },
+  bookButtonDefault: { backgroundColor: '#FFF', borderColor: '#111111', borderWidth: 1 },
+  bookButtonSelected: { backgroundColor: '#111111' },
   bookButtonText: { fontWeight: 'bold', fontSize: 12 },
-  bookButtonTextDefault: { color: '#24150E' },
+  bookButtonTextDefault: { color: '#111111' },
   bookButtonTextSelected: { color: '#FFF' },
-  bookNowButton: { backgroundColor: '#24150E', padding: 15, borderRadius: 10, alignItems: 'center', marginTop: 20, marginBottom: 95 },
+  bookNowButton: { backgroundColor: 'black', padding: 15, borderRadius: 10, alignItems: 'center', marginTop: 20, marginBottom: 95 },
   bookNowButtonText: { color: '#FFF', fontSize: 18 },
   categoryContainer: { alignItems: 'center', marginRight: 20, backgroundColor: '#fff', borderRadius: 20, padding: 10, elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.3, shadowRadius: 3, marginBottom: 10 },
-  activeCategoryContainer: { backgroundColor: '#24150E' },
-  categoryTitle: { fontSize: 14, color: '#24150E', fontWeight: 'bold', textAlign: 'center' },
+  activeCategoryContainer: { backgroundColor: '#111111' },
+  categoryTitle: { fontSize: 14, color: '#111111', fontWeight: 'bold', textAlign: 'center' },
   activeCategoryTitle: { color: '#FFF' },
   specialistContainer: { marginBottom: 20 },
   specialistList: { flexDirection: 'row', justifyContent: 'space-around' },
-  specialistCard: { alignItems: 'center', padding: 10, borderRadius: 10, backgroundColor: '#6B4E35', width: 100 },
-  selectedSpecialistCard: { backgroundColor: '#24150E' },
+  specialistCard: { alignItems: 'center', padding: 10, borderRadius: 10, backgroundColor: '#656565', width: 100 },
+  selectedSpecialistCard: { backgroundColor: 'black' },
   specialistImage: { width: 60, height: 60, borderRadius: 35, marginBottom: 10 },
   specialistName: { color: '#FFF', fontWeight: 'bold' },
   specialistRating: { color: '#FFF' },
