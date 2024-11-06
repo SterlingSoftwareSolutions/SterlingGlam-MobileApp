@@ -1,16 +1,27 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'react-native';
 import RootNavigator from './App/navigation/RootNavigator';
-import AuthContext from "./App/auth/context";
 import AdminNavigation from "./App/navigation/AdminNavigation";
 import TabNavigator from './App/navigation/TabNavigator';
+import authService from "./App/auth/authService";
+import AuthContext from './App/auth/context';
 
 export default function App() {
   const [user, setUser] = useState();
 
+  // Load user data from AsyncStorage on app launch
+  useEffect(() => {
+    const loadUser = async () => {
+      const storedUser = await authService.getUser();
+      setUser(storedUser);
+    };
+    loadUser();
+  }, []);
+
+  // Conditionally render navigator based on user role
   const renderNavigator = () => {
-    if (!user) { //if no user is logged in
+    if (!user) {
       console.log('Not logged in', user);
       return <RootNavigator />;
     }
@@ -26,11 +37,10 @@ export default function App() {
 
   return (
     <AuthContext.Provider value={{ user, setUser }}>
-    <NavigationContainer>
-      <StatusBar barStyle="light-content" />
-      {renderNavigator()}
-    </NavigationContainer>
+      <NavigationContainer>
+        <StatusBar barStyle="light-content" />
+        {renderNavigator()}
+      </NavigationContainer>
     </AuthContext.Provider>
   );
 }
-

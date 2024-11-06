@@ -1,16 +1,22 @@
-import {useContext} from 'react';
-import AuthContext from "./context";
+import { useContext } from "react";
 import authService from "./authService";
+import AuthContext from "./context";
 
-export default useAuth = () => {
-    const {user, setUser} = useContext(AuthContext);
 
-    const logIn = (authToken, user) => {
-        setUser(user);
-        console.log('User login:', user);
-        authService.storeUser(user);
-        authService.storeToken(authToken);
+export default function useAuth() {
+    const { user, setUser } = useContext(AuthContext);
+
+    const logIn = async (authToken, userData) => {
+        setUser(userData);
+        await authService.storeToken(authToken);
+        await authService.storeUser(userData);
     };
 
-  return { logIn };
-};
+    const logOut = async () => {
+        setUser(null);
+        await authService.storeToken(null);
+        await authService.storeUser(null);
+    };
+
+    return { user, logIn, logOut };
+}

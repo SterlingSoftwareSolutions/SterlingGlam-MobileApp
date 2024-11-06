@@ -9,6 +9,7 @@ const localProfilePicture = require('../resources/specialist1.jpeg');
 
 export default function ProfileScreen({ navigation }) {
   const { user } = useContext(AuthContext);
+  const {logOut} = useAuth();
   
   return (
     <View style={styles.container}>
@@ -26,11 +27,10 @@ export default function ProfileScreen({ navigation }) {
       {/* Menu Items */}
       <ScrollView contentContainerStyle={styles.menuContainer}>
         <MenuItem title="Account" iconName="account" onPress={() => navigation.navigate('EditProfile')}/>
-        {/* <MenuItem title="Notifications" iconName="bell" onPress={() => navigation.navigate('Notification')} /> */}
         <MenuItem title="Language Support" iconName="translate" onPress={() => navigation.navigate('Language')}/>
         <MenuItem title="Invite Friend" iconName="account-multiple-plus" onPress={() => navigation.navigate('Invite')} />
         <MenuItem title="About" iconName="information-outline" onPress={() => navigation.navigate('About')} />
-        <MenuItem title="Log Out" iconName="logout" logout/>
+        <MenuItem title="Log Out" iconName="logout" logout onPress={logOut}/>
       </ScrollView>
     </View>
   );
