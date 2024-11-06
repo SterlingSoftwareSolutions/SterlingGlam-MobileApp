@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import { MaterialIcons, FontAwesome, Ionicons } from '@expo/vector-icons';
+import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import admin from '../api/admin';
 
 const ReviewBookingScreen = () => {
@@ -12,77 +12,64 @@ const ReviewBookingScreen = () => {
   const [services, setServices] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
- useEffect(() => {
-  const fetchServiceDetails = async () => {
-    try {
-      const api = await admin();
-      const response = await api.get('/services');
-      const servicesData = response.data;
+  useEffect(() => {
+    const fetchServiceDetails = async () => {
+      try {
+        const api = await admin();
+        const response = await api.get('/services');
+        const servicesData = response.data;
 
-      // Filter the services based on selectedServices
-      const filteredServices = servicesData.filter(service =>
-        selectedServices.some(selected => parseInt(selected.id, 10) === parseInt(service.id, 10))
-      );
+        const filteredServices = servicesData.filter(service =>
+          selectedServices.some(selected => parseInt(selected.id, 10) === parseInt(service.id, 10))
+        );
 
-      setServices(filteredServices);
+        setServices(filteredServices);
 
-      // Calculate total price
-      const price = filteredServices.reduce((sum, service) => sum + (parseFloat(service.price) || 0), 0);
-      setTotalPrice(price);
-    } catch (error) {
-      console.error('Error fetching service details:', error);
-    }
-  };
-
-  if (selectedServices.length > 0) {
-    fetchServiceDetails();
-  }
-}, [selectedServices]);
-
-
-// Confirm Booking
-const handleConfirmBooking = async () => {
-  try {
-    const formattedDate = selectedDate.toISOString().split('T')[0];
-
-    const bookingData = {
-      date: formattedDate,
-      start_time: selectedSlot,
-      staff_id: selectedSpecialist,
-      service_ids: selectedServices.map(service => service.id),
+        const price = filteredServices.reduce((sum, service) => sum + (parseFloat(service.price) || 0), 0);
+        setTotalPrice(price);
+      } catch (error) {
+        console.error('Error fetching service details:', error);
+      }
     };
 
-    console.log("Preparing booking data:", bookingData);
-
-    const api = await admin(); 
-    const response = await api.post('/booking', bookingData); 
-
-    console.log("Response:", response.data);
-
-    if (response.status !== 200) {
-      console.error("Booking API response error:", response.data);
-      throw new Error('Failed to confirm booking');
+    if (selectedServices.length > 0) {
+      fetchServiceDetails();
     }
+  }, [selectedServices]);
 
-    console.log("Booking confirmed successfully:", response.data);
-    Alert.alert('Success', 'Booking confirmed successfully!');
+  const handleConfirmBooking = async () => {
+    try {
+      const formattedDate = selectedDate.toISOString().split('T')[0];
+      const bookingData = {
+        date: formattedDate,
+        start_time: selectedSlot,
+        staff_id: selectedSpecialist,
+        service_ids: selectedServices.map(service => service.id),
+        total_price: totalPrice,
+      };
 
-  } catch (error) {
-    console.error('Error in booking:', error.message);
-    Alert.alert('Error', 'Booking failed. Please try again.');
-  }
-};
+      const api = await admin();
+      const response = await api.post('/booking', bookingData);
 
+      if (response.status === 200) {
+        Alert.alert('Success', 'Booking confirmed successfully!');
+      } else {
+        throw new Error('Failed to confirm booking');
+      }
+    } catch (error) {
+      console.error('Error in booking:', error.message);
+      Alert.alert('Error', 'Booking failed. Please try again.');
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.header}>Review Your Booking</Text>
 
-      {/* Selected services */}
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
           <MaterialIcons name="work" size={24} color="#24150E" />
-          <Text style={styles.sectionTitleIcon}>Services Booked</Text>
+          <Text style={styles.sectionTitle}>Services Booked</Text>
         </View>
         {services.length > 0 ? (
           services.map((service) => (
@@ -96,35 +83,23 @@ const handleConfirmBooking = async () => {
         )}
       </View>
 
-      {/* Selected date and time */}
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
           <Ionicons name="calendar" size={24} color="#24150E" />
-          <Text style={styles.sectionTitleIcon}>Date & Time</Text>
+          <Text style={styles.sectionTitle}>Date & Time</Text>
         </View>
         <Text>{selectedDate.toDateString()}</Text>
         <Text>{selectedSlot}</Text>
       </View>
 
-      {/* Selected specialist */}
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <FontAwesome name="user" size={24} color="#24150E" />
-          <Text style={styles.sectionTitleIcon}>Specialist</Text>
-        </View>
-        <Text>{selectedSpecialist}</Text>
-      </View>
-
-      {/* Total price */}
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
           <Ionicons name="pricetag" size={24} color="#24150E" />
-          <Text style={styles.sectionTitleIcon}>Price</Text>
+          <Text style={styles.sectionTitle}>Price</Text>
         </View>
         <Text>${totalPrice.toFixed(2)}</Text>
       </View>
 
-      {/* Confirm booking button */}
       <TouchableOpacity style={styles.confirmButton} onPress={handleConfirmBooking}>
         <Text style={styles.confirmButtonText}>Confirm Booking</Text>
       </TouchableOpacity>
@@ -146,11 +121,16 @@ const styles = StyleSheet.create({
   section: {
     marginBottom: 15,
   },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 5,
     color: '#24150E',
+    marginLeft: 10,
   },
   serviceItem: {
     flexDirection: 'row',
@@ -169,21 +149,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  sectionTitleIcon: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#24150E',
-    marginLeft: 10,
-  },
-  sectionContent: {
-    color: '#888888',
-    fontSize: 16,
   },
 });
 
