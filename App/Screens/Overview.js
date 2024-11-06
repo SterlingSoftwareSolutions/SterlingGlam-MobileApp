@@ -1,207 +1,196 @@
-import React from 'react';
-import { View, Text, TextInput, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TextInput, StyleSheet, Image, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
-
-
-const plusIcon = require('../resources/plusAdd1.png');
-
+import admin from '../api/admin';
 
 const Overview = () => {
   const navigation = useNavigation();
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+ 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const api = await admin();
+        const bookingResponse = await api.get('/booking');
+  
+        if (bookingResponse.ok) {
+          setBookings(bookingResponse.data.booking); 
+        } else {
+          setError('Failed to fetch data');
+        }
+      } catch (err) {
+        setError('Error: ' + err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
 
-  const handlePlus = () => {
-    navigation.navigate("Home");
-};
-
+  if (loading) {
+    return <ActivityIndicator size="large" color="#24150E" style={{ flex: 1, justifyContent: 'center' }} />;
+  }
 
   return (
     <ScrollView style={styles.container}>
-      {/* Header Section */}
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <Text style={styles.greeting}>Book New Service!</Text>
-          <Text style={styles.tagline}>“Stay Sharp, Stay Stylish”</Text>
-        </View>
-        <TouchableOpacity onPress={handlePlus}>
-        <Image source={plusIcon} style={styles.profileImage} />
-        </TouchableOpacity>
-      </View>
 
-      {/* Search Section */}
-      <View style={styles.searchContainer}>
-        <View style={styles.searchBox}>
-          {/* <Icon name="magnify" size={24} color="#24150E" /> */}
-          <TextInput style={styles.searchInput} placeholder="Search" />
-          <Icon name="magnify" size={24} color="#24150E" />
-        </View>
-      </View>
-
-      {/* Recent Appointment Section */}
+      {/* Recent Appointments */}
       <View style={styles.recentAppointment}>
-        <Text style={styles.sectionTitle}>Your Recent Appointment</Text>
-        <View style={styles.appointmentCard}>
-          <View style={styles.appointmentHeader}>
-            <Icon name="calendar-clock" size={18} color="#24150E" />
-            <Text style={styles.appointmentDate}>Saturday 17 August 2024 at 11.00 - 12.00</Text>
-          </View>
-          <Text style={styles.appointmentTitle}>Sterling Glam</Text>
-          <Text style={styles.appointmentSubtitle}>Katherine</Text>
-          <Text style={styles.appointmentService}>Foundation, Blush</Text>
-          <View style={styles.appointmentFooter}>
-            <Text style={styles.appointmentStatus}>Confirmed</Text>
-            <Text style={styles.appointmentPrice}>Rs.5,050.00</Text>
-          </View>
-        </View>
+        <Text style={styles.sectionTitle}>Your Appointments</Text>
+        {bookings.length > 0 ? (
+          bookings.map((booking) => (
+            <View key={booking.id} style={styles.appointmentCard}>
+              <View style={styles.appointmentHeader}>
+                <Icon name="calendar-clock" size={18} color="#24150E" />
+                <Text style={styles.appointmentDate}>
+                  {new Date(booking.date).toLocaleDateString()} at {booking.start_time} - {booking.end_time}
+                </Text>
+              </View>
+              <Text style={styles.appointmentTitle}>{booking.services[0]?.name}</Text>
+              <Text style={styles.appointmentSubtitle}>Specialist: {booking.staff.name}</Text>
+              <Text style={styles.appointmentService}>
+                {booking.services.map(service => service.name).join(', ')}
+              </Text>
+              <View style={styles.appointmentFooter}>
+                <Text style={styles.appointmentStatus}>Confirmed</Text>
+                <Text style={styles.appointmentPrice}>
+                  Rs.{booking.total_price ? booking.total_price : '0.00'}
+                </Text>
+              </View>
+            </View>
+          ))
+        ) : (
+          <Text style={styles.noAppointments}>No recent appointments available.</Text>
+        )}
       </View>
-
-      {/* Overview Section */}
-      <View style={styles.overview}>
-        <Text style={styles.sectionTitle}>Overview</Text>
-        <View style={styles.overviewBoxes}>
-          <View style={styles.overviewBox}>
-            <Text style={styles.overviewLabel}>New Appointments</Text>
-            <Text style={styles.overviewCount}>01</Text>
-          </View>
-          <View style={styles.overviewBox}>
-            <Text style={styles.overviewLabel}>All Appointments</Text>
-            <Text style={styles.overviewCount}>02</Text>
-          </View>
-        </View>
-      </View>
-
-      
     </ScrollView>
   );
 };
 
-
-
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFF',
+    paddingHorizontal: 20,
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    justifyContent: 'space-between',
+    marginTop: 20,
+    marginBottom: 15,
   },
   headerLeft: {
-    flexDirection: 'column',
+    flex: 1,
   },
   greeting: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#624332',
+    color: '#24150E', // brown
+    fontWeight: '700',
   },
   tagline: {
-    fontSize: 16,
-    color: '#6F4E37',
+    fontSize: 14,
+    color: '#8A8A8A', // light grey
+    fontStyle: 'italic',
+    marginTop: 5,
   },
   profileImage: {
-    width: 50,
-    height: 50,
-    // borderRadius: 25,
+    width: 40,
+    height: 40,
+    tintColor: '#24150E', // brown
+    marginLeft: 10,
   },
   searchContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    marginVertical: 15,
   },
   searchBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-    borderRadius: 25,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+    backgroundColor: '#F2F2F2', // light grey
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
   },
   searchInput: {
     flex: 1,
-    marginHorizontal: 8,
+    fontSize: 16,
+    color: '#24150E', // brown
+    paddingLeft: 10,
   },
   recentAppointment: {
-    padding: 16,
+    marginVertical: 20,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 12,
+    fontWeight: '700',
+    color: '#000', // black
+    marginBottom: 15,
   },
   appointmentCard: {
-    backgroundColor: '#F5E8E4',
-    padding: 16,
-    borderRadius: 8,
+    backgroundColor: '#F2F2F2', // light grey
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
   },
   appointmentHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 5,
   },
   appointmentDate: {
+    fontSize: 14,
+    color: '#24150E', // brown
     marginLeft: 8,
-    color: '#6F4E37',
   },
   appointmentTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#6F4E37',
+    fontWeight: '700',
+    color: '#000', // black
+    marginTop: 8,
   },
   appointmentSubtitle: {
-    color: '#6F4E37',
+    fontSize: 14,
+    color: '#8A8A8A', // light grey
+    marginTop: 5,
   },
   appointmentService: {
-    color: '#6F4E37',
-    marginVertical: 8,
+    fontSize: 14,
+    color: '#24150E', // brown
+    marginTop: 5,
   },
   appointmentFooter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderTopWidth: 1,
-    borderTopColor: '#DCDCDC',
-    paddingTop: 8,
+    marginTop: 10,
   },
   appointmentStatus: {
-    color: '#6F4E37',
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#24150E', // brown
   },
   appointmentPrice: {
-    fontWeight: 'bold',
-    color: '#24150E',
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#000', // black
   },
-  overview: {
-    padding: 16,
-  },
-  overviewBoxes: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  overviewBox: {
-    backgroundColor: '#EDEDED',
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    width: '48%',
-  },
-  overviewLabel: {
-    color: 'black',
-    fontWeight:'bold',
-  },
-  overviewCount: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#24150E',
-  },
-  offers: {
-    padding: 16,
-    marginBottom:80
-  },
-  offerImage: {
-    height: 150,
-    borderRadius: 8,
+  errorText: {
+    color: 'red',
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 20,
   },
 });
+
 
 export default Overview;
