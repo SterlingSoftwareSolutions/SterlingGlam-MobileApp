@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useState, useContext  } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import useAuth from '../auth/useAuth';
+import AuthContext from '../auth/context';
 
-const localProfilePicture = require('../resources/specialist1.jpeg');
+const localProfilePicture = require('../resources/avatar.jpg');
 
 export default function ProfileScreen({ navigation }) {
+  const { user } = useContext(AuthContext);
+  const {logOut} = useAuth();
+  
   return (
     <View style={styles.container}>
 
@@ -15,18 +20,17 @@ export default function ProfileScreen({ navigation }) {
           source={localProfilePicture} 
           style={styles.profileImage}
         />
-        <Text style={styles.profileName}>Jenifer Lopez</Text>
-        <Text style={styles.profileRole}>User</Text>
+        <Text style={styles.profileName}>{user?.first_name || 'User Name'}</Text>
+        <Text style={styles.profileRole}>{user?.role || 'User Role'}</Text>
       </View>
 
       {/* Menu Items */}
       <ScrollView contentContainerStyle={styles.menuContainer}>
         <MenuItem title="Account" iconName="account" onPress={() => navigation.navigate('EditProfile')}/>
-        <MenuItem title="Notifications" iconName="bell" onPress={() => navigation.navigate('Notification')} />
-        <MenuItem title="Language Support" iconName="translate" onPress={() => navigation.navigate('Language')}/>
-        <MenuItem title="Invite Friend" iconName="account-multiple-plus" onPress={() => navigation.navigate('Invite')} />
+        {/* <MenuItem title="Language Support" iconName="translate" onPress={() => navigation.navigate('Language')}/> */}
+        {/* <MenuItem title="Invite Friend" iconName="account-multiple-plus" onPress={() => navigation.navigate('Invite')} /> */}
         <MenuItem title="About" iconName="information-outline" onPress={() => navigation.navigate('About')} />
-        <MenuItem title="Log Out" iconName="logout" logout />
+        <MenuItem title="Log Out" iconName="logout" logout onPress={logOut}/>
       </ScrollView>
     </View>
   );
@@ -36,7 +40,7 @@ function MenuItem({ title, logout, iconName, onPress }) {
   return (
     <TouchableOpacity style={logout ? [styles.menuItem, styles.logout] : styles.menuItem} onPress={onPress}>
       <View style={styles.menuItemContent}>
-        <MaterialCommunityIcons name={iconName} size={24} color="#4D2906" />
+        <MaterialCommunityIcons name={iconName} size={25} color="black" />
         <Text style={logout ? [styles.menuText, styles.logoutText] : styles.menuText}>{title}</Text>
       </View>
       {!logout && <Icon name="chevron-forward" size={24} color="black" />}
@@ -61,12 +65,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   profileName: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
-    color: '#4D2906',
+    color: 'black',
   },
   profileRole: {
-    color: '#4D2906',
+    color: 'grey',
     marginBottom: 20,
   },
   menuContainer: {
@@ -87,7 +91,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   menuText: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#000',
     marginLeft: 10,
   },
@@ -96,7 +100,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   logoutText: {
-    color: '#4D2906',
+    color: 'black',
     fontWeight: 'bold',
   },
 });

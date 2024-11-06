@@ -5,11 +5,11 @@ const AboutScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>STERLING GLAM</Text>
+      <Text style={styles.headerText}>Salon By Sameera</Text>
       <Text style={styles.subText}>Version 1.0</Text>
 
       <Image
-        source={require('../resources/sterlingglamlogo.png')}
+        source={require('../resources/salonsameeralogo.png')}
         style={styles.image}
       />
       <Text style={styles.subText}>© 2024 SterlingIT</Text>
@@ -36,20 +36,20 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 30,
     fontWeight: '900',
-    color: '#624332',
+    color: 'black',
     textAlign: 'center',
     letterSpacing: 2,
   },
   subText: {
     marginTop: 10,
     fontSize: 15,
-    color: '#624332',
+    color: 'grey',
     textAlign: 'center',
     marginHorizontal: 50,
   },
   button: {
     marginTop: 80,
-    backgroundColor: '#624332',
+    backgroundColor: 'black',
     paddingVertical: 10,
     paddingHorizontal: 80,
     borderRadius: 30,

@@ -17,7 +17,7 @@ export default function BookingConfirmationScreen() {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.header}>Review Booking</Text>
+      <Text style={styles.header}>Review Bookingg</Text>
 
       {/* Services Booked */}
       <View style={styles.sectionContainer}>
@@ -77,10 +77,7 @@ export default function BookingConfirmationScreen() {
       {/* Payment Buttons */}
       <View style={styles.buttonsContainer}>
         <TouchableOpacity style={styles.paymentButton} onPress={handlePayVenue}>
-          <Text style={styles.paymentButtonText}>Pay at Venue</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.paymentButton} onPress={handlePay}>
-          <Text style={styles.paymentButtonText}>Pay Now</Text>
+          <Text style={styles.paymentButtonText}>Confirm Booking</Text>
         </TouchableOpacity>
       </View>
 
@@ -162,7 +159,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
-    width: '48%',
+    width: '100%',
   },
   paymentButtonText: {
     color: '#FFFFFF',

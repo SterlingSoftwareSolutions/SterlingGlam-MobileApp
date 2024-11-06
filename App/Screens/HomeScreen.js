@@ -1,46 +1,62 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Image, ScrollView, TouchableOpacity, Dimensions, ImageBackground } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, ImageBackground, ActivityIndicator, StyleSheet, Dimensions,Image,TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import AuthContext from '../auth/context';
+import admin , {BASE_URL} from '../api/admin';
+import Swiper from 'react-native-swiper';
 
 const { width } = Dimensions.get('window');
 
-const localProfilePicture = require('../resources/specialist1.jpeg');
-const banner1 = require('../resources/slider1.png');
+const localProfilePicture = require('../resources/avatar.jpg');
+const banner1 = require('../resources/Banner01.png');
+const banner2 = require('../resources/BannerNew.png');
 
-const categoriesData = {
-  male: [
-    { id: '1', title: 'Haircut and Styling', image: require('../resources/service7.png'), type: 'haircutStyling' },
-    { id: '2', title: 'Beard Trim', image: require('../resources/service11.jpg'), type: 'beardTrim' },
-    { id: '3', title: 'Shaving', image: require('../resources/service12.jpg'), type: 'shaving' },
-    { id: '4', title: 'Facial Treatments', image: require('../resources/service13.png'), type: 'facialTreatments' },
-    { id: '5', title: 'Hair Coloring', image: require('../resources/service14.jpg'), type: 'hairColoring' },
-    { id: '6', title: 'Waxing Services', image: require('../resources/service6.png'), type: 'waxingServices' },
-  ],
-  female: [
-    { id: '1', title: 'Haircut and Styling', image: require('../resources/service7.png'), type: 'haircutStyling' },
-    { id: '2', title: 'Hair Coloring', image: require('../resources/service2.png'), type: 'hairColoring' },
-    { id: '3', title: 'Hair Treatments', image: require('../resources/service4.png'), type: 'hairTreatments' },
-    { id: '4', title: 'Manicure and Pedicure', image: require('../resources/service5.png'), type: 'manicurePedicure' },
-    { id: '5', title: 'Eyebrow Threading', image: require('../resources/service3.png'), type: 'eyebrowThreading' },
-    { id: '6', title: 'Waxing Services', image: require('../resources/service6.png'), type: 'waxingServices' },
-    { id: '7', title: 'Facial Treatments', image: require('../resources/service8.png'), type: 'facialTreatments' },
-    { id: '8', title: 'Bridal Services', image: require('../resources/service1.png'), type: 'bridalServices' },
-    { id: '9', title: 'Hair Extensions', image: require('../resources/service9.png'), type: 'hairExtensions' },
-    { id: '10', title: 'Fillers', image: require('../resources/service3.png'), type: 'fillers' },
-  ]
-};
 
 const HomeScreen = () => {
-  const [selectedGender, setSelectedGender] = useState('female');
+  const { user } = useContext(AuthContext);
   const navigation = useNavigation();
+  const [categoriesData, setCategoriesData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const handleCategoryPress = (type) => {
-    navigation.navigate('Services', { serviceType: type });
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const api = await admin();
+        const response = await api.get('/categories');
+
+        if (response.ok) {
+          setCategoriesData(response.data);
+        } else {
+          setError('Failed to fetch categories');
+        }
+      } catch (err) {
+        setError('Error: ' + err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const handleCategoryPress = (category) => {
+    navigation.navigate('Services', { serviceType: category.id });
   };
 
-  const toggleGender = (gender) => {
-    setSelectedGender(gender);
+  if (loading) {
+    return <ActivityIndicator size="large" color="#24150E" style={{ flex: 1, justifyContent: 'center' }} />;
+  }
+
+
+
+  if (error) {
+    return <Text>{error}</Text>;
+  }
+
+  const handleUserProfile = () => {
+    console.log('User Details', user);
   };
 
   return (
@@ -48,10 +64,12 @@ const HomeScreen = () => {
       {/* Header Section */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <Text style={styles.greeting}>Hi Jenifer!</Text>
-          <Text style={styles.tagline}>“Unleash Your Inner Glam”</Text>
+          <Text style={styles.greeting}>Hi {user ? user.first_name : 'User'}</Text> 
+          <Text style={styles.tagline}>“Stay Sharp, Stay Stylish”</Text>
         </View>
-        <Image source={localProfilePicture} style={styles.profileImage} />
+        <TouchableOpacity onPress={handleUserProfile}>
+          <Image source={localProfilePicture} style={styles.profileImage}/>
+        </TouchableOpacity>
       </View>
 
       {/* Search Section */}
@@ -65,36 +83,32 @@ const HomeScreen = () => {
 
       {/* Offers Section */}
       <View style={styles.offers}>
+      <Swiper
+        autoplay
+        autoplayTimeout={3}
+        showsPagination={false}
+        loop
+      >
         <Image source={banner1} style={styles.offerImage} />
-      </View>
+        <Image source={banner2} style={styles.offerImage} />
+      </Swiper>
+    </View>
 
-      {/* Gender Toggle */}
-      <View style={styles.genderToggle}>
-        <TouchableOpacity
-          style={[styles.genderButton, selectedGender === 'male' && styles.genderButtonActive]}
-          onPress={() => toggleGender('male')}
-        >
-          <Text style={[styles.genderText, selectedGender === 'male' && styles.genderTextActive]}>Male</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.genderButton, selectedGender === 'female' && styles.genderButtonActive]}
-          onPress={() => toggleGender('female')}
-        >
-          <Text style={[styles.genderText, selectedGender === 'female' && styles.genderTextActive]}>Female</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Categories Section */}
+      {/* Categories */}
       <View style={styles.categoriesContainer}>
-        {categoriesData[selectedGender].map((item) => (
+        {categoriesData.map((item) => (
           <TouchableOpacity
             key={item.id}
             style={styles.categoryContainer}
-            onPress={() => handleCategoryPress(item.type)}
+            onPress={() => handleCategoryPress(item)}
           >
-            <ImageBackground source={item.image} style={styles.image} imageStyle={styles.imageStyle}>
+            <ImageBackground 
+              source={{ uri: BASE_URL + item.image }}
+              style={styles.image}
+              imageStyle={styles.imageStyle}
+            >
               <View style={styles.overlay}>
-                <Text style={styles.categoryText}>{item.title}</Text>
+                <Text style={styles.categoryText}>{item.name}</Text>
               </View>
             </ImageBackground>
           </TouchableOpacity>
@@ -113,7 +127,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    padding: 20,
+    marginTop:10
   },
   headerLeft: {
     flexDirection: 'column',
@@ -121,11 +136,11 @@ const styles = StyleSheet.create({
   greeting: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#624332',
+    color: 'black',
   },
   tagline: {
     fontSize: 16,
-    color: '#6F4E37',
+    color: '#444444',
   },
   profileImage: {
     width: 50,
@@ -149,37 +164,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   offers: {
-    padding: 16,
     marginTop: 10,
-  },
-  offerImage: {
-    height: 150,
-    width: '100%',
-    borderRadius: 8,
-  },
-  genderToggle: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginVertical: 16,
-  },
-  genderButton: {
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#A3A3A3',
-    marginHorizontal: 8,
-  },
-  genderButtonActive: {
-    backgroundColor: '#24150E',
-  },
-  genderText: {
-    fontSize: 16,
-    color: '#A3A3A3',
-  },
-  genderTextActive: {
-    fontSize: 16,
-    color: '#FFF',
   },
   categoriesContainer: {
     flexDirection: 'row',
@@ -210,6 +195,16 @@ const styles = StyleSheet.create({
   categoryText: {
     color: 'white',
     fontSize: 15,
+  },
+  offers: {
+    height: 165, 
+    padding: 15
+  },
+  offerImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+    borderRadius:10
   },
 });
 

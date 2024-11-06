@@ -18,32 +18,47 @@ const Login = () => {
   const { logIn } = useAuth();
   const navigation = useNavigation();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(false);  
+  const [errorMessage, setErrorMessage] = useState('');  
+
   const handleLogin = async () => {
     try {
-      const result = await authApi.login(email, password);
-  
-      if (result.ok) {
-        const loggedInUser = result.data.user; // Get user details
-        const token = result.data.access_token; // Use access_token from the response
-        authService.storeToken(token);
-        logIn(token, loggedInUser);
-  
-        // Pass the entire user object and token if needed
-        navigation.navigate("AdminDashboard", { user: loggedInUser, token });
-        // You may also want to navigate to AdminProfile if needed directly here.
-      } else {
-        setError(true);
-        setErrorMessage(result.data?.message || "An unknown error occurred.");
-      }
+        const result = await authApi.login(email, password);
+        console.log("Login API result:", result);
+
+        if (result.ok) {
+            const loggedInUser = result.data.user;
+            const token = result.data.access_token; 
+ 
+            if (token) {
+                await authService.storeToken(token); 
+                const storedToken = await authService.getToken(); 
+            } else {
+                console.error("No token received in login response.");
+            }
+
+            await authService.storeUser(loggedInUser); 
+            console.log("User stored successfully:", loggedInUser); // Log stored user
+            
+            // Navigate based on user role
+            if (loggedInUser.role === 'admin') {
+                navigation.navigate('Dashboard');
+            } else {
+                navigation.navigate('ClientDashboard');
+            }
+        } else {
+            setError(true);
+            setErrorMessage(result.data?.message || "An unknown error occurred.");
+        }
     } catch (error) {
       console.error("Login failed:", error);
       setErrorMessage("Login failed. Please try again.");
       setError(true);
     }
-  };
-  
+};
+
 
   const handleSignup = () => {
     navigation.navigate("Signup");
@@ -72,9 +87,13 @@ const Login = () => {
           onChangeText={(text) => setPassword(text)}
         />
       </View>
+
+      {error && <Text style={styles.errorText}>{errorMessage}</Text>}
+
       <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>
         <Text style={styles.loginText}>Login</Text>
       </TouchableOpacity>
+
       <TouchableOpacity onPress={handleSignup} style={styles.signupContainer}>
         <Text style={styles.signupText}>New to Sterling Glam? </Text>
         <Text
@@ -143,6 +162,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 5,
   },
+  errorText:{
+    color:'red'
+  }
 });
 
 export default Login;

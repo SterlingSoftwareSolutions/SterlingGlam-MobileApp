@@ -8,7 +8,6 @@ export const servicesData = {
       { id: 1, name: 'Classic Haircut', description: 'Standard haircut for all hair types.', price: 'Rs. 2500.00' },
       { id: 2, name: 'Layered Cut', description: 'Haircut that adds volume and shape.', price: 'Rs. 3000.00' },
       { id: 3, name: 'Bob Cut', description: 'A chic, short hairstyle that’s always in trend.', price: 'Rs. 3500.00' },
-      { id: 4, name: 'Blowout', description: 'A blow-dry service for a sleek finish.', price: 'Rs. 1500.00' },
     ],
     specialists: [
       { id: 1, name: 'Alice', rating: '4.5', image: require('../resources/specialist1.jpeg') },
