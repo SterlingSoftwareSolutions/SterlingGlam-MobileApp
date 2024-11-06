@@ -1,39 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DaySchedule from './DaySchedule';
 import { useNavigation } from '@react-navigation/native';
-import Footer from '../components/footer'; 
+import Footer from '../components/footer'; // Ensure correct capitalization of component
+import useAuth from '../auth/useAuth'; // Import your useAuth hook
 
 const stylists = require('../resources/stylists.png');
 const services = require('../resources/servicesImg.png');
 
 const AdminScreen = () => {
   const navigation = useNavigation();
+  const { getUser } = useAuth(); // Get getUser from useAuth
+  const [user, setUser] = useState({}); // Initialize user state
+
+  useEffect(() => {
+    const userDetails = getUser(); // Fetch user details from auth context
+    if (userDetails) {
+      setUser(userDetails);
+    }
+  }, [getUser]); // Listen for changes to the getUser function
 
   const handleServices = () => {
     navigation.navigate("Services");
-  };
-  const handleServicesCategorie = () => {
-    navigation.navigate("ServiceCategory");
   };
 
   const handleStylist = () => {
     navigation.navigate("Stylists");
   };
 
+  const handleIconClick = () => {
+    navigation.navigate('AdminProfile', { user });
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {/* Header Section */}
         <View style={styles.header}>
-          <Text style={styles.adminText}>Admin</Text>
-          <Icon name="person-circle-outline" size={45} color="black" />
+          <Text style={styles.adminText}>{user.role || 'User'}</Text> 
+          <Icon name="person-circle-outline" size={45} color="black" onPress={handleIconClick} />
         </View>
 
-        <Text style={styles.username}>Sameera Appuhamy</Text>
+        <Text style={styles.username}>{user.first_name || 'User'}</Text> 
 
-        {/* Booking Stats */}
         <View style={styles.statsContainer}>
           <View style={styles.statBoxGreen}>
             <Text style={styles.statText}>Active Bookings</Text>
@@ -52,42 +61,27 @@ const AdminScreen = () => {
           </View>
         </View>
 
-        {/* Day Schedule */}
         <View style={styles.scheduleContainer}>
           <View style={styles.scheduleHeader}>
             <Text style={styles.dayScheduleText}>Day Schedule</Text>
             <Text style={styles.dateText}>02nd of Sep 2024</Text>
           </View>
           <Text style={styles.appointmentText}>Appointments booking chart</Text>
-
-          {/* Appointment Chart */}
           <DaySchedule />
         </View>
 
-        {/* Buttons */}
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={handleServices}>
-            <Image
-              source={services} 
-              style={styles.Image}
-            />
+            <Image source={services} style={styles.Image} />
             <Text style={styles.buttonText}>Services</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={handleStylist}>
-            <Image
-              source={stylists} 
-              style={styles.Image}
-            />
+            <Image source={stylists} style={styles.Image} />
             <Text style={styles.buttonText}>Stylists</Text>
           </TouchableOpacity>
         </View>
-
-        <TouchableOpacity style={styles.button} onPress={handleServicesCategorie}>
-        <Text style={styles.buttonText}>Go to Service Category</Text>
-      </TouchableOpacity>
       </ScrollView>
 
-      {/* Footer */}
       <Footer navigation={navigation} />
     </View>
   );
@@ -111,6 +105,7 @@ const styles = StyleSheet.create({
   adminText: {
     fontSize: 14,
     color: 'gray',
+    textTransform: 'uppercase', // Added to transform text to uppercase
   },
   username: {
     fontSize: 22,
@@ -200,17 +195,6 @@ const styles = StyleSheet.create({
   Image: {
     width: 50,
     height: 50,
-  },
-  statsButton: {
-    marginVertical: 20,
-    paddingVertical: 15,
-    backgroundColor: '#000',
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  statsButtonText: {
-    color: '#FFF',
-    fontSize: 16,
   },
 });
 

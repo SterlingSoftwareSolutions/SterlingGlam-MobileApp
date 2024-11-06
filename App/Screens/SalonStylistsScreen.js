@@ -31,17 +31,20 @@ const SalonStylistsScreen = () => {
     fetchStylists(); // Call the function
   }, []);
 
-  const handleAddNewService = () => {
+  const handleAddNewStylist = () => {
     navigation.navigate("AddStylist");
+  };
+
+  const handleUpdateStylist = (stylist) => {
+    navigation.navigate("UpdateStylist", { stylist }); // Pass the entire stylist object
   };
 
   // Render individual stylist
   const renderServiceBox = ({ item }) => (
     <TouchableOpacity
       style={styles.serviceBox}
-      onPress={() => console.log(item)}
+      onPress={() => handleUpdateStylist(item)} // Navigate with stylist details
     >
-      {/* Display the staff name */}
       <Text style={styles.serviceText}>{item.name}</Text>
     </TouchableOpacity>
   );
@@ -50,20 +53,20 @@ const SalonStylistsScreen = () => {
     <View style={styles.container}>
       <Text style={styles.heading}>Stylists</Text>
       <FlatList
-        data={[...(Array.isArray(stylistlist) ? stylistlist : []), { id: "add-new", name: "+ Add new" }]} // Safely spread the stylist array
+        data={[
+          ...(Array.isArray(stylistlist) ? stylistlist : []),
+          { id: "add-new", name: "+ Add new" }, // Add "Add new" at the end
+        ]}
         renderItem={({ item }) =>
           item.id === "add-new" ? (
-            <TouchableOpacity
-              style={styles.serviceBox}
-              onPress={handleAddNewService}
-            >
+            <TouchableOpacity style={styles.serviceBox} onPress={handleAddNewStylist}>
               <Text style={styles.serviceText}>{item.name}</Text>
             </TouchableOpacity>
           ) : (
             renderServiceBox({ item }) // Render each stylist's name
           )
         }
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => (item.id ? item.id.toString() : "add-new")}
         numColumns={2}
         columnWrapperStyle={styles.row}
       />

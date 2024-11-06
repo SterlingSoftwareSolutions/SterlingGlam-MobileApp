@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import authApi from '../api/auth';
-import useAuth from '../auth/useAuth';
-import authService from '../auth/authService';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import authApi from "../api/auth";
+import useAuth from "../auth/useAuth";
+import authService from "../auth/authService";
 
-import Logo from '../resources/salonsameeralogo.png'; 
+import Logo from "../resources/salonsameeralogo.png";
 
 const Login = () => {
   const { logIn } = useAuth();
@@ -46,9 +53,9 @@ const Login = () => {
             setErrorMessage(result.data?.message || "An unknown error occurred.");
         }
     } catch (error) {
-        console.error("Login failed:", error);
-        setErrorMessage("Login failed. Please try again.");
-        setError(true);
+      console.error("Login failed:", error);
+      setErrorMessage("Login failed. Please try again.");
+      setError(true);
     }
 };
 
@@ -67,7 +74,7 @@ const Login = () => {
           placeholder="Email Address"
           placeholderTextColor="#6e6e6e"
           value={email}
-          onChangeText={text => setEmail(text)}
+          onChangeText={(text) => setEmail(text)}
         />
       </View>
       <View style={styles.inputView}>
@@ -77,7 +84,7 @@ const Login = () => {
           placeholderTextColor="#6e6e6e"
           secureTextEntry
           value={password}
-          onChangeText={text => setPassword(text)}
+          onChangeText={(text) => setPassword(text)}
         />
       </View>
 
@@ -89,7 +96,12 @@ const Login = () => {
 
       <TouchableOpacity onPress={handleSignup} style={styles.signupContainer}>
         <Text style={styles.signupText}>New to Sterling Glam? </Text>
-        <Text style={[styles.signupText, styles.signupHighlight]} onPress={handleSignup}>Signup</Text>
+        <Text
+          style={[styles.signupText, styles.signupHighlight]}
+          onPress={handleSignup}
+        >
+          Signup
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -98,57 +110,57 @@ const Login = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#ffffff",
+    alignItems: "center",
+    justifyContent: "center",
   },
   logo: {
-    width:220,
+    width: 220,
     height: 220,
-    marginBottom:50
+    marginBottom: 50,
   },
   inputView: {
-    width: '80%',
+    width: "80%",
     borderRadius: 25,
     height: 50,
     marginBottom: 20,
-    justifyContent: 'center',
+    justifyContent: "center",
     padding: 20,
-    borderColor:'#000000',
-    borderWidth:1,
+    borderColor: "#000000",
+    borderWidth: 1,
     // backgroundColor: '#f2f2f2',
   },
   inputText: {
     height: 50,
-    color: '#24150E',
+    color: "#24150E",
   },
   loginBtn: {
-    width: '80%',
-    backgroundColor: '#000000',
+    width: "80%",
+    backgroundColor: "#000000",
     borderRadius: 25,
     height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 40,
     marginBottom: 10,
   },
   loginText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
     fontSize: 18,
   },
   signupContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginTop: 15,
   },
   signupText: {
-    color: '#141414',
+    color: "#141414",
     fontSize: 16,
   },
   signupHighlight: {
-    color: '#24150E',
+    color: "#24150E",
     fontSize: 16,
-    marginLeft: 5, 
+    marginLeft: 5,
   },
   errorText:{
     color:'red'
