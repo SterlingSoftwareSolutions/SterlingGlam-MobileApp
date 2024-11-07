@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, ScrollView, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 import admin from '../api/admin';
 import { useFocusEffect } from '@react-navigation/native';
+import dayjs from 'dayjs';
 
 const generateColor = (index) => {
-  const colors = ['#00CC66', '#FFCC00', '#66B2FF', '#FF6347', '#8A2BE2', '#90EE90', '#ADD8E6', '#FFA500', '#800080']; 
+  const colors = ['#00CC66', '#FFCC00', '#66B2FF', '#FF6347', '#8A2BE2'];
   return colors[index % colors.length];
 };
 
@@ -13,11 +14,12 @@ const DaySchedule = () => {
   const [staff, setStaff] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(dayjs().format('YYYY-MM-DD'));
 
-  const fetchBookings = async () => {
+  const fetchBookings = async (date) => {
     try {
       const api = await admin();
-      const bookingResponse = await api.get('/booking');
+      const bookingResponse = await api.get(`/booking?date=${date}`);
 
       if (bookingResponse.ok) {
         setBookings(bookingResponse.data.booking);
@@ -37,7 +39,7 @@ const DaySchedule = () => {
       if (staffResponse.ok) {
         const staffData = staffResponse.data.data.map((member, index) => ({
           ...member,
-          color: generateColor(index), 
+          color: generateColor(index),
         }));
         setStaff(staffData);
       } else {
@@ -51,22 +53,30 @@ const DaySchedule = () => {
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
-      await Promise.all([fetchBookings(), fetchStaff()]);
+      await Promise.all([fetchBookings(selectedDate), fetchStaff()]);
       setLoading(false);
     };
     loadData();
-  }, []);
+  }, [selectedDate]);
 
   useFocusEffect(
     useCallback(() => {
       const refetchData = async () => {
         setLoading(true);
-        await fetchBookings();
+        await fetchBookings(selectedDate);
         setLoading(false);
       };
       refetchData();
-    }, [])
+    }, [selectedDate])
   );
+
+  const handlePrevDate = () => {
+    setSelectedDate((prevDate) => dayjs(prevDate).subtract(1, 'day').format('YYYY-MM-DD'));
+  };
+
+  const handleNextDate = () => {
+    setSelectedDate((prevDate) => dayjs(prevDate).add(1, 'day').format('YYYY-MM-DD'));
+  };
 
   if (loading) {
     return <ActivityIndicator size="large" color="#24150E" style={{ flex: 1, justifyContent: 'center' }} />;
@@ -74,7 +84,16 @@ const DaySchedule = () => {
 
   return (
     <ScrollView style={styles.container}>
-      {/* <Text style={styles.heading}>Day Schedule</Text> */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={handlePrevDate} style={styles.arrowButton}>
+          <Text style={styles.arrowText}>{"<"}</Text>
+        </TouchableOpacity>
+        <Text style={styles.heading}>Day Schedule - {dayjs(selectedDate).format('DD MMM YYYY')}</Text>
+        <TouchableOpacity onPress={handleNextDate} style={styles.arrowButton}>
+          <Text style={styles.arrowText}>{">"}</Text>
+        </TouchableOpacity>
+      </View>
+
       {error && <Text style={styles.errorText}>{error}</Text>}
       <View style={styles.legendContainer}>
         {staff.map((member) => (
@@ -86,7 +105,7 @@ const DaySchedule = () => {
       </View>
 
       {bookings.length === 0 ? (
-        <Text style={styles.noBookingsText}>No bookings available for today.</Text>
+        <Text style={styles.noBookingsText}>No bookings available for this date.</Text>
       ) : (
         <View style={styles.scheduleContainer}>
           {bookings.map((booking) => {
@@ -121,15 +140,29 @@ const DaySchedule = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#e8e8e8',
+    backgroundColor: '#f9f9f9',
     padding: 15,
     borderRadius: 10,
   },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
   heading: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#24150E',
-    marginBottom: 10,
+    marginHorizontal: 10,
+  },
+  arrowButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  arrowText: {
+    fontSize: 22,
+    color: '#24150E',
   },
   errorText: {
     color: 'red',

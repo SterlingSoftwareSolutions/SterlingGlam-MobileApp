@@ -45,10 +45,6 @@ const AdminScreen = () => {
 
         {/* Day Schedule Section */}
         <View style={styles.scheduleContainer}>
-          <View style={styles.scheduleHeader}>
-            <Text style={styles.dayScheduleText}>Day Schedule</Text>
-            <Text style={styles.dateText}>02nd of Sep 2024</Text>
-          </View>
           <Text style={styles.appointmentText}>Appointments booking chart</Text>
           <DaySchedule />
         </View>
@@ -82,11 +78,11 @@ const styles = StyleSheet.create({
   statText: { fontSize: 14, color: '#FFF' },
   statNumber: { fontSize: 24, fontWeight: 'bold', color: '#FFF', marginVertical: 5 },
   statMore: { fontSize: 12, color: '#FFF' },
-  scheduleContainer: { marginVertical: 20 },
+  scheduleContainer: { marginVertical: 0 },
   scheduleHeader: { flexDirection: 'row', justifyContent: 'space-between' },
   dayScheduleText: { fontSize: 18, fontWeight: 'bold' },
   dateText: { fontSize: 13, color: 'black' },
-  appointmentText: { fontSize: 14, marginVertical: 10, color: 'gray' },
+  appointmentText: { fontSize: 14, marginBottom:10, color: 'gray' },
   buttonContainer: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20, marginBottom: 20 },
   button: { flexDirection: 'column', alignItems: 'center', backgroundColor: '#FFF', borderRadius: 10, padding: 10, elevation: 2, borderColor: 'black', borderWidth: 1, width: '40%' },
   buttonText: { fontSize: 14, marginTop: 5 },
