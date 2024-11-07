@@ -1,58 +1,49 @@
-import React, { useEffect, useState,useContext } from 'react';
+import React, { useContext } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import DaySchedule from './DaySchedule';
 import { useNavigation } from '@react-navigation/native';
-import authService from '../auth/authService';
 import AuthContext from '../auth/context';
+import DaySchedule from './DaySchedule';
 
-const stylists = require('../resources/stylists.png');
-const services = require('../resources/servicesImg.png');
+const stylistsImage = require('../resources/stylists.png');
+const servicesImage = require('../resources/servicesImg.png');
+
+// Reusable StatBox component for different statistics
+const StatBox = ({ color, title, number, trend }) => (
+  <View style={[styles.statBox, { backgroundColor: color }]}>
+    <Text style={styles.statText}>{title}</Text>
+    <Text style={styles.statNumber}>{number}</Text>
+    <Text style={styles.statMore}>{trend}</Text>
+  </View>
+);
 
 const AdminScreen = () => {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
 
-  const handleServices = () => {
-    navigation.navigate("Services");
-  };
-
-  const handleStylist = () => {
-    navigation.navigate("Stylists");
-  };
-
-  const handleIconClick = () => {
-    navigation.navigate('AdminProfile', { user });
-  };
+  const handleServices = () => navigation.navigate("Services");
+  const handleStylist = () => navigation.navigate("Stylists");
+  const handleProfile = () => navigation.navigate('AdminProfile', { user });
 
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {/* Header Section */}
         <View style={styles.header}>
-          <Text style={styles.adminText}>{user.role || 'User'}</Text> 
-          <Icon name="person-circle-outline" size={45} color="black" onPress={handleIconClick} />
+          <Text style={styles.adminText}>{user.role || 'User'}</Text>
+          <Icon name="person-circle-outline" size={45} color="black" onPress={handleProfile} />
         </View>
 
-        <Text style={styles.username}>{user.first_name || 'User'}</Text> 
+        <Text style={styles.username}>{user.first_name || 'User'}</Text>
 
+        {/* Stats Section */}
         <View style={styles.statsContainer}>
-          <View style={styles.statBoxGreen}>
-            <Text style={styles.statText}>Active Bookings</Text>
-            <Text style={styles.statNumber}>15</Text>
-            <Text style={styles.statMore}>↑ 3 More vs last 7 days</Text>
-          </View>
-          <View style={styles.statBoxRed}>
-            <Text style={styles.statText}>Rejected Bookings</Text>
-            <Text style={styles.statNumber}>5</Text>
-            <Text style={styles.statMore}>↓ 2 More vs last 7 days</Text>
-          </View>
-          <View style={styles.statBoxBlue}>
-            <Text style={styles.statText}>New Visitors</Text>
-            <Text style={styles.statNumber}>20</Text>
-            <Text style={styles.statMore}>↑ 15 More vs last 7 days</Text>
-          </View>
+          <StatBox color="#8EC354" title="Active Bookings" number="15" trend="↑ 3 More vs last 7 days" />
+          <StatBox color="#EC5464" title="Rejected Bookings" number="5" trend="↓ 2 More vs last 7 days" />
+          <StatBox color="#5B9BEB" title="New Visitors" number="20" trend="↑ 15 More vs last 7 days" />
         </View>
 
+        {/* Day Schedule Section */}
         <View style={styles.scheduleContainer}>
           <View style={styles.scheduleHeader}>
             <Text style={styles.dayScheduleText}>Day Schedule</Text>
@@ -62,131 +53,44 @@ const AdminScreen = () => {
           <DaySchedule />
         </View>
 
+        {/* Buttons Section */}
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleServices}>
-            <Image source={services} style={styles.Image} />
-            <Text style={styles.buttonText}>Services</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={handleStylist}>
-            <Image source={stylists} style={styles.Image} />
-            <Text style={styles.buttonText}>Stylists</Text>
-          </TouchableOpacity>
+          <Button onPress={handleServices} image={servicesImage} label="Services" />
+          <Button onPress={handleStylist} image={stylistsImage} label="Stylists" />
         </View>
       </ScrollView>
-
     </View>
   );
 };
 
+// Reusable Button component
+const Button = ({ onPress, image, label }) => (
+  <TouchableOpacity style={styles.button} onPress={onPress}>
+    <Image source={image} style={styles.image} />
+    <Text style={styles.buttonText}>{label}</Text>
+  </TouchableOpacity>
+);
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFF',
-  },
-  scrollContainer: {
-    paddingHorizontal: 20,
-    paddingBottom: 80, // Ensure there's space for the footer
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 10,
-  },
-  adminText: {
-    fontSize: 14,
-    color: 'gray',
-    textTransform: 'uppercase', // Added to transform text to uppercase
-  },
-  username: {
-    fontSize: 22,
-    fontWeight: 'bold',
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 20,
-    flexWrap: 'wrap',
-  },
-  statBoxGreen: {
-    backgroundColor: '#8EC354',
-    padding: 15,
-    borderRadius: 10,
-    width: '48%',
-    marginBottom: 15,
-  },
-  statBoxRed: {
-    backgroundColor: '#EC5464',
-    padding: 15,
-    borderRadius: 10,
-    width: '48%',
-    marginBottom: 15,
-  },
-  statBoxBlue: {
-    backgroundColor: '#5B9BEB',
-    padding: 15,
-    borderRadius: 10,
-    width: '48%',
-  },
-  statText: {
-    fontSize: 14,
-    color: '#FFF',
-  },
-  statNumber: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFF',
-    marginVertical: 5,
-  },
-  statMore: {
-    fontSize: 12,
-    color: '#FFF',
-  },
-  scheduleContainer: {
-    marginVertical: 20,
-  },
-  scheduleHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  dayScheduleText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  dateText: {
-    fontSize: 13,
-    color: 'black',
-  },
-  appointmentText: {
-    fontSize: 14,
-    marginVertical: 10,
-    color: 'gray',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 20,
-    marginBottom: 20, // Adjusted margin to make room for the footer
-  },
-  button: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    backgroundColor: '#FFF',
-    borderRadius: 10,
-    padding: 10,
-    elevation: 2,
-    borderColor: 'black',
-    borderWidth: 1,
-    width: '40%',
-  },
-  buttonText: {
-    fontSize: 14,
-    marginTop: 5,
-  },
-  Image: {
-    width: 50,
-    height: 50,
-  },
+  container: { flex: 1, backgroundColor: '#FFF' },
+  scrollContainer: { paddingHorizontal: 20, paddingBottom: 80 },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: 10 },
+  adminText: { fontSize: 14, color: 'gray', textTransform: 'uppercase' },
+  username: { fontSize: 22, fontWeight: 'bold' },
+  statsContainer: { flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20, flexWrap: 'wrap' },
+  statBox: { padding: 15, borderRadius: 10, width: '48%', marginBottom: 15 },
+  statText: { fontSize: 14, color: '#FFF' },
+  statNumber: { fontSize: 24, fontWeight: 'bold', color: '#FFF', marginVertical: 5 },
+  statMore: { fontSize: 12, color: '#FFF' },
+  scheduleContainer: { marginVertical: 20 },
+  scheduleHeader: { flexDirection: 'row', justifyContent: 'space-between' },
+  dayScheduleText: { fontSize: 18, fontWeight: 'bold' },
+  dateText: { fontSize: 13, color: 'black' },
+  appointmentText: { fontSize: 14, marginVertical: 10, color: 'gray' },
+  buttonContainer: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20, marginBottom: 20 },
+  button: { flexDirection: 'column', alignItems: 'center', backgroundColor: '#FFF', borderRadius: 10, padding: 10, elevation: 2, borderColor: 'black', borderWidth: 1, width: '40%' },
+  buttonText: { fontSize: 14, marginTop: 5 },
+  image: { width: 50, height: 50 },
 });
 
 export default AdminScreen;

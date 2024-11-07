@@ -1,26 +1,72 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import { format, addDays, subDays } from 'date-fns'; 
-
-const appointments = [
-  { id: '1', name: 'Dhanushka', services: 'Haircut, Shaving', time: '10:00', stylist: 'Anderson' },
-  { id: '2', name: 'Umindu', services: 'Shaving, Facial', time: '12:30', stylist: 'Clinton' },
-  { id: '3', name: 'Shavin', services: 'Facial, Haircut, Shaving', time: '15:00', stylist: 'Anderson' },
-  { id: '4', name: 'Isuru', services: 'Haircut', time: '10:00', stylist: 'Allen' },
-  { id: '5', name: 'Thevanan', services: 'Beard Trimming', time: '09:00', stylist: 'Anderson' },
-  { id: '6', name: 'Gamika', services: 'Massage Therapy', time: '10:00', stylist: 'Clinton' },
-];
+import admin from '../api/admin';
+import { useFocusEffect } from '@react-navigation/native';
 
 const UpcomingAppointments = ({ navigation }) => {
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [startDate, setStartDate] = useState(new Date());
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  const fetchData = async () => {
+    try {
+      const api = await admin();
+      const bookingResponse = await api.get('/booking');
+
+      if (bookingResponse.ok) {
+        const formattedBookings = bookingResponse.data.booking.map((booking) => ({
+          id: booking.id,
+          name: `${booking.user.first_name} ${booking.user.last_name}`,
+          services: booking.services.map(service => service.name).join(', '),
+          time: format(new Date(`${booking.date}T${booking.start_time}`), 'HH:mm'),
+          stylist: booking.staff.name,
+        }));
+        setBookings(formattedBookings);
+      } else {
+        setError('Failed to fetch data');
+      }
+    } catch (err) {
+      setError('Error: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch data on initial mount
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // Refetch data when the screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true);
+      fetchData();
+    }, [])
+  );
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="#24150E" style={{ flex: 1, justifyContent: 'center' }} />;
+  }
+
+  // Get next 6 days
   const getNextDays = (start, days) => {
     return Array.from({ length: days }, (_, index) => addDays(start, index));
   };
 
   const cancelAppointment = (id) => {
     console.log(`Appointment ${id} cancelled`);
+  };
+
+  const approveAppointment = (id) => {
+    console.log(`Appointment ${id} approved`);
+  };
+
+  const completeAppointment = (id) => {
+    console.log(`Appointment ${id} completed`);
   };
 
   const handlePrevious = () => {
@@ -37,12 +83,33 @@ const UpcomingAppointments = ({ navigation }) => {
     <View style={styles.appointmentCard}>
       <View style={styles.appointmentInfo}>
         <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.details}>{item.services}</Text>
-        <Text style={styles.time}>{item.time} | {item.stylist}</Text>
+        <Text style={styles.services}>{item.services}</Text>
+        <View style={styles.timeContainer}>
+          <Text style={styles.time}>{item.time}</Text>
+        </View>
+        <Text style={styles.stylist}>{item.stylist}</Text>
       </View>
-      <TouchableOpacity style={styles.cancelButton} onPress={() => cancelAppointment(item.id)}>
-        <Text style={styles.cancelButtonText}>Cancel Appointment</Text>
-      </TouchableOpacity>
+
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={[styles.button, styles.approveButton]}
+          onPress={() => approveAppointment(item.id)}
+        >
+          <Text style={styles.buttonText}>Approve</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, styles.cancelButton]}
+          onPress={() => cancelAppointment(item.id)}
+        >
+          <Text style={styles.buttonText}>Cancel</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, styles.completeButton]}
+          onPress={() => completeAppointment(item.id)}
+        >
+          <Text style={styles.buttonText}>Complete</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
@@ -64,26 +131,13 @@ const UpcomingAppointments = ({ navigation }) => {
         {getNextDays(startDate, 6).map((date) => (
           <TouchableOpacity
             key={format(date, 'yyyy-MM-dd')}
-            style={[
-              styles.dateItem,
-              selectedDate === format(date, 'yyyy-MM-dd') ? styles.selectedDateItem : {},
-            ]}
+            style={[styles.dateItem, selectedDate === format(date, 'yyyy-MM-dd') ? styles.selectedDateItem : {}]}
             onPress={() => setSelectedDate(format(date, 'yyyy-MM-dd'))}
           >
-            <Text
-              style={[
-                styles.weekday,
-                selectedDate === format(date, 'yyyy-MM-dd') ? styles.selectedDateText : {},
-              ]}
-            >
+            <Text style={[styles.weekday, selectedDate === format(date, 'yyyy-MM-dd') ? styles.selectedDateText : {}]}>
               {format(date, 'EEE').toUpperCase()}
             </Text>
-            <Text
-              style={[
-                styles.dateText,
-                selectedDate === format(date, 'yyyy-MM-dd') ? styles.selectedDateText : {},
-              ]}
-            >
+            <Text style={[styles.dateText, selectedDate === format(date, 'yyyy-MM-dd') ? styles.selectedDateText : {}]}>
               {format(date, 'dd')}
             </Text>
           </TouchableOpacity>
@@ -91,12 +145,11 @@ const UpcomingAppointments = ({ navigation }) => {
       </View>
 
       <FlatList
-        data={appointments}
-        keyExtractor={(item) => item.id}
+        data={bookings}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={renderAppointment}
         contentContainerStyle={styles.appointmentList}
       />
-      
     </View>
   );
 };
@@ -112,6 +165,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
+    color: '#4A4A4A',
   },
   datePicker: {
     flexDirection: 'row',
@@ -122,10 +176,12 @@ const styles = StyleSheet.create({
   monthText: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#4A4A4A',
   },
   arrow: {
     fontSize: 24,
     paddingHorizontal: 10,
+    color: '#4A4A4A',
   },
   dateRow: {
     flexDirection: 'row',
@@ -137,7 +193,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   selectedDateItem: {
-    backgroundColor: 'black',
+    backgroundColor: '#909090',  
     borderRadius: 10,
     padding: 10,
   },
@@ -147,10 +203,10 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: 'black',
+    color: '#333',
   },
   selectedDateText: {
-    color: 'white',
+    color: '#fff',
   },
   appointmentList: {
     paddingBottom: 20,
@@ -163,28 +219,59 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     marginBottom: 15,
+    alignSelf: 'center', 
+    elevation: 3, 
   },
   appointmentInfo: {
     flex: 1,
+    marginRight: 10,
   },
   name: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#333',
   },
-  details: {
-    color: '#666',
+  services: {
+    fontSize: 14,
+    color: '#777',
+    marginBottom: 10,  
+  },
+  timeContainer: {
+    marginBottom: 4,
   },
   time: {
-    color: '#666',
+    fontSize: 14,
+    color: '#888',
+  },
+  stylist: {
+    fontSize: 14,
+    color: '#888',
+  },
+  buttonContainer: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  button: {
+    width: 90,
+    paddingVertical: 8,
+    marginVertical: 5,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  approveButton: {
+    backgroundColor: '#7FBF7F', 
   },
   cancelButton: {
-    backgroundColor: '#DADADA',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
+    backgroundColor: '#FF6F61', 
   },
-  cancelButtonText: {
-    color: '#FF0000',
+  completeButton: {
+    backgroundColor: '#6EC1E4',
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
 
