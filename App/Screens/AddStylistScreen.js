@@ -3,7 +3,6 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView 
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import Footer from "../components/footer"; // Import the Footer component
 import authClient from "../api/authClient"; // Ensure you import authClient
 
 const AddStylistScreen = () => {
@@ -129,8 +128,6 @@ const AddStylistScreen = () => {
         </TouchableOpacity>
       </ScrollView>
 
-      {/* Footer */}
-      <Footer navigation={navigation} />
     </View>
   );
 };

@@ -10,8 +10,7 @@ import {
 import { BarChart } from "react-native-chart-kit";
 import { Picker } from "@react-native-picker/picker";
 import Icon from "react-native-vector-icons/FontAwesome";
-import Footer from "../components/footer"; // Import the Footer component
-import { format } from "date-fns"; // Import the format function
+import { format } from "date-fns"; 
 const screenWidth = Dimensions.get("window").width;
 
 const dataAppointments = {
@@ -124,8 +123,6 @@ const StatisticsScreen = ({ navigation }) => {
         </View>
       </ScrollView>
 
-      {/* Footer */}
-      <Footer navigation={navigation} />
     </View>
   );
 };

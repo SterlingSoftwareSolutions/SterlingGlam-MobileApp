@@ -1,25 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useContext } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DaySchedule from './DaySchedule';
 import { useNavigation } from '@react-navigation/native';
-import Footer from '../components/footer'; // Ensure correct capitalization of component
-import useAuth from '../auth/useAuth'; // Import your useAuth hook
+import authService from '../auth/authService';
+import AuthContext from '../auth/context';
 
 const stylists = require('../resources/stylists.png');
 const services = require('../resources/servicesImg.png');
 
 const AdminScreen = () => {
   const navigation = useNavigation();
-  const { getUser } = useAuth(); // Get getUser from useAuth
-  const [user, setUser] = useState({}); // Initialize user state
-
-  useEffect(() => {
-    const userDetails = getUser(); // Fetch user details from auth context
-    if (userDetails) {
-      setUser(userDetails);
-    }
-  }, [getUser]); // Listen for changes to the getUser function
+  const { user } = useContext(AuthContext);
 
   const handleServices = () => {
     navigation.navigate("Services");
@@ -82,7 +74,6 @@ const AdminScreen = () => {
         </View>
       </ScrollView>
 
-      <Footer navigation={navigation} />
     </View>
   );
 };

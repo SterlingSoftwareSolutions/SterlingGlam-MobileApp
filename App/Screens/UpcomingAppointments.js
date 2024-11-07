@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import { format, addDays, subDays } from 'date-fns'; 
-import Footer from '../components/footer'; 
 
 const appointments = [
   { id: '1', name: 'Dhanushka', services: 'Haircut, Shaving', time: '10:00', stylist: 'Anderson' },
@@ -97,9 +96,7 @@ const UpcomingAppointments = ({ navigation }) => {
         renderItem={renderAppointment}
         contentContainerStyle={styles.appointmentList}
       />
-
-      {/* Footer */}
-      <Footer navigation={navigation} />
+      
     </View>
   );
 };

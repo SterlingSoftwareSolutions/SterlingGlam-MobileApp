@@ -12,7 +12,6 @@ import {
   Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import Footer from "../components/footer";
 import { SafeAreaView } from "react-native-safe-area-context";
 import admin from "../api/admin";
 
@@ -324,7 +323,6 @@ const ServiceCategoryScreen = ({ route, navigation }) => {
         columnWrapperStyle={styles.row}
         contentContainerStyle={styles.scrollContainer}
       />
-      <Footer navigation={navigation} />
     </SafeAreaView>
   );
 };

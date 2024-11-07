@@ -6,6 +6,7 @@ import AdminNavigation from "./App/navigation/AdminNavigation";
 import TabNavigator from './App/navigation/TabNavigator';
 import authService from "./App/auth/authService";
 import AuthContext from './App/auth/context';
+import AdminTabNavigator from './App/navigation/AdminTabNavigator';
 
 export default function App() {
   const [user, setUser] = useState();
@@ -28,7 +29,7 @@ export default function App() {
 
     if (user.role === 'admin') {
       console.log('Admin logged in', user);
-      return <AdminNavigation />;
+      return <AdminTabNavigator />;
     } else {
       console.log('User logged in', user);
       return <TabNavigator />;
