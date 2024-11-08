@@ -11,7 +11,6 @@ import {
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
-import Footer from "../components/footer";
 import authClient from "../api/authClient";
 
 const UpdateStylistScreen = () => {
@@ -192,7 +191,6 @@ const UpdateStylistScreen = () => {
           <Text style={styles.deleteButtonText}>Delete Stylist</Text>
         </TouchableOpacity>
       </ScrollView>
-      <Footer navigation={navigation} />
     </View>
   );
 };

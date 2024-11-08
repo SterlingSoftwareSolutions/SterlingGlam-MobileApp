@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     padding: 10,
     justifyContent: 'center',
     backgroundColor: '#fff',
-    paddingTop: 80
+    paddingTop: 20
   },
   row: {
     justifyContent: 'space-between',

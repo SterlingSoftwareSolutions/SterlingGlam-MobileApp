@@ -44,9 +44,9 @@ const Login = () => {
             
             // Navigate based on user role
             if (loggedInUser.role === 'admin') {
-                navigation.navigate('Dashboard');
+                navigation.navigate('AdminDashboard');
             } else {
-                navigation.navigate('ClientDashboard');
+                navigation.navigate('Account');
             }
         } else {
             setError(true);

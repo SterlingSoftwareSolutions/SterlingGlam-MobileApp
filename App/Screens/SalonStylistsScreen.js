@@ -8,7 +8,6 @@ import {
   Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import Footer from "../components/footer"; // Import the Footer component
 import authClient from "../api/authClient";
 
 const SalonStylistsScreen = () => {
@@ -71,8 +70,6 @@ const SalonStylistsScreen = () => {
         columnWrapperStyle={styles.row}
       />
 
-      {/* Footer */}
-      <Footer navigation={navigation} />
     </View>
   );
 };
