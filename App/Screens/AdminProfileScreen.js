@@ -4,15 +4,17 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 import useAuth from '../auth/useAuth'; // Import your useAuth hook
+import authService from '../auth/authService';
 
 export default function AdminProfileScreen() {
   const navigation = useNavigation();
-  const { getUser } = useAuth(); // Get getUser from useAuth
+  const { getUser } = authService.getUser(); // Get getUser from useAuth
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState({});
 
   useEffect(() => {
-    const userDetails = getUser(); // Fetch user details from auth context
+    const userDetails = authService.getUser(); // Fetch user details from auth context
+    console.log('userrrrrrrr', authService.getUser());
     if (userDetails) {
       setUser(userDetails);
     }
