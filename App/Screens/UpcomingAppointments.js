@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { format, addDays, subDays } from 'date-fns'; 
 import admin from '../api/admin';
 import { useFocusEffect } from '@react-navigation/native';
@@ -12,6 +12,7 @@ const UpcomingAppointments = ({ navigation }) => {
   const [error, setError] = useState(null);
 
   const fetchData = async () => {
+    setLoading(true);
     try {
       const api = await admin();
       const bookingResponse = await api.get('/booking');
@@ -48,6 +49,29 @@ const UpcomingAppointments = ({ navigation }) => {
     }, [])
   );
 
+  const updateAppointmentStatus = async (id, status) => {
+    try {
+      setLoading(true);
+      const api = await admin();
+      const response = await api.post(`/booking-update/${id}`, { status });
+
+      if (response.ok) {
+        Alert.alert("Success", `Appointment ${status}`);
+        fetchData(); // Refresh the booking list after update
+      } else {
+        setError('Failed to update booking status');
+      }
+    } catch (err) {
+      setError('Error: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const cancelAppointment = (id) => updateAppointmentStatus(id, 'canceled');
+  const approveAppointment = (id) => updateAppointmentStatus(id, 'approved');
+  const completeAppointment = (id) => updateAppointmentStatus(id, 'completed');
+
   if (loading) {
     return <ActivityIndicator size="large" color="#24150E" style={{ flex: 1, justifyContent: 'center' }} />;
   }
@@ -55,18 +79,6 @@ const UpcomingAppointments = ({ navigation }) => {
   // Get next 6 days
   const getNextDays = (start, days) => {
     return Array.from({ length: days }, (_, index) => addDays(start, index));
-  };
-
-  const cancelAppointment = (id) => {
-    console.log(`Appointment ${id} cancelled`);
-  };
-
-  const approveAppointment = (id) => {
-    console.log(`Appointment ${id} approved`);
-  };
-
-  const completeAppointment = (id) => {
-    console.log(`Appointment ${id} completed`);
   };
 
   const handlePrevious = () => {
@@ -267,10 +279,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF6F61', 
   },
   completeButton: {
-    backgroundColor: '#6EC1E4',
+    backgroundColor: '#FEC107',
   },
   buttonText: {
-    color: 'white',
+    color: '#fff',
+    fontSize: 14,
     fontWeight: 'bold',
   },
 });
