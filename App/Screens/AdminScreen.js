@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import AuthContext from '../auth/context';
 import DaySchedule from './DaySchedule';
-
+import admin from '../api/admin';
 const stylistsImage = require('../resources/stylists.png');
 const servicesImage = require('../resources/servicesImg.png');
 
@@ -21,6 +21,40 @@ const AdminScreen = () => {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
 
+  const [stats, setStats] = useState({
+    active: 0,
+    rejected: 0,
+    completed: 0,
+  });
+  const [loading, setLoading] = useState(true);
+
+  // Fetch booking counts from the API
+  useEffect(() => {
+    const fetchBookingCounts = async () => {
+      try {
+        const api = await admin();
+        const bookingResponse = await api.get('/bookings/counts');
+
+        if (bookingResponse.data.success) {
+          const { data } = bookingResponse.data;
+          setStats({
+            active: data.approved,
+            rejected: data.rejected,
+            completed: data.completed,
+          });
+        } else {
+          console.error('Failed to fetch booking counts');
+        }
+      } catch (error) {
+        console.error('Error fetching booking counts:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBookingCounts();
+  }, []);
+
   const handleServices = () => navigation.navigate("Services");
   const handleStylist = () => navigation.navigate("Stylists");
   const handleProfile = () => navigation.navigate('AdminProfile', { user });
@@ -31,17 +65,36 @@ const AdminScreen = () => {
         {/* Header Section */}
         <View style={styles.header}>
           <Text style={styles.adminText}>{user.role || 'User'}</Text>
-          <Icon name="person-circle-outline" size={45} color="black" onPress={handleProfile} />
+          <Text style={styles.adminText}>Sterling Glam</Text>
         </View>
 
         <Text style={styles.username}>{user.first_name || 'User'}</Text>
 
         {/* Stats Section */}
-        <View style={styles.statsContainer}>
-          <StatBox color="#8EC354" title="Active Bookings" number="15" trend="↑ 3 More vs last 7 days" />
-          <StatBox color="#EC5464" title="Rejected Bookings" number="5" trend="↓ 2 More vs last 7 days" />
-          <StatBox color="#5B9BEB" title="New Visitors" number="20" trend="↑ 15 More vs last 7 days" />
-        </View>
+        {loading ? (
+          <ActivityIndicator size="large" color="#0000ff" style={styles.loader} />
+        ) : (
+          <View style={styles.statsContainer}>
+            <StatBox
+              color="#8EC354"
+              title="Active Bookings"
+              number={stats.active}
+              trend="↑ vs last 7 days"
+            />
+            <StatBox
+              color="#EC5464"
+              title="Rejected Bookings"
+              number={stats.rejected}
+              trend="↓ vs last 7 days"
+            />
+            <StatBox
+              color="#5B9BEB"
+              title="Completed Bookings"
+              number={stats.completed}
+              trend="↑ vs last 7 days"
+            />
+          </View>
+        )}
 
         {/* Day Schedule Section */}
         <View style={styles.scheduleContainer}>
@@ -79,10 +132,8 @@ const styles = StyleSheet.create({
   statNumber: { fontSize: 24, fontWeight: 'bold', color: '#FFF', marginVertical: 5 },
   statMore: { fontSize: 12, color: '#FFF' },
   scheduleContainer: { marginVertical: 0 },
-  scheduleHeader: { flexDirection: 'row', justifyContent: 'space-between' },
-  dayScheduleText: { fontSize: 18, fontWeight: 'bold' },
-  dateText: { fontSize: 13, color: 'black' },
-  appointmentText: { fontSize: 14, marginBottom:10, color: 'gray' },
+  loader: { marginVertical: 20 },
+  appointmentText: { fontSize: 14, marginBottom: 10, color: 'gray' },
   buttonContainer: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20, marginBottom: 20 },
   button: { flexDirection: 'column', alignItems: 'center', backgroundColor: '#FFF', borderRadius: 10, padding: 10, elevation: 2, borderColor: 'black', borderWidth: 1, width: '40%' },
   buttonText: { fontSize: 14, marginTop: 5 },
