@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, FlatList, ActivityIndicator, Toucha
 import admin from '../api/admin';
 import { useFocusEffect } from '@react-navigation/native';
 import dayjs from 'dayjs';
+import { format, addDays, subDays } from 'date-fns';
 
 const generateColor = (index) => {
   const colors = ['#00CC66', '#FFCC00', '#66B2FF', '#FF6347', '#8A2BE2'];
@@ -15,19 +16,34 @@ const DaySchedule = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedDate, setSelectedDate] = useState(dayjs().format('YYYY-MM-DD'));
+  const [startDate, setStartDate] = useState(new Date());
 
   const fetchBookings = async (date) => {
     try {
       const api = await admin();
-      const bookingResponse = await api.get(`/booking?date=${date}`);
+      const bookingResponse = await api.get('/booking');
 
       if (bookingResponse.ok) {
-        setBookings(bookingResponse.data.booking);
+        const formattedBookings = bookingResponse.data.booking
+          .filter((booking) => booking.date === date) // Filter bookings based on the selected date
+          .map((booking) => ({
+            id: booking.id,
+            name: `${booking.user.first_name} ${booking.user.last_name}`,
+            services: booking.services.map(service => service.name),
+            time: format(new Date(`${booking.date}T${booking.start_time}`), 'HH:mm'),
+            stylist: booking.staff.name,
+            date: booking.date,
+            start_time: booking.start_time,
+            staff_id: booking.staff.id,
+          }));
+        setBookings(formattedBookings);
       } else {
-        setError('Failed to fetch booking data');
+        setError('Failed to fetch data');
       }
     } catch (err) {
       setError('Error: ' + err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -70,12 +86,25 @@ const DaySchedule = () => {
     }, [selectedDate])
   );
 
-  const handlePrevDate = () => {
-    setSelectedDate((prevDate) => dayjs(prevDate).subtract(1, 'day').format('YYYY-MM-DD'));
+  const handleDateClick = (date) => {
+    setSelectedDate(format(date, 'yyyy-MM-dd')); // Update selected date when clicked
   };
 
-  const handleNextDate = () => {
-    setSelectedDate((prevDate) => dayjs(prevDate).add(1, 'day').format('YYYY-MM-DD'));
+  const handlePrevious = () => {
+    const newStartDate = subDays(startDate, 6);
+    setStartDate(newStartDate);
+    setSelectedDate(format(newStartDate, 'yyyy-MM-dd'));
+  };
+
+  const handleNext = () => {
+    const newStartDate = addDays(startDate, 6);
+    setStartDate(newStartDate);
+    setSelectedDate(format(newStartDate, 'yyyy-MM-dd'));
+  };
+
+  // Generate the next 6 days from the start date
+  const getNextDays = (start, days) => {
+    return Array.from({ length: days }, (_, index) => addDays(start, index));
   };
 
   if (loading) {
@@ -84,16 +113,45 @@ const DaySchedule = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={handlePrevDate} style={styles.arrowButton}>
-          <Text style={styles.arrowText}>{"<"}</Text>
+      <Text style={styles.header}>Upcoming Appointments</Text>
+      <View style={styles.datePicker}>
+        <TouchableOpacity onPress={handlePrevious}>
+          <Text style={styles.arrow}>{"<"}</Text>
         </TouchableOpacity>
-        <Text style={styles.heading}>Day Schedule - {dayjs(selectedDate).format('DD MMM YYYY')}</Text>
-        <TouchableOpacity onPress={handleNextDate} style={styles.arrowButton}>
-          <Text style={styles.arrowText}>{">"}</Text>
+        <Text style={styles.monthText}>{format(startDate, 'MMMM, yyyy')}</Text>
+        <TouchableOpacity onPress={handleNext}>
+          <Text style={styles.arrow}>{">"}</Text>
         </TouchableOpacity>
       </View>
-
+      <View style={styles.dateRow}>
+        {getNextDays(startDate, 6).map((date) => (
+          <TouchableOpacity
+            key={format(date, 'yyyy-MM-dd')}
+            style={[
+              styles.dateItem,
+              selectedDate === format(date, 'yyyy-MM-dd') ? styles.selectedDateItem : {}
+            ]}
+            onPress={() => handleDateClick(date)}
+          >
+            <Text
+              style={[
+                styles.weekday,
+                selectedDate === format(date, 'yyyy-MM-dd') ? styles.selectedDateText : {}
+              ]}
+            >
+              {format(date, 'EEE').toUpperCase()}
+            </Text>
+            <Text
+              style={[
+                styles.dateText,
+                selectedDate === format(date, 'yyyy-MM-dd') ? styles.selectedDateText : {}
+              ]}
+            >
+              {format(date, 'dd')}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
       {error && <Text style={styles.errorText}>{error}</Text>}
       <View style={styles.legendContainer}>
         {staff.map((member) => (
@@ -116,7 +174,7 @@ const DaySchedule = () => {
                 <FlatList
                   horizontal
                   data={booking.services}
-                  keyExtractor={(item) => `${item.id}`}
+                  keyExtractor={(item, index) => `${booking.id}-${index}`}
                   renderItem={({ item }) => (
                     <View
                       style={[
@@ -124,7 +182,7 @@ const DaySchedule = () => {
                         { borderColor: staffMember?.color, backgroundColor: `${staffMember?.color}20` },
                       ]}
                     >
-                      <Text style={styles.serviceText}>{item.name}</Text>
+                      <Text style={styles.serviceText}>{item}</Text>
                     </View>
                   )}
                 />
@@ -145,13 +203,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 10,
+    fontSize: 20, // Reduced font size
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+    color: '#4A4A4A',
   },
   heading: {
-    fontSize: 18,
+    fontSize: 16, // Reduced font size
     fontWeight: 'bold',
     color: '#24150E',
     marginHorizontal: 10,
@@ -161,7 +220,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   arrowText: {
-    fontSize: 22,
+    fontSize: 20, // Reduced font size
     color: '#24150E',
   },
   errorText: {
@@ -186,7 +245,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   legendText: {
-    fontSize: 16,
+    fontSize: 14, // Reduced font size
     color: '#333',
   },
   scheduleContainer: {
@@ -206,7 +265,7 @@ const styles = StyleSheet.create({
   },
   time: {
     width: 60,
-    fontSize: 16,
+    fontSize: 14, // Reduced font size
     color: '#555',
     fontWeight: 'bold',
   },
@@ -215,17 +274,63 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 8,
     marginLeft: 10,
-    borderWidth: 1,
+    maxWidth: 120,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   serviceText: {
-    fontSize: 14,
+    fontSize: 12, // Reduced font size
     color: '#333',
+    textAlign: 'center',
   },
   noBookingsText: {
-    fontSize: 18,
+    fontSize: 14, // Reduced font size
     color: '#888',
     textAlign: 'center',
-    marginTop: 30,
+    marginTop: 20,
+  },
+  datePicker: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  arrow: {
+    fontSize: 20, // Reduced font size
+    color: '#333',
+  },
+  monthText: {
+    fontSize: 16, // Reduced font size
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  dateRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  dateItem: {
+    alignItems: 'center',
+    paddingVertical: 8, // Reduced padding
+    paddingHorizontal: 12, // Reduced padding
+    backgroundColor: '#F5F5F5',
+    borderRadius: 8,
+    width: 50,
+  },
+  selectedDateItem: {
+    backgroundColor: '#4B9B61',
+  },
+  weekday: {
+    fontSize: 12, // Reduced font size
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  dateText: {
+    fontSize: 14, // Reduced font size
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  selectedDateText: {
+    color: '#fff',
   },
 });
 

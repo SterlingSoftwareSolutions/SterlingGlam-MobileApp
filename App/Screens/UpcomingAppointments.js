@@ -1,30 +1,34 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet, ActivityIndicator, Alert } from 'react-native';
-import { format, addDays, subDays } from 'date-fns'; 
+import { format, addDays, subDays } from 'date-fns';
 import admin from '../api/admin';
 import { useFocusEffect } from '@react-navigation/native';
 
 const UpcomingAppointments = ({ navigation }) => {
-  const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
+  const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd')); // Start with today's date
   const [startDate, setStartDate] = useState(new Date());
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const fetchData = async () => {
-    setLoading(true);
     try {
       const api = await admin();
       const bookingResponse = await api.get('/booking');
 
       if (bookingResponse.ok) {
-        const formattedBookings = bookingResponse.data.booking.map((booking) => ({
-          id: booking.id,
-          name: `${booking.user.first_name} ${booking.user.last_name}`,
-          services: booking.services.map(service => service.name).join(', '),
-          time: format(new Date(`${booking.date}T${booking.start_time}`), 'HH:mm'),
-          stylist: booking.staff.name,
-        }));
+        const formattedBookings = bookingResponse.data.booking
+          .filter((booking) => booking.date === selectedDate) // Filter bookings based on selected date
+          .map((booking) => ({
+            id: booking.id,
+            name: `${booking.user.first_name} ${booking.user.last_name}`,
+            services: booking.services.map(service => service.name).join(', '),
+            time: format(new Date(`${booking.date}T${booking.start_time}`), 'HH:mm'),
+            stylist: booking.staff.name,
+            date: booking.date,
+            start_time: booking.start_time,
+            staff_id: booking.staff.id,
+          }));
         setBookings(formattedBookings);
       } else {
         setError('Failed to fetch data');
@@ -39,25 +43,31 @@ const UpcomingAppointments = ({ navigation }) => {
   // Fetch data on initial mount
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [selectedDate]); // Re-fetch when selectedDate changes
 
   // Refetch data when the screen is focused
   useFocusEffect(
     useCallback(() => {
       setLoading(true);
       fetchData();
-    }, [])
+    }, [selectedDate]) // Refetch data when the selectedDate changes
   );
 
-  const updateAppointmentStatus = async (id, status) => {
+  const updateAppointmentStatus = async (id, status, date, start_time, staff_id) => {
     try {
       setLoading(true);
       const api = await admin();
-      const response = await api.post(`/booking-update/${id}`, { status });
+      
+      const response = await api.post(`/booking-update/${id}`, {
+        status,
+        date,
+        start_time,
+        staff_id
+      });
 
       if (response.ok) {
-        Alert.alert("Success", `Appointment ${status}`);
         fetchData(); // Refresh the booking list after update
+        showAlert(status); // Show the alert based on the status
       } else {
         setError('Failed to update booking status');
       }
@@ -68,9 +78,29 @@ const UpcomingAppointments = ({ navigation }) => {
     }
   };
 
-  const cancelAppointment = (id) => updateAppointmentStatus(id, 'canceled');
-  const approveAppointment = (id) => updateAppointmentStatus(id, 'approved');
-  const completeAppointment = (id) => updateAppointmentStatus(id, 'completed');
+  const showAlert = (status) => {
+    let message = '';
+    if (status === 'approved') {
+      message = 'Appointment has been approved.';
+    } else if (status === 'rejected') {
+      message = 'Appointment has been rejected.';
+    } else if (status === 'completed') {
+      message = 'Appointment has been marked as completed.';
+    }
+    Alert.alert('Appointment Status', message);
+  };
+
+  const cancelAppointment = (id, date, start_time, staff_id) => {
+    updateAppointmentStatus(id, 'rejected', date, start_time, staff_id);
+  };
+
+  const approveAppointment = (id, date, start_time, staff_id) => {
+    updateAppointmentStatus(id, 'approved', date, start_time, staff_id);
+  };
+
+  const completeAppointment = (id, date, start_time, staff_id) => {
+    updateAppointmentStatus(id, 'completed', date, start_time, staff_id);
+  };
 
   if (loading) {
     return <ActivityIndicator size="large" color="#24150E" style={{ flex: 1, justifyContent: 'center' }} />;
@@ -84,11 +114,17 @@ const UpcomingAppointments = ({ navigation }) => {
   const handlePrevious = () => {
     const newStartDate = subDays(startDate, 6); 
     setStartDate(newStartDate);
+    setSelectedDate(format(newStartDate, 'yyyy-MM-dd')); // Update selectedDate to reflect new start date
   };
 
   const handleNext = () => {
     const newStartDate = addDays(startDate, 6); 
     setStartDate(newStartDate);
+    setSelectedDate(format(newStartDate, 'yyyy-MM-dd')); // Update selectedDate to reflect new start date
+  };
+
+  const handleDateClick = (date) => {
+    setSelectedDate(format(date, 'yyyy-MM-dd')); // Update selectedDate when a date is clicked
   };
 
   const renderAppointment = ({ item }) => (
@@ -105,19 +141,21 @@ const UpcomingAppointments = ({ navigation }) => {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={[styles.button, styles.approveButton]}
-          onPress={() => approveAppointment(item.id)}
+          onPress={() => approveAppointment(item.id, item.date, item.start_time, item.staff_id)}
         >
           <Text style={styles.buttonText}>Approve</Text>
         </TouchableOpacity>
+
         <TouchableOpacity
           style={[styles.button, styles.cancelButton]}
-          onPress={() => cancelAppointment(item.id)}
+          onPress={() => cancelAppointment(item.id, item.date, item.start_time, item.staff_id)}
         >
-          <Text style={styles.buttonText}>Cancel</Text>
+          <Text style={styles.buttonText}>Reject</Text>
         </TouchableOpacity>
+
         <TouchableOpacity
           style={[styles.button, styles.completeButton]}
-          onPress={() => completeAppointment(item.id)}
+          onPress={() => completeAppointment(item.id, item.date, item.start_time, item.staff_id)}
         >
           <Text style={styles.buttonText}>Complete</Text>
         </TouchableOpacity>
@@ -144,7 +182,7 @@ const UpcomingAppointments = ({ navigation }) => {
           <TouchableOpacity
             key={format(date, 'yyyy-MM-dd')}
             style={[styles.dateItem, selectedDate === format(date, 'yyyy-MM-dd') ? styles.selectedDateItem : {}]}
-            onPress={() => setSelectedDate(format(date, 'yyyy-MM-dd'))}
+            onPress={() => handleDateClick(date)} // When a date is clicked, update selectedDate
           >
             <Text style={[styles.weekday, selectedDate === format(date, 'yyyy-MM-dd') ? styles.selectedDateText : {}]}>
               {format(date, 'EEE').toUpperCase()}
@@ -279,11 +317,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF6F61', 
   },
   completeButton: {
-    backgroundColor: '#FEC107',
+    backgroundColor: '#6EC1E4',
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 14,
+    color: 'white',
     fontWeight: 'bold',
   },
 });
