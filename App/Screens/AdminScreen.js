@@ -23,7 +23,7 @@ const AdminScreen = () => {
 
   const handleServices = () => navigation.navigate("Services");
   const handleStylist = () => navigation.navigate("Stylists");
-  const handleProfile = () => navigation.navigate('AdminProfile', { user });
+  const handleProfile = () => navigation.navigate('Profile', { user });
 
   return (
     <View style={styles.container}>

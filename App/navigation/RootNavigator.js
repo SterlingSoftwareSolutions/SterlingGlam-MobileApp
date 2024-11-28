@@ -17,7 +17,7 @@ const RootNavigator = () => {
     <Stack.Screen name="GetStarted" component={GetStartedScreen} options={{ headerShown: false }} />
     <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
     <Stack.Screen name="Signup" component={SignUp} options={{ headerShown: false }} />
-    <Stack.Screen name="Dashboard" component={AdminTabNavigator} options={{ headerShown: false }} />
+    <Stack.Screen name="AdminDashboard" component={AdminTabNavigator} options={{ headerShown: false }} />
     <Stack.Screen name="ClientDashboard" component={TabNavigator} options={{ headerShown: false }} />
   </Stack.Navigator>
   );

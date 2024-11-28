@@ -46,6 +46,7 @@ const ReviewBookingScreen = () => {
         staff_id: selectedSpecialist,
         service_ids: selectedServices.map(service => service.id),
         total_price: totalPrice,
+        status:'pending',
       };
 
       const api = await admin();
