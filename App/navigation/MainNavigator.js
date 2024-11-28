@@ -9,6 +9,8 @@ import Login from "../Screens/Login";
 import SignUp from "../Screens/SignUp";
 import Dashboard from "../Screens/Dashboard";
 import HomeScreen from "../Screens/HomeScreen";
+import AdminScreen from "../Screens/AdminScreen";
+import AdminTabNavigator from "./AdminTabNavigator";
 
 const Stack = createNativeStackNavigator();
 
@@ -20,6 +22,7 @@ const MainNavigator = () => (
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="GetStarted" component={GetStartedScreen} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
+        <Stack.Screen name="AdminDashboard" component={AdminTabNavigator} />
 
     </Stack.Navigator>
 );

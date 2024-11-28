@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AuthContext from '../auth/context';
 import admin , {BASE_URL} from '../api/admin';
 import Swiper from 'react-native-swiper';
+import authService from '../auth/authService';
 
 const { width } = Dimensions.get('window');
 
@@ -49,14 +50,13 @@ const HomeScreen = () => {
     return <ActivityIndicator size="large" color="#24150E" style={{ flex: 1, justifyContent: 'center' }} />;
   }
 
-
-
   if (error) {
     return <Text>{error}</Text>;
   }
 
   const handleUserProfile = () => {
-    console.log('User Details', user);
+    console.log('User Detailssss', user);
+    navigation.navigate('Profile');
   };
 
   return (
