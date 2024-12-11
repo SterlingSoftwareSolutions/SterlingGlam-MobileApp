@@ -10,13 +10,18 @@ const Overview = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Function to sort bookings by date (most recent first)
+  const sortBookingsByDate = (bookings) => {
+    return bookings.sort((a, b) => new Date(b.date) - new Date(a.date));
+  };
+
   const fetchData = async () => {
     try {
       const api = await admin();
       const bookingResponse = await api.get('/booking');
 
       if (bookingResponse.ok) {
-        setBookings(bookingResponse.data.booking);
+        setBookings(sortBookingsByDate(bookingResponse.data.booking));
       } else {
         setError('Failed to fetch data');
       }
@@ -70,11 +75,11 @@ const Overview = () => {
           bookings.map((booking) => (
             <TouchableOpacity
               key={booking.id}
-              style={[styles.appointmentCard, { shadowColor: getStatusColor(booking.status) }]} 
+              style={[styles.appointmentCard, { borderLeftColor: getStatusColor(booking.status) }]}
               // onPress={() => navigation.navigate('BookingDetails', { bookingId: booking.id })}
             >
               <View style={styles.appointmentHeader}>
-                <Icon name="calendar-clock" size={18} color="#000" />
+                <Icon name="calendar-clock" size={20} color="#000" />
                 <Text style={styles.appointmentDate}>
                   {new Date(booking.date).toLocaleDateString()} at {booking.start_time} - {booking.end_time}
                 </Text>
@@ -85,7 +90,9 @@ const Overview = () => {
                 {booking.services.map((service) => service.name).join(', ')}
               </Text>
               <View style={styles.appointmentFooter}>
-                <Text style={styles.appointmentStatus}>{booking.status}</Text>
+                <Text style={[styles.appointmentStatus, { color: getStatusColor(booking.status) }]}>
+                  {booking.status}
+                </Text>
                 <Text style={styles.appointmentPrice}>
                   Rs.{booking.total_price ? booking.total_price : '0.00'}
                 </Text>
@@ -103,9 +110,9 @@ const Overview = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF', 
+    backgroundColor: '#F5F5F5',
     paddingHorizontal: 20,
-    paddingTop: 10,
+    paddingTop: 20,
   },
   loaderContainer: {
     flex: 1,
@@ -117,59 +124,61 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   sectionTitle: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: '700',
-    color: '#000',
+    color: '#333',
     marginBottom: 20,
   },
   appointmentCard: {
-    backgroundColor: '#F7F7F7', 
+    backgroundColor: '#FFF',
     padding: 20,
     marginBottom: 15,
-    shadowOffset: { width: 2, height: 10 },
-    shadowOpacity: 0.5,
-    shadowRadius: 20,
-    elevation: 4,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 5,
     marginHorizontal: 10,
+    borderLeftWidth: 5,
     overflow: 'hidden',
   },
   appointmentHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 12,
   },
   appointmentDate: {
     fontSize: 14,
-    color: '#333',
+    color: '#666',
     marginLeft: 8,
   },
   appointmentTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '700',
-    color: '#000',
-    marginTop: 10,
+    color: '#333',
+    marginTop: 12,
   },
   appointmentSubtitle: {
     fontSize: 14,
-    color: '#666',
+    color: '#888',
     marginTop: 5,
   },
   appointmentService: {
     fontSize: 14,
     color: '#333',
-    marginTop: 5,
+    marginTop: 8,
   },
   appointmentFooter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 15,
+    marginTop: 18,
   },
   appointmentStatus: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
-    textTransform:'capitalize'
+    textTransform: 'capitalize',
   },
   appointmentPrice: {
     fontSize: 16,

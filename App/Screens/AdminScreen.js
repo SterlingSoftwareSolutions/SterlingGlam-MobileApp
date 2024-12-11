@@ -20,6 +20,7 @@ const StatBox = ({ color, title, number, trend }) => (
 const AdminScreen = () => {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
+  console.log("cccccccccccccccccccccccccccccccccccccc",user);
 
   const [stats, setStats] = useState({
     active: 0,
@@ -65,7 +66,7 @@ const AdminScreen = () => {
         {/* Header Section */}
         <View style={styles.header}>
           <Text style={styles.adminText}>{user.role || 'User'}</Text>
-          <Text style={styles.adminText}>Sterling Glam</Text>
+          <Text style={styles.adminText}>Salon By Sameera</Text>
         </View>
 
         <Text style={styles.username}>{user.first_name || 'User'}</Text>

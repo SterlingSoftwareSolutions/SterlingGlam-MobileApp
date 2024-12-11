@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -11,11 +11,12 @@ import { useNavigation } from "@react-navigation/native";
 import authApi from "../api/auth";
 import useAuth from "../auth/useAuth";
 import authService from "../auth/authService";
-
+import AuthContext from "../auth/context";
 import Logo from "../resources/salonsameeralogo.png";
 
 const Login = () => {
   const { logIn } = useAuth();
+  const { setUser } = useContext(AuthContext);
   const navigation = useNavigation();
 
   const [email, setEmail] = useState('');
@@ -40,8 +41,9 @@ const Login = () => {
             }
 
             await authService.storeUser(loggedInUser); 
-            console.log("User stored successfully:", loggedInUser); // Log stored user
+            console.log("User stored successfully:", loggedInUser); 
             
+            setUser(loggedInUser);
             // Navigate based on user role
             if (loggedInUser.role === 'admin') {
                 navigation.navigate('AdminDashboard');

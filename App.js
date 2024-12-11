@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'react-native';
@@ -11,7 +12,6 @@ import AdminTabNavigator from './App/navigation/AdminTabNavigator';
 export default function App() {
   const [user, setUser] = useState();
 
-  // Load user data from AsyncStorage on app launch
   useEffect(() => {
     const loadUser = async () => {
       const storedUser = await authService.getUser();
@@ -20,7 +20,6 @@ export default function App() {
     loadUser();
   }, []);
 
-  // Conditionally render navigator based on user role
   const renderNavigator = () => {
     if (!user) {
       console.log('Not logged in', user);

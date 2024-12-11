@@ -22,6 +22,7 @@ const DaySchedule = () => {
     try {
       const api = await admin();
       const bookingResponse = await api.get('/booking');
+      console.log("booooooooooooooooooooooooooooking", bookingResponse);
 
       if (bookingResponse.ok) {
         const formattedBookings = bookingResponse.data.booking
@@ -87,7 +88,7 @@ const DaySchedule = () => {
   );
 
   const handleDateClick = (date) => {
-    setSelectedDate(format(date, 'yyyy-MM-dd')); // Update selected date when clicked
+    setSelectedDate(format(date, 'yyyy-MM-dd')); 
   };
 
   const handlePrevious = () => {
